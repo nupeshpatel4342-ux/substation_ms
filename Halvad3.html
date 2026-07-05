@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>66 K.V. HALVAD-3 S/S - Monthly Report App</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; margin: 0; padding: 15px; }
+        .container { max-width: 1000px; margin: auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #1a73e8; margin-bottom: 10px; font-size: 22px; }
+        
+        .header-controls { display: flex; justify-content: space-between; align-items: center; background-color: #e8f0fe; padding: 10px 20px; border-radius: 8px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+        .month-header { font-size: 18px; font-weight: bold; color: #1a73e8; display: flex; align-items: center; }
+        .month-header input { margin-left: 10px; padding: 5px 15px; font-size: 16px; font-weight: bold; text-align: center; border: 2px solid #1a73e8; border-radius: 5px; text-transform: uppercase; color: #d93025; background: #fff; }
+        
+        .btn-group { display: flex; gap: 10px; }
+        .btn { padding: 8px 15px; font-size: 14px; font-weight: bold; color: white; border: none; border-radius: 5px; cursor: pointer; transition: 0.3s; }
+        .btn-reset { background-color: #dc3545; }
+        .btn-reset:hover { background-color: #c82333; }
+        .btn-save { background-color: #28a745; }
+        .btn-save:hover { background-color: #218838; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; }
+        th, td { border: 1px solid #dcdcdc; padding: 8px; text-align: left; vertical-align: middle; }
+        th { background-color: #1a73e8; color: white; }
+        
+        input[type="number"] { width: 100%; padding: 6px; box-sizing: border-box; border: 1px solid #babbbd; border-radius: 4px; font-size: 13px; font-weight: bold; color: #333; }
+        .readonly { background-color: #f8f9fa; font-weight: bold; color: #333; }
+        .green-input { background-color: #92D050 !important; font-weight: bold; border: 1px solid #75a840 !important; color: #000; }
+        
+        .section-title { margin-top: 25px; background-color: #34a853; color: white; padding: 8px 12px; border-radius: 6px; font-size: 15px; font-weight: bold; }
+        .highlight-table th { background-color: #5f6368; }
+        .total-row { background-color: #fff3cd; font-weight: bold; }
+        
+        /* Mobile Responsive */
+        @media screen and (max-width: 768px) {
+            .header-controls { flex-direction: column; text-align: center; }
+            .btn-group { width: 100%; justify-content: center; }
+            table, thead, tbody, th, td, tr { display: block; }
+            thead tr { position: absolute; top: -9999px; left: -9999px; }
+            tr { border: 1px solid #ccc; margin-bottom: 15px; border-radius: 8px; padding: 10px; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+            td { border: none; border-bottom: 1px solid #eee; position: relative; padding-left: 50%; text-align: right; min-height: 30px; }
+            td:before { position: absolute; top: 12px; left: 10px; width: 45%; padding-right: 10px; white-space: nowrap; text-align: left; font-weight: bold; color: #555; content: attr(data-label); }
+            td:last-child { border-bottom: 0; }
+            .two-col-table td { padding-left: 60%; }
+            .two-col-table td:before { width: 55%; white-space: normal; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="reportContainer">
+    <h2>66 K.V. HALVAD-3 S/S - MONTHLY REPORT</h2>
+    
+    <div class="header-controls" id="controls">
+        <div class="month-header">
+            <label for="report_month">MONTH : </label>
+            <input type="text" id="report_month" value="MAY-2026">
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-reset" onclick="resetData()">↺ Reset Data</button>
+            <button class="btn btn-save" onclick="exportToPDF()">📄 Save as PDF</button>
+        </div>
+    </div>
+    
+    <table id="mainTable">
+        <thead>
+            <tr>
+                <th>NAME OF FEEDER</th>
+                <th>METER READING 24:00</th>
+                <th>METER READING 00:00</th>
+                <th>DIFFERENCE</th>
+                <th>M.F.</th>
+                <th>TOTAL UNITS</th>
+            </tr>
+        </thead>
+        <tbody id="feederBody">
+            </tbody>
+    </table>
+
+    <div class="section-title">TOTALS</div>
+    <table id="totalsTable" class="two-col-table highlight-table">
+        <tr class="total-row"><td data-label="FEEDER TOTAL" width="60%">FEEDER TOTAL</td><td data-label="UNITS" id="feeder_total" class="readonly">0</td></tr>
+        <tr class="total-row"><td data-label="TOTAL RECEIVED">TOTAL RECEIVED</td><td data-label="UNITS" id="total_received" class="readonly">0</td></tr>
+        <tr class="total-row"><td data-label="TOTAL SENT">TOTAL SENT</td><td data-label="UNITS" id="total_sent" class="readonly">0</td></tr>
+    </table>
+
+    <div class="section-title">OPPOSITE SS END UNITS (For Line Loss)</div>
+    <table id="oppositeTable" class="two-col-table">
+        <tr><td data-label="SS NAME" width="60%"><strong>MANSAR SS END (E)</strong></td><td data-label="UNIT"><input type="number" id="b29" class="green-input" oninput="calculate()"></td></tr>
+        <tr><td data-label="SS NAME"><strong>MANSAR SS END (I)</strong></td><td data-label="UNIT"><input type="number" id="b30" class="green-input" oninput="calculate()"></td></tr>
+        <tr><td data-label="SS NAME"><strong>GHANSHYAMGADH SS END (E)</strong></td><td data-label="UNIT"><input type="number" id="b32" class="green-input" oninput="calculate()"></td></tr>
+        <tr><td data-label="SS NAME"><strong>GHANSHYAMGADH SS END (I)</strong></td><td data-label="UNIT"><input type="number" id="b33" class="green-input" oninput="calculate()"></td></tr>
+    </table>
+
+    <div class="section-title">LOSS CALCULATION</div>
+    <table id="lossTable" class="two-col-table highlight-table">
+        <thead>
+            <tr><th>LOSS TYPE</th><th>PERCENTAGE (%)</th></tr>
+        </thead>
+        <tbody>
+            <tr><td data-label="LOSS TYPE"><strong>S/S LOSS</strong></td><td data-label="PERCENTAGE (%)" id="ss_loss" class="readonly">0.00 %</td></tr>
+            <tr><td data-label="LOSS TYPE"><strong>TR-1 LOSS</strong></td><td data-label="PERCENTAGE (%)" id="tr1_loss" class="readonly">0.00 %</td></tr>
+            <tr><td data-label="LOSS TYPE"><strong>TR-2 LOSS</strong></td><td data-label="PERCENTAGE (%)" id="tr2_loss" class="readonly">0.00 %</td></tr>
+            <tr><td data-label="LOSS TYPE"><strong>LINE LOSS</strong></td><td data-label="PERCENTAGE (%)" id="line_loss" class="readonly">0.00 %</td></tr>
+            <tr><td data-label="LOSS TYPE"><strong>66 K.V. BUS LOSS</strong></td><td data-label="PERCENTAGE (%)" id="bus66_loss" class="readonly">0.00 %</td></tr>
+            <tr><td data-label="LOSS TYPE"><strong>11 K.V. BUS LOSS</strong></td><td data-label="PERCENTAGE (%)" id="bus11_loss" class="readonly">0.00 %</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    const feeders = [
+        { id: 5, name: "66 K.V. MANSAR-HALVAD-3 LINE (I)", mf: 2 }, { id: 6, name: "66 K.V. MANSAR-HALVAD-3 LINE (E)", mf: 2 },
+        { id: 7, name: "66K.V. HALVAD-3-GHANSHYAMGADH LINE(E)", mf: 2 }, { id: 8, name: "66K.V. HALVAD-3-GHANSHYAMGADH LINE(I)", mf: 2 },
+        { id: 9, name: "66 K.V. TR-1 H.V-1", mf: 3 }, { id: 10, name: "66 K.V. TR-1 H.V-2", mf: 1.5 },
+        { id: 11, name: "11 K.V. MAIN-1 L.V.-1", mf: 2 }, { id: 12, name: "11 K.V. MAIN-1 L.V.-2", mf: 2 },
+        { id: 13, name: "11 K.V. DERIYARI (AG)", mf: 2 }, { id: 14, name: "11 K.V. SANDIPANI (URB)", mf: 2 },
+        { id: 15, name: "11 K.V. SHINE (IND)", mf: 2 }, { id: 16, name: "11 K.V. ASTHA (IND)", mf: 2 },
+        { id: 17, name: "11 K.V. RANJITGADH (AG)", mf: 2 }, { id: 18, name: "11 K.V. VANVAGDO (IND)", mf: 2 },
+        { id: 19, name: "11 K.V. CHETAN (JGY)", mf: 2 }, { id: 20, name: "11 K.V. SHINE SOLAR INPORT", mf: 6 },
+        { id: 21, name: "11 K.V. SHINE SOLAR EXPORT", mf: 6 }, { id: 22, name: "11 K.V. STATION", mf: 1 },
+        { id: 23, name: "11 K.V. LT PANEL 1", mf: 1 }, { id: 24, name: "11 K.V. LT PANEL 2", mf: 1 }
+    ];
+
+    const tbody = document.getElementById('feederBody');
+    feeders.forEach(f => {
+        let tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td data-label="NAME OF FEEDER"><strong>${f.name}</strong></td>
+            <td data-label="READING 24:00"><input type="number" id="r24_${f.id}" oninput="calculate()"></td>
+            <td data-label="READING 00:00"><input type="number" id="r00_${f.id}" oninput="calculate()"></td>
+            <td data-label="DIFFERENCE" id="diff_${f.id}" class="readonly">0</td>
+            <td data-label="M.F." class="readonly">${f.mf}</td>
+            <td data-label="TOTAL UNITS" id="units_${f.id}" class="readonly">0</td>
+        `;
+        tbody.appendChild(tr);
+    });
+
+    function getVal(id) { let val = parseFloat(document.getElementById(id).value); return isNaN(val) ? 0 : val; }
+    function setDisplay(id, val) { document.getElementById(id).innerText = isNaN(val) || !isFinite(val) ? "-" : parseFloat(val.toFixed(2)); }
+    function setPercent(id, val) { document.getElementById(id).innerText = (isNaN(val) || !isFinite(val)) ? "- %" : val.toFixed(2) + " %"; }
+
+    function calculate() {
+        let fData = {};
+        feeders.forEach(f => {
+            let r24 = getVal('r24_' + f.id); let r00 = getVal('r00_' + f.id);
+            let diff = 0; if(r24 > 0 || r00 > 0) diff = r24 - r00;
+            let units = diff * f.mf;
+            setDisplay('diff_' + f.id, diff); setDisplay('units_' + f.id, units); fData[f.id] = units;
+        });
+
+        let feederTotal = fData[13] + fData[14] + fData[15] + fData[16] + fData[17] + fData[18] + fData[19] + fData[21] + fData[22];
+        let totalReceived = fData[5] + fData[8] + fData[20];
+        let totalSent = fData[6] + fData[7] + feederTotal;
+
+        setDisplay('feeder_total', feederTotal); setDisplay('total_received', totalReceived); setDisplay('total_sent', totalSent);
+
+        let b29 = getVal('b29'), b30 = getVal('b30'), b32 = getVal('b32'), b33 = getVal('b33');
+        
+        setPercent('ss_loss', ((totalReceived - totalSent) / totalReceived) * 100);
+        setPercent('tr1_loss', ((fData[9] - fData[11]) / fData[9]) * 100);
+        setPercent('tr2_loss', ((fData[10] - fData[12]) / fData[10]) * 100);
+        
+        let l1 = b29 > 0 ? ((b29 - fData[5]) / b29) * 100 : 0; let l2 = fData[6] > 0 ? ((fData[6] - b30) / fData[6]) * 100 : 0;
+        let l3 = b32 > 0 ? ((b32 - fData[8]) / b32) * 100 : 0; let l4 = fData[7] > 0 ? ((fData[7] - b33) / fData[7]) * 100 : 0;
+        setPercent('line_loss', (l1 + l2 + l3 + l4) / 4);
+        
+        let kv66_in = fData[5] + fData[8]; let kv66_out = fData[6] + fData[7] + fData[9] + fData[10];
+        setPercent('bus66_loss', ((kv66_in - kv66_out) / kv66_in) * 100);
+        
+        let kv11_in = fData[11] + fData[12] + fData[20];
+        setPercent('bus11_loss', ((kv11_in - feederTotal) / kv11_in) * 100);
+    }
+
+    function resetData() {
+        if(confirm("શું તમે ખરેખર બધો ડેટા ક્લિયર કરવા માંગો છો?")) {
+            let inputs = document.querySelectorAll('input[type="number"]');
+            inputs.forEach(input => input.value = '');
+            calculate();
+        }
+    }
+
+    function exportToPDF() {
+        // ૧. કયો મહિનો છે તે મેળવો
+        let month = document.getElementById('report_month').value;
+        let element = document.getElementById('reportContainer');
+        let controls = document.getElementById('controls');
+
+        // ૨. PDF બનાવતી વખતે બટન્સ છુપાવી દો
+        controls.style.display = 'none';
+
+        // ૩. PDF ના સેટિંગ્સ
+        let opt = {
+            margin:       0.2,
+            filename:     'Halvad_SS_Report_' + month + '.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true, scrollY: 0 },
+            jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+        };
+
+        // ૪. PDF ડાઉનલોડ કરો અને પછી બટન્સ પાછા લાવો
+        html2pdf().set(opt).from(element).save().then(() => {
+            controls.style.display = 'flex';
+        });
+    }
+</script>
+
+</body>
+</html>
