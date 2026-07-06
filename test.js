@@ -1645,8 +1645,10 @@ function openFaultForm(faultId = null) {
         document.getElementById('f_resolution_date').value = f.resolution_date || '';
         document.getElementById('f_resolution_notes').value = f.resolution_notes || '';
         
+        document.getElementById('f_id').readOnly = true;
         document.getElementById('btnDeleteFault').style.display = 'inline-flex';
         document.getElementById('btnViewAttachedPhotosFault').style.display = 'inline-flex';
+        document.getElementById('btnViewAttachedDocsFault').style.display = 'inline-flex';
     } else {
         document.getElementById('f_id').value = '';
         document.getElementById('f_date').value = new Date().toISOString().split('T')[0];
@@ -1672,8 +1674,10 @@ function openFaultForm(faultId = null) {
         document.getElementById('f_resolution_date').value = '';
         document.getElementById('f_resolution_notes').value = '';
         
+        document.getElementById('f_id').readOnly = false;
         document.getElementById('btnDeleteFault').style.display = 'none';
         document.getElementById('btnViewAttachedPhotosFault').style.display = 'none';
+        document.getElementById('btnViewAttachedDocsFault').style.display = 'none';
     }
 }
 
@@ -1956,6 +1960,7 @@ function openTripForm(tripId = null) {
             document.getElementById('t_restore_time').value = trip.restore_time;
             document.getElementById('btnDeleteTrip').style.display = 'inline-flex';
             document.getElementById('btnViewAttachedPhotosTrip').style.display = 'inline-flex';
+            document.getElementById('btnViewAttachedDocsTrip').style.display = 'inline-flex';
         }
     } else {
         document.getElementById('t_id').value = '';
@@ -1966,8 +1971,10 @@ function openTripForm(tripId = null) {
         document.getElementById('t_trip_time').value = '';
         document.getElementById('t_restore_date').value = '';
         document.getElementById('t_restore_time').value = '';
+        document.getElementById('t_id').readOnly = false;
         document.getElementById('btnDeleteTrip').style.display = 'none';
         document.getElementById('btnViewAttachedPhotosTrip').style.display = 'none';
+        document.getElementById('btnViewAttachedDocsTrip').style.display = 'none';
     }
 }
 
@@ -2064,7 +2071,7 @@ function exportTrips() {
         return;
     }
     
-    let csv = 'ID,Equipment,Type,Trip Date,Trip Time,Restore Date,Restore Time,Duration(H),Remarks\\n';
+    let csv = 'ID,Equipment,Type,Trip Date,Trip Time,Restore Date,Restore Time,Duration(H),Remarks\n';
     trips.forEach(t => {
         csv += `${t.id},"${t.equipment}",${t.type},${t.trip_date},${t.trip_time},${t.restore_date||''},${t.restore_time||''},${t.duration},"${t.remarks||''}"\n`;
     });
@@ -2194,6 +2201,7 @@ function openBreakdownForm(id = null) {
             
             document.getElementById('btnDeleteBreakdown').style.display = 'inline-flex';
             document.getElementById('btnViewAttachedPhotosBd').style.display = 'inline-flex';
+            document.getElementById('btnViewAttachedDocsBd').style.display = 'inline-flex';
         }
     } else {
         document.getElementById('bdFormTitle').textContent = '📝 Report New Breakdown';
@@ -2218,8 +2226,10 @@ function openBreakdownForm(id = null) {
         document.getElementById('bdLinkDoc').value = '';
         document.getElementById('bdStatus').value = 'Pending';
         
+        document.getElementById('bdNumber').readOnly = false;
         document.getElementById('btnDeleteBreakdown').style.display = 'none';
         document.getElementById('btnViewAttachedPhotosBd').style.display = 'none';
+        document.getElementById('btnViewAttachedDocsBd').style.display = 'none';
     }
 }
 
@@ -2317,7 +2327,7 @@ function exportBreakdowns() {
         return;
     }
     
-    let csv = 'BD Number,Equipment,Severity,Status,Start Time,Restore Time,Outage(h),Nature\\n';
+    let csv = 'BD Number,Equipment,Severity,Status,Start Time,Restore Time,Outage(h),Nature\n';
     bds.forEach(b => {
         let out = b.totalOutage || '';
         let nat = b.nature ? b.nature.replace(/\\n/g, ' ').replace(/"/g, '""') : '';
@@ -2454,6 +2464,7 @@ function openMaintenanceForm(id = null) {
         document.getElementById('mntFormTitle').textContent = 'Edit Maintenance';
         document.getElementById('btnDeleteMaintenance').style.display = 'inline-flex';
         document.getElementById('btnViewAttachedPhotosMnt').style.display = 'inline-flex';
+        document.getElementById('btnViewAttachedDocsMnt').style.display = 'inline-flex';
         
         let m = ss.maintenance.find(x => x.id === id);
         if (m) {
@@ -2480,6 +2491,7 @@ function openMaintenanceForm(id = null) {
         document.getElementById('mntFormTitle').textContent = 'New Maintenance';
         document.getElementById('btnDeleteMaintenance').style.display = 'none';
         document.getElementById('btnViewAttachedPhotosMnt').style.display = 'none';
+        document.getElementById('btnViewAttachedDocsMnt').style.display = 'none';
         
         document.getElementById('mntId').value = '';
         document.getElementById('mntEquipmentName').value = '';
@@ -2823,6 +2835,232 @@ window.viewRelatedPhotos = function(recordId) {
     }
     renderPhotoReport();
 };
+
+// ===== DMS LOGIC =====
+window.currentDmsFolder = 'Monthly Reports';
+
+window.setDmsFolder = function(folder) {
+    window.currentDmsFolder = folder;
+    document.querySelectorAll('.dms-folder').forEach(el => {
+        if (el.textContent === folder) el.classList.add('active');
+        else el.classList.remove('active');
+    });
+    renderDms();
+};
+
+window.openDmsForm = function(id = null) {
+    let ss = getSubstation(currentDashboardSSId);
+    let eqSelect = document.getElementById('dmsEquipment');
+    eqSelect.innerHTML = '<option value="">Select Equipment</option>';
+    let eqSet = new Set();
+    Object.keys(ss.feeders || {}).forEach(cat => {
+        (ss.feeders[cat] || []).forEach(f => eqSet.add(f.name));
+    });
+    (ss.transformers || []).forEach(t => eqSet.add(t.name));
+    eqSet.forEach(eq => {
+        eqSelect.innerHTML += `<option value="${eq}">${eq}</option>`;
+    });
+
+    document.getElementById('dmsFormSection').style.display = 'block';
+    if (id) {
+        let doc = (ss.documents || []).find(d => d.id === id);
+        if (!doc) return;
+        document.getElementById('dmsFormTitle').textContent = 'Edit Document';
+        document.getElementById('dmsId').value = doc.id;
+        document.getElementById('dmsDocTitle').value = doc.title;
+        document.getElementById('dmsDocUrl').value = doc.url;
+        document.getElementById('dmsDocFolder').value = doc.folder;
+        document.getElementById('dmsEquipment').value = doc.equipment || '';
+        document.getElementById('dmsRecordId').value = doc.recordId || '';
+        document.getElementById('dmsStatus').value = doc.status || 'Draft';
+        document.getElementById('dmsExpiry').value = doc.expiry || '';
+        document.getElementById('dmsRemarks').value = doc.remarks || '';
+        document.getElementById('btnDeleteDms').style.display = 'inline-flex';
+    } else {
+        document.getElementById('dmsFormTitle').textContent = 'Upload Document';
+        document.getElementById('dmsId').value = '';
+        document.getElementById('dmsDocTitle').value = '';
+        document.getElementById('dmsDocUrl').value = '';
+        document.getElementById('dmsDocFolder').value = window.currentDmsFolder;
+        document.getElementById('dmsEquipment').value = '';
+        document.getElementById('dmsRecordId').value = '';
+        document.getElementById('dmsStatus').value = 'Draft';
+        document.getElementById('dmsExpiry').value = '';
+        document.getElementById('dmsRemarks').value = '';
+        document.getElementById('btnDeleteDms').style.display = 'none';
+    }
+};
+
+window.closeDmsForm = function() {
+    document.getElementById('dmsFormSection').style.display = 'none';
+};
+
+window.saveDocument = function() {
+    let ss = getSubstation(currentDashboardSSId);
+    if (!ss.documents) ss.documents = [];
+    
+    let id = document.getElementById('dmsId').value;
+    let title = document.getElementById('dmsDocTitle').value.trim();
+    let url = document.getElementById('dmsDocUrl').value.trim();
+    let folder = document.getElementById('dmsDocFolder').value;
+    let equipment = document.getElementById('dmsEquipment').value;
+    let recordId = document.getElementById('dmsRecordId').value.trim();
+    let status = document.getElementById('dmsStatus').value;
+    let expiry = document.getElementById('dmsExpiry').value;
+    let remarks = document.getElementById('dmsRemarks').value.trim();
+    
+    if (!title || !url || !folder) {
+        showToast('Please fill all required fields');
+        return;
+    }
+    
+    let isNew = !id;
+    let version = 'v1';
+    
+    if (isNew) {
+        let sameNameDocs = ss.documents.filter(d => d.folder === folder && d.title === title);
+        if (sameNameDocs.length > 0) {
+            version = 'v' + (sameNameDocs.length + 1);
+        }
+    } else {
+        let existing = ss.documents.find(d => d.id === id);
+        if (existing) version = existing.version || 'v1';
+    }
+    
+    let docObj = {
+        title, url, folder, equipment, recordId, status, expiry, remarks, version,
+        timestamp: new Date().toISOString(),
+        user: 'Admin'
+    };
+    
+    if (isNew) {
+        docObj.id = 'DOC-' + Date.now();
+        ss.documents.push(docObj);
+        EventEngine.dispatch('document_uploaded', 'Documents', `Document Uploaded: ${title} in ${folder}`, ss.id);
+        showToast('Document uploaded successfully');
+    } else {
+        docObj.id = id;
+        let index = ss.documents.findIndex(d => d.id === id);
+        if (index > -1) {
+            ss.documents[index] = docObj;
+            EventEngine.dispatch('document_updated', 'Documents', `Document Updated: ${title}`, ss.id);
+            showToast('Document updated successfully');
+        }
+    }
+    
+    saveData();
+    closeDmsForm();
+    renderDms();
+};
+
+window.deleteDocument = function() {
+    if (!confirm('Are you sure you want to delete this document?')) return;
+    let id = document.getElementById('dmsId').value;
+    let ss = getSubstation(currentDashboardSSId);
+    let doc = ss.documents.find(d => d.id === id);
+    if (doc) {
+        ss.documents = ss.documents.filter(d => d.id !== id);
+        EventEngine.dispatch('document_deleted', 'Documents', `Document Deleted: ${doc.title}`, ss.id);
+        saveData();
+        showToast('Document deleted');
+        closeDmsForm();
+        renderDms();
+    }
+};
+
+window.renderDms = function() {
+    let ss = getSubstation(currentDashboardSSId);
+    let docs = ss.documents || [];
+    let search = document.getElementById('dmsSearch').value.toLowerCase();
+    let recordFilter = document.getElementById('dmsFilterRecordId').value.toLowerCase();
+    
+    let filtered = docs.filter(d => {
+        let matchFolder = d.folder === window.currentDmsFolder;
+        let matchSearch = d.title.toLowerCase().includes(search) || (d.equipment && d.equipment.toLowerCase().includes(search));
+        let matchRecord = recordFilter ? (d.recordId && d.recordId.toLowerCase().includes(recordFilter)) : true;
+        return matchFolder && matchSearch && matchRecord;
+    });
+    
+    let container = document.getElementById('dmsGrid');
+    container.innerHTML = '';
+    
+    let total = docs.length;
+    let pending = docs.filter(d => d.status === 'Pending Review').length;
+    let expiring = docs.filter(d => {
+        if (!d.expiry) return false;
+        let expDate = new Date(d.expiry);
+        let now = new Date();
+        let diff = expDate - now;
+        return diff > 0 && diff < (30 * 24 * 60 * 60 * 1000); // within 30 days
+    }).length;
+    
+    document.getElementById('dmsTotalDocs').textContent = total;
+    document.getElementById('dmsPendingDocs').textContent = pending;
+    document.getElementById('dmsExpiringDocs').textContent = expiring;
+    
+    if (filtered.length === 0) {
+        container.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;"><div class="empty-icon">📄</div><p>No documents found.</p></div>`;
+        return;
+    }
+    
+    filtered.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+    
+    filtered.forEach(d => {
+        let statusColor = d.status === 'Approved' ? 'var(--success)' : (d.status === 'Pending Review' ? 'var(--warning)' : 'var(--text-secondary)');
+        let div = document.createElement('div');
+        div.className = 'doc-card';
+        div.innerHTML = `
+            <div class="doc-version">${d.version}</div>
+            <div class="doc-icon">📄</div>
+            <div class="doc-title" title="${d.title}">${d.title}</div>
+            <div class="doc-meta">
+                <span><strong>Status:</strong> <span style="color:${statusColor}">${d.status}</span></span>
+                ${d.equipment ? `<span><strong>Eq:</strong> ${d.equipment}</span>` : ''}
+                ${d.recordId ? `<span><strong>Ref:</strong> ${d.recordId}</span>` : ''}
+                ${d.expiry ? `<span><strong>Expiry:</strong> ${d.expiry}</span>` : ''}
+                <span>${new Date(d.timestamp).toLocaleDateString()}</span>
+            </div>
+            <div class="doc-actions">
+                <button class="doc-btn-view" onclick="window.open('${d.url}', '_blank')">👁️ View</button>
+                <button class="doc-btn-edit" onclick="openDmsForm('${d.id}')">✏️ Edit</button>
+            </div>
+        `;
+        container.appendChild(div);
+    });
+};
+
+window.exportDmsPdf = function() {
+    let ss = getSubstation(currentDashboardSSId);
+    let opt = {
+        margin: [10, 10, 10, 10],
+        filename: `${ss.name}_Documents_${window.currentDmsFolder}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+    };
+    html2pdf().set(opt).from(document.getElementById('dmsGrid')).save();
+};
+
+window.viewRelatedDocuments = function(recordId) {
+    if (!recordId) {
+        showToast('No Record ID found');
+        return;
+    }
+    navigateTo('dms', currentDashboardSSId);
+    
+    let ss = getSubstation(currentDashboardSSId);
+    let doc = (ss.documents || []).find(d => d.recordId === recordId);
+    if (doc) {
+        window.setDmsFolder(doc.folder);
+    }
+    
+    let filterEl = document.getElementById('dmsFilterRecordId');
+    if (filterEl) {
+        filterEl.value = recordId;
+    }
+    renderDms();
+};
+
 
 function openPhotoForm(id = null) {
     let ss = getSubstation(currentDashboardSSId);

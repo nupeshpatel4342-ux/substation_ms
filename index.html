@@ -1905,6 +1905,70 @@
             opacity: 1;
             transform: translateX(-50%) translateY(0);
         }
+
+        /* ===== DMS CSS ===== */
+        .dms-layout {
+            display: flex;
+            height: calc(100vh - var(--nav-height) - 40px);
+            gap: 20px;
+            overflow: hidden;
+        }
+        .dms-sidebar {
+            width: 250px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px 10px;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+        .dms-folder {
+            padding: 12px 15px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            margin-bottom: 5px;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        .dms-folder:hover {
+            background: var(--background);
+        }
+        .dms-folder.active {
+            background: #e3f2fd;
+            color: var(--primary);
+            border-left: 4px solid var(--primary);
+        }
+        .dms-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        .dms-action-bar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .dms-widget {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 15px;
+            border-radius: var(--radius);
+            min-width: 150px;
+            box-shadow: var(--shadow-sm);
+        }
+        .dms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            padding-bottom: 30px;
+        }
+        @media (max-width: 768px) {
+            .dms-layout { flex-direction: column; overflow: visible; height: auto; }
+            .dms-sidebar { width: 100%; height: 200px; }
+        }
     </style>
 </head>
 <body>
@@ -2188,9 +2252,134 @@
                     <span class="material-icons-round" style="color: #00838f; background: #e0f7fa;">analytics</span>
                     <div class="card-title">Analytics</div>
                 </div>
-                <div class="ss-dashboard-card">
+                <div class="ss-dashboard-card" onclick="navigateTo('dms', currentDashboardSSId)">
                     <span class="material-icons-round" style="color: #795548; background: #efebe9;">folder</span>
                     <div class="card-title">Documents</div>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <!-- ===== DMS VIEW ===== -->
+        <div id="dmsView" class="view">
+            <div class="dms-layout">
+                <!-- Sidebar -->
+                <div class="dms-sidebar">
+                    <h3 style="margin-bottom:15px; font-size:16px;">📂 Folders</h3>
+                    <div class="dms-folder active" onclick="setDmsFolder('Monthly Reports')">Monthly Reports</div>
+                    <div class="dms-folder" onclick="setDmsFolder('Shutdown Permits')">Shutdown Permits</div>
+                    <div class="dms-folder" onclick="setDmsFolder('Maintenance Reports')">Maintenance Reports</div>
+                    <div class="dms-folder" onclick="setDmsFolder('Fault Reports')">Fault Reports</div>
+                    <div class="dms-folder" onclick="setDmsFolder('Tripping Reports')">Tripping Reports</div>
+                    <div class="dms-folder" onclick="setDmsFolder('Breakdown Reports')">Breakdown Reports</div>
+                    <div class="dms-folder" onclick="setDmsFolder('Equipment Manuals')">Equipment Manuals</div>
+                    <div class="dms-folder" onclick="setDmsFolder('SOPs')">SOPs</div>
+                    <div class="dms-folder" onclick="setDmsFolder('Others')">Others</div>
+                </div>
+                
+                <!-- Main Content -->
+                <div class="dms-main">
+                    <!-- Action Bar -->
+                    <div class="dms-action-bar">
+                        <button class="btn btn-primary" onclick="openDmsForm()">➕ Add Document</button>
+                        <input type="text" class="form-input" id="dmsSearch" placeholder="🔍 Search docs..." oninput="renderDms()" style="width:250px;">
+                        <input type="text" class="form-input" id="dmsFilterRecordId" placeholder="Ref ID (e.g. FLT-123)" oninput="renderDms()" style="width:150px;">
+                        <button class="btn btn-outline" onclick="exportDmsPdf()">Export PDF</button>
+                    </div>
+
+                    <!-- Summary Widgets -->
+                    <div style="display:flex; gap:15px; margin-bottom:20px; flex-wrap:wrap;">
+                        <div class="dms-widget">
+                            <div>Total Documents</div>
+                            <div id="dmsTotalDocs" style="font-size:24px; font-weight:700; color:var(--primary);">0</div>
+                        </div>
+                        <div class="dms-widget">
+                            <div>Pending Review</div>
+                            <div id="dmsPendingDocs" style="font-size:24px; font-weight:700; color:var(--warning);">0</div>
+                        </div>
+                        <div class="dms-widget">
+                            <div>Expiring Soon</div>
+                            <div id="dmsExpiringDocs" style="font-size:24px; font-weight:700; color:var(--danger);">0</div>
+                        </div>
+                    </div>
+
+                    <!-- Grid -->
+                    <div class="dms-grid" id="dmsGrid"></div>
+                </div>
+            </div>
+            
+            <!-- DMS Form Modal -->
+            <div id="dmsFormSection" class="form-section-overlay" style="display:none;">
+                <div class="form-card" style="position:relative; max-width:600px; margin:40px auto;">
+                    <button class="btn-close" onclick="closeDmsForm()" style="position:absolute; top:15px; right:15px; background:transparent; border:none; font-size:20px; cursor:pointer;">✖</button>
+                    <h3 id="dmsFormTitle">Upload Document</h3>
+                    <input type="hidden" id="dmsId">
+                    
+                    <div class="form-row">
+                        <div class="form-group" style="flex:1;">
+                            <label class="form-label">Title <span style="color:var(--danger)">*</span></label>
+                            <input type="text" class="form-input" id="dmsDocTitle" placeholder="e.g. Transformer Manual">
+                        </div>
+                        <div class="form-group" style="flex:1;">
+                            <label class="form-label">Folder <span style="color:var(--danger)">*</span></label>
+                            <select class="form-input" id="dmsDocFolder">
+                                <option>Monthly Reports</option>
+                                <option>Shutdown Permits</option>
+                                <option>Maintenance Reports</option>
+                                <option>Fault Reports</option>
+                                <option>Tripping Reports</option>
+                                <option>Breakdown Reports</option>
+                                <option>Equipment Manuals</option>
+                                <option>SOPs</option>
+                                <option>Others</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Document URL (Drive/Server Link) <span style="color:var(--danger)">*</span></label>
+                        <input type="url" class="form-input" id="dmsDocUrl" placeholder="https://...">
+                        <small style="color:var(--text-secondary); margin-top:5px; display:block;">Pasting URL prevents browser storage crash (5MB limit).</small>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group" style="flex:1;">
+                            <label class="form-label">Related Equipment</label>
+                            <select class="form-input" id="dmsEquipment"></select>
+                        </div>
+                        <div class="form-group" style="flex:1;">
+                            <label class="form-label">Related Record ID</label>
+                            <input type="text" class="form-input" id="dmsRecordId" placeholder="e.g. FLT-12345">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group" style="flex:1;">
+                            <label class="form-label">Status</label>
+                            <select class="form-input" id="dmsStatus">
+                                <option>Draft</option>
+                                <option>Pending Review</option>
+                                <option>Approved</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="flex:1;">
+                            <label class="form-label">Expiry Date</label>
+                            <input type="date" class="form-input" id="dmsExpiry">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Remarks</label>
+                        <textarea class="form-input" id="dmsRemarks" rows="2"></textarea>
+                    </div>
+                    
+                    <div style="display:flex; justify-content:space-between; margin-top:20px;">
+                        <button type="button" class="btn btn-danger" id="btnDeleteDms" style="display:none;" onclick="deleteDocument()">Delete</button>
+                        <div style="margin-left:auto; display:flex; gap:10px;">
+                            <button type="button" class="btn btn-outline" onclick="closeDmsForm()">Cancel</button>
+                            <button type="button" class="btn btn-primary" onclick="saveDocument()">Save Document</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -3291,6 +3480,15 @@ function navigateTo(view, ssId) {
         let ss = getSubstation(ssId);
         document.getElementById('headerTitle').textContent = '🏠 ' + ss.name;
         document.getElementById('headerSubtitle').textContent = 'Substation Dashboard';
+    } else if (view === 'dms') {
+        document.getElementById('dmsView').classList.add('active');
+        headerBack.style.display = 'flex';
+        headerBack.onclick = () => navigateTo('ssDashboard', currentDashboardSSId);
+        currentDashboardSSId = ssId;
+        let ss = getSubstation(ssId);
+        document.getElementById('headerTitle').textContent = '📁 Documents (DMS)';
+        document.getElementById('headerSubtitle').textContent = ss.name;
+        renderDms();
     } else if (view === 'eventTimeline') {
         document.getElementById('eventTimelineView').classList.add('active');
         headerBack.style.display = 'flex';
@@ -4761,8 +4959,10 @@ function openFaultForm(faultId = null) {
         document.getElementById('f_resolution_date').value = f.resolution_date || '';
         document.getElementById('f_resolution_notes').value = f.resolution_notes || '';
         
+        document.getElementById('f_id').readOnly = true;
         document.getElementById('btnDeleteFault').style.display = 'inline-flex';
         document.getElementById('btnViewAttachedPhotosFault').style.display = 'inline-flex';
+        document.getElementById('btnViewAttachedDocsFault').style.display = 'inline-flex';
     } else {
         document.getElementById('f_id').value = '';
         document.getElementById('f_date').value = new Date().toISOString().split('T')[0];
@@ -4788,8 +4988,10 @@ function openFaultForm(faultId = null) {
         document.getElementById('f_resolution_date').value = '';
         document.getElementById('f_resolution_notes').value = '';
         
+        document.getElementById('f_id').readOnly = false;
         document.getElementById('btnDeleteFault').style.display = 'none';
         document.getElementById('btnViewAttachedPhotosFault').style.display = 'none';
+        document.getElementById('btnViewAttachedDocsFault').style.display = 'none';
     }
 }
 
@@ -5072,6 +5274,7 @@ function openTripForm(tripId = null) {
             document.getElementById('t_restore_time').value = trip.restore_time;
             document.getElementById('btnDeleteTrip').style.display = 'inline-flex';
             document.getElementById('btnViewAttachedPhotosTrip').style.display = 'inline-flex';
+            document.getElementById('btnViewAttachedDocsTrip').style.display = 'inline-flex';
         }
     } else {
         document.getElementById('t_id').value = '';
@@ -5082,8 +5285,10 @@ function openTripForm(tripId = null) {
         document.getElementById('t_trip_time').value = '';
         document.getElementById('t_restore_date').value = '';
         document.getElementById('t_restore_time').value = '';
+        document.getElementById('t_id').readOnly = false;
         document.getElementById('btnDeleteTrip').style.display = 'none';
         document.getElementById('btnViewAttachedPhotosTrip').style.display = 'none';
+        document.getElementById('btnViewAttachedDocsTrip').style.display = 'none';
     }
 }
 
@@ -5180,7 +5385,7 @@ function exportTrips() {
         return;
     }
     
-    let csv = 'ID,Equipment,Type,Trip Date,Trip Time,Restore Date,Restore Time,Duration(H),Remarks\\n';
+    let csv = 'ID,Equipment,Type,Trip Date,Trip Time,Restore Date,Restore Time,Duration(H),Remarks\n';
     trips.forEach(t => {
         csv += `${t.id},"${t.equipment}",${t.type},${t.trip_date},${t.trip_time},${t.restore_date||''},${t.restore_time||''},${t.duration},"${t.remarks||''}"\n`;
     });
@@ -5310,6 +5515,7 @@ function openBreakdownForm(id = null) {
             
             document.getElementById('btnDeleteBreakdown').style.display = 'inline-flex';
             document.getElementById('btnViewAttachedPhotosBd').style.display = 'inline-flex';
+            document.getElementById('btnViewAttachedDocsBd').style.display = 'inline-flex';
         }
     } else {
         document.getElementById('bdFormTitle').textContent = '📝 Report New Breakdown';
@@ -5334,8 +5540,10 @@ function openBreakdownForm(id = null) {
         document.getElementById('bdLinkDoc').value = '';
         document.getElementById('bdStatus').value = 'Pending';
         
+        document.getElementById('bdNumber').readOnly = false;
         document.getElementById('btnDeleteBreakdown').style.display = 'none';
         document.getElementById('btnViewAttachedPhotosBd').style.display = 'none';
+        document.getElementById('btnViewAttachedDocsBd').style.display = 'none';
     }
 }
 
@@ -5433,7 +5641,7 @@ function exportBreakdowns() {
         return;
     }
     
-    let csv = 'BD Number,Equipment,Severity,Status,Start Time,Restore Time,Outage(h),Nature\\n';
+    let csv = 'BD Number,Equipment,Severity,Status,Start Time,Restore Time,Outage(h),Nature\n';
     bds.forEach(b => {
         let out = b.totalOutage || '';
         let nat = b.nature ? b.nature.replace(/\\n/g, ' ').replace(/"/g, '""') : '';
@@ -5570,6 +5778,7 @@ function openMaintenanceForm(id = null) {
         document.getElementById('mntFormTitle').textContent = 'Edit Maintenance';
         document.getElementById('btnDeleteMaintenance').style.display = 'inline-flex';
         document.getElementById('btnViewAttachedPhotosMnt').style.display = 'inline-flex';
+        document.getElementById('btnViewAttachedDocsMnt').style.display = 'inline-flex';
         
         let m = ss.maintenance.find(x => x.id === id);
         if (m) {
@@ -5596,6 +5805,7 @@ function openMaintenanceForm(id = null) {
         document.getElementById('mntFormTitle').textContent = 'New Maintenance';
         document.getElementById('btnDeleteMaintenance').style.display = 'none';
         document.getElementById('btnViewAttachedPhotosMnt').style.display = 'none';
+        document.getElementById('btnViewAttachedDocsMnt').style.display = 'none';
         
         document.getElementById('mntId').value = '';
         document.getElementById('mntEquipmentName').value = '';
@@ -5939,6 +6149,232 @@ window.viewRelatedPhotos = function(recordId) {
     }
     renderPhotoReport();
 };
+
+// ===== DMS LOGIC =====
+window.currentDmsFolder = 'Monthly Reports';
+
+window.setDmsFolder = function(folder) {
+    window.currentDmsFolder = folder;
+    document.querySelectorAll('.dms-folder').forEach(el => {
+        if (el.textContent === folder) el.classList.add('active');
+        else el.classList.remove('active');
+    });
+    renderDms();
+};
+
+window.openDmsForm = function(id = null) {
+    let ss = getSubstation(currentDashboardSSId);
+    let eqSelect = document.getElementById('dmsEquipment');
+    eqSelect.innerHTML = '<option value="">Select Equipment</option>';
+    let eqSet = new Set();
+    Object.keys(ss.feeders || {}).forEach(cat => {
+        (ss.feeders[cat] || []).forEach(f => eqSet.add(f.name));
+    });
+    (ss.transformers || []).forEach(t => eqSet.add(t.name));
+    eqSet.forEach(eq => {
+        eqSelect.innerHTML += `<option value="${eq}">${eq}</option>`;
+    });
+
+    document.getElementById('dmsFormSection').style.display = 'block';
+    if (id) {
+        let doc = (ss.documents || []).find(d => d.id === id);
+        if (!doc) return;
+        document.getElementById('dmsFormTitle').textContent = 'Edit Document';
+        document.getElementById('dmsId').value = doc.id;
+        document.getElementById('dmsDocTitle').value = doc.title;
+        document.getElementById('dmsDocUrl').value = doc.url;
+        document.getElementById('dmsDocFolder').value = doc.folder;
+        document.getElementById('dmsEquipment').value = doc.equipment || '';
+        document.getElementById('dmsRecordId').value = doc.recordId || '';
+        document.getElementById('dmsStatus').value = doc.status || 'Draft';
+        document.getElementById('dmsExpiry').value = doc.expiry || '';
+        document.getElementById('dmsRemarks').value = doc.remarks || '';
+        document.getElementById('btnDeleteDms').style.display = 'inline-flex';
+    } else {
+        document.getElementById('dmsFormTitle').textContent = 'Upload Document';
+        document.getElementById('dmsId').value = '';
+        document.getElementById('dmsDocTitle').value = '';
+        document.getElementById('dmsDocUrl').value = '';
+        document.getElementById('dmsDocFolder').value = window.currentDmsFolder;
+        document.getElementById('dmsEquipment').value = '';
+        document.getElementById('dmsRecordId').value = '';
+        document.getElementById('dmsStatus').value = 'Draft';
+        document.getElementById('dmsExpiry').value = '';
+        document.getElementById('dmsRemarks').value = '';
+        document.getElementById('btnDeleteDms').style.display = 'none';
+    }
+};
+
+window.closeDmsForm = function() {
+    document.getElementById('dmsFormSection').style.display = 'none';
+};
+
+window.saveDocument = function() {
+    let ss = getSubstation(currentDashboardSSId);
+    if (!ss.documents) ss.documents = [];
+    
+    let id = document.getElementById('dmsId').value;
+    let title = document.getElementById('dmsDocTitle').value.trim();
+    let url = document.getElementById('dmsDocUrl').value.trim();
+    let folder = document.getElementById('dmsDocFolder').value;
+    let equipment = document.getElementById('dmsEquipment').value;
+    let recordId = document.getElementById('dmsRecordId').value.trim();
+    let status = document.getElementById('dmsStatus').value;
+    let expiry = document.getElementById('dmsExpiry').value;
+    let remarks = document.getElementById('dmsRemarks').value.trim();
+    
+    if (!title || !url || !folder) {
+        showToast('Please fill all required fields');
+        return;
+    }
+    
+    let isNew = !id;
+    let version = 'v1';
+    
+    if (isNew) {
+        let sameNameDocs = ss.documents.filter(d => d.folder === folder && d.title === title);
+        if (sameNameDocs.length > 0) {
+            version = 'v' + (sameNameDocs.length + 1);
+        }
+    } else {
+        let existing = ss.documents.find(d => d.id === id);
+        if (existing) version = existing.version || 'v1';
+    }
+    
+    let docObj = {
+        title, url, folder, equipment, recordId, status, expiry, remarks, version,
+        timestamp: new Date().toISOString(),
+        user: 'Admin'
+    };
+    
+    if (isNew) {
+        docObj.id = 'DOC-' + Date.now();
+        ss.documents.push(docObj);
+        EventEngine.dispatch('document_uploaded', 'Documents', `Document Uploaded: ${title} in ${folder}`, ss.id);
+        showToast('Document uploaded successfully');
+    } else {
+        docObj.id = id;
+        let index = ss.documents.findIndex(d => d.id === id);
+        if (index > -1) {
+            ss.documents[index] = docObj;
+            EventEngine.dispatch('document_updated', 'Documents', `Document Updated: ${title}`, ss.id);
+            showToast('Document updated successfully');
+        }
+    }
+    
+    saveData();
+    closeDmsForm();
+    renderDms();
+};
+
+window.deleteDocument = function() {
+    if (!confirm('Are you sure you want to delete this document?')) return;
+    let id = document.getElementById('dmsId').value;
+    let ss = getSubstation(currentDashboardSSId);
+    let doc = ss.documents.find(d => d.id === id);
+    if (doc) {
+        ss.documents = ss.documents.filter(d => d.id !== id);
+        EventEngine.dispatch('document_deleted', 'Documents', `Document Deleted: ${doc.title}`, ss.id);
+        saveData();
+        showToast('Document deleted');
+        closeDmsForm();
+        renderDms();
+    }
+};
+
+window.renderDms = function() {
+    let ss = getSubstation(currentDashboardSSId);
+    let docs = ss.documents || [];
+    let search = document.getElementById('dmsSearch').value.toLowerCase();
+    let recordFilter = document.getElementById('dmsFilterRecordId').value.toLowerCase();
+    
+    let filtered = docs.filter(d => {
+        let matchFolder = d.folder === window.currentDmsFolder;
+        let matchSearch = d.title.toLowerCase().includes(search) || (d.equipment && d.equipment.toLowerCase().includes(search));
+        let matchRecord = recordFilter ? (d.recordId && d.recordId.toLowerCase().includes(recordFilter)) : true;
+        return matchFolder && matchSearch && matchRecord;
+    });
+    
+    let container = document.getElementById('dmsGrid');
+    container.innerHTML = '';
+    
+    let total = docs.length;
+    let pending = docs.filter(d => d.status === 'Pending Review').length;
+    let expiring = docs.filter(d => {
+        if (!d.expiry) return false;
+        let expDate = new Date(d.expiry);
+        let now = new Date();
+        let diff = expDate - now;
+        return diff > 0 && diff < (30 * 24 * 60 * 60 * 1000); // within 30 days
+    }).length;
+    
+    document.getElementById('dmsTotalDocs').textContent = total;
+    document.getElementById('dmsPendingDocs').textContent = pending;
+    document.getElementById('dmsExpiringDocs').textContent = expiring;
+    
+    if (filtered.length === 0) {
+        container.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;"><div class="empty-icon">📄</div><p>No documents found.</p></div>`;
+        return;
+    }
+    
+    filtered.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+    
+    filtered.forEach(d => {
+        let statusColor = d.status === 'Approved' ? 'var(--success)' : (d.status === 'Pending Review' ? 'var(--warning)' : 'var(--text-secondary)');
+        let div = document.createElement('div');
+        div.className = 'doc-card';
+        div.innerHTML = `
+            <div class="doc-version">${d.version}</div>
+            <div class="doc-icon">📄</div>
+            <div class="doc-title" title="${d.title}">${d.title}</div>
+            <div class="doc-meta">
+                <span><strong>Status:</strong> <span style="color:${statusColor}">${d.status}</span></span>
+                ${d.equipment ? `<span><strong>Eq:</strong> ${d.equipment}</span>` : ''}
+                ${d.recordId ? `<span><strong>Ref:</strong> ${d.recordId}</span>` : ''}
+                ${d.expiry ? `<span><strong>Expiry:</strong> ${d.expiry}</span>` : ''}
+                <span>${new Date(d.timestamp).toLocaleDateString()}</span>
+            </div>
+            <div class="doc-actions">
+                <button class="doc-btn-view" onclick="window.open('${d.url}', '_blank')">👁️ View</button>
+                <button class="doc-btn-edit" onclick="openDmsForm('${d.id}')">✏️ Edit</button>
+            </div>
+        `;
+        container.appendChild(div);
+    });
+};
+
+window.exportDmsPdf = function() {
+    let ss = getSubstation(currentDashboardSSId);
+    let opt = {
+        margin: [10, 10, 10, 10],
+        filename: `${ss.name}_Documents_${window.currentDmsFolder}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+    };
+    html2pdf().set(opt).from(document.getElementById('dmsGrid')).save();
+};
+
+window.viewRelatedDocuments = function(recordId) {
+    if (!recordId) {
+        showToast('No Record ID found');
+        return;
+    }
+    navigateTo('dms', currentDashboardSSId);
+    
+    let ss = getSubstation(currentDashboardSSId);
+    let doc = (ss.documents || []).find(d => d.recordId === recordId);
+    if (doc) {
+        window.setDmsFolder(doc.folder);
+    }
+    
+    let filterEl = document.getElementById('dmsFilterRecordId');
+    if (filterEl) {
+        filterEl.value = recordId;
+    }
+    renderDms();
+};
+
 
 function openPhotoForm(id = null) {
     let ss = getSubstation(currentDashboardSSId);
