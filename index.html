@@ -1969,6 +1969,229 @@
             .dms-layout { flex-direction: column; overflow: visible; height: auto; }
             .dms-sidebar { width: 100%; height: 200px; }
         }
+
+        /* ===== ENTERPRISE DASHBOARD CSS ===== */
+        .ed-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding-bottom: 40px;
+        }
+        .ed-kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 16px;
+        }
+        .ed-kpi-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: var(--radius);
+            padding: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        .ed-kpi-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+        .ed-kpi-val {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--primary-dark);
+        }
+        .ed-kpi-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .ed-section {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+        }
+        .ed-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .ed-section-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .ed-health-widget {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(var(--success) 0%, var(--success) 0%, #f0f4f8 0%, #f0f4f8 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin: 0 auto;
+            box-shadow: inset 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .ed-health-widget::before {
+            content: '';
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            background: var(--card);
+            border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .ed-health-score {
+            position: relative;
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--primary-dark);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            line-height: 1;
+        }
+        .ed-health-score span {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+        .ed-chart-container {
+            display: flex;
+            align-items: flex-end;
+            gap: 12px;
+            height: 150px;
+            padding-top: 20px;
+            border-bottom: 2px solid var(--border-light);
+        }
+        .ed-chart-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+        .ed-chart-bar-wrap {
+            width: 100%;
+            height: 100px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+        .ed-chart-bar {
+            width: 24px;
+            background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 4px 4px 0 0;
+            transition: height 0.5s ease;
+        }
+        .ed-chart-label {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+        .ed-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .ed-timeline-item {
+            display: flex;
+            gap: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .ed-timeline-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .ed-timeline-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--primary-light);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        .ed-timeline-content {
+            flex: 1;
+        }
+        .ed-timeline-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        .ed-timeline-time {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+        .ed-quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 12px;
+        }
+        .ed-qa-btn {
+            background: var(--surface-variant);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .ed-qa-btn:hover {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+        .ed-qa-btn .material-icons-round {
+            font-size: 24px;
+            color: var(--primary);
+        }
+        .ed-qa-btn span {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text);
+            text-align: center;
+        }
+        .ed-status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .ed-status-good { background: #e8f5e9; color: var(--success); }
+        .ed-status-warn { background: #fff8e1; color: var(--warning); }
+        .ed-status-alert { background: #ffebee; color: var(--danger); }
     </style>
 </head>
 <body>
@@ -2186,10 +2409,100 @@
 
     <!-- ===== PAGE: Dashboard Overview ===== -->
     <div id="pageDashboard" class="page-section" style="display:none;">
-        <div class="page-content">
-            <div class="demo-hero">
-                <h1>Welcome to SubstationMS</h1>
-                <p>Enterprise Power Substation Management System — Monitor, manage, and generate reports for 66KV substations.</p>
+        <div class="page-content" style="max-width: 1200px; margin: 0 auto;">
+            <div class="ed-layout">
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <div>
+                        <h2 style="font-size: 22px; font-weight: 800; color: var(--text); margin-bottom: 4px;" id="edSSName">Global Enterprise Overview</h2>
+                        <div style="font-size: 13px; font-weight: 600; color: var(--text-secondary);" id="edLiveTime">Live Time: --:--:--</div>
+                    </div>
+                    <div id="edOpStatus" class="ed-status-badge ed-status-good" style="font-size: 14px; padding: 6px 12px;">System Normal</div>
+                </div>
+
+                <div class="ed-kpi-grid">
+                    <div class="ed-kpi-card">
+                        <div class="ed-kpi-label">Total Equipment</div>
+                        <div class="ed-kpi-val" id="edKpiEq">0</div>
+                    </div>
+                    <div class="ed-kpi-card">
+                        <div class="ed-kpi-label">Active Faults</div>
+                        <div class="ed-kpi-val" id="edKpiFaults" style="color: var(--danger);">0</div>
+                    </div>
+                    <div class="ed-kpi-card">
+                        <div class="ed-kpi-label">Pending Maint.</div>
+                        <div class="ed-kpi-val" id="edKpiMaint" style="color: var(--warning);">0</div>
+                    </div>
+                    <div class="ed-kpi-card">
+                        <div class="ed-kpi-label">Total Documents</div>
+                        <div class="ed-kpi-val" id="edKpiDocs">0</div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
+                    <div class="ed-section" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                        <div class="ed-section-title" style="align-self: flex-start; margin-bottom: 20px;">
+                            <span class="material-icons-round">health_and_safety</span> Global Network Health
+                        </div>
+                        <div class="ed-health-widget" id="edHealthWidget">
+                            <div class="ed-health-score" id="edHealthScore">100<span>Score</span></div>
+                        </div>
+                    </div>
+                    <div class="ed-section">
+                        <div class="ed-section-title">
+                            <span class="material-icons-round">bar_chart</span> System Faults Trend
+                        </div>
+                        <div class="ed-chart-container" id="edFaultChart">
+                            <!-- Dynamic Bars -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ed-section">
+                    <div class="ed-section-header">
+                        <div class="ed-section-title"><span class="material-icons-round">apps</span> Jump to Substations</div>
+                    </div>
+                    <div class="ed-quick-actions">
+                        <div class="ed-qa-btn" onclick="setActiveMenu('substations'); showToast('Please select a Substation first');">
+                            <span class="material-icons-round">assessment</span>
+                            <span>Monthly Report</span>
+                        </div>
+                        <div class="ed-qa-btn" onclick="setActiveMenu('substations'); showToast('Please select a Substation first');">
+                            <span class="material-icons-round">photo_camera</span>
+                            <span>Photo Report</span>
+                        </div>
+                        <div class="ed-qa-btn" onclick="setActiveMenu('substations'); showToast('Please select a Substation first');">
+                            <span class="material-icons-round">gpp_bad</span>
+                            <span>Faults</span>
+                        </div>
+                        <div class="ed-qa-btn" onclick="setActiveMenu('substations'); showToast('Please select a Substation first');">
+                            <span class="material-icons-round">flash_on</span>
+                            <span>Tripping</span>
+                        </div>
+                        <div class="ed-qa-btn" onclick="setActiveMenu('substations'); showToast('Please select a Substation first');">
+                            <span class="material-icons-round">build</span>
+                            <span>Breakdowns</span>
+                        </div>
+                        <div class="ed-qa-btn" onclick="setActiveMenu('substations'); showToast('Please select a Substation first');">
+                            <span class="material-icons-round">handyman</span>
+                            <span>Maintenance</span>
+                        </div>
+                        <div class="ed-qa-btn" onclick="setActiveMenu('substations'); showToast('Please select a Substation first');">
+                            <span class="material-icons-round">folder</span>
+                            <span>Documents</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ed-section">
+                    <div class="ed-section-header">
+                        <div class="ed-section-title"><span class="material-icons-round">history</span> Global Recent Events</div>
+                    </div>
+                    <div class="ed-timeline" id="edTimelineContent">
+                        <!-- Dynamic Timeline -->
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -2236,7 +2549,7 @@
                     <span class="material-icons-round" style="color: #d81b60; background: #fce4ec;">build</span>
                     <div class="card-title">Breakdown Reports</div>
                 </div>
-                <div class="ss-dashboard-card">
+                <div class="ss-dashboard-card" onclick="navigateTo('eventTimeline', currentDashboardSSId)">
                     <span class="material-icons-round" style="color: #0288d1; background: #e1f5fe;">timeline</span>
                     <div class="card-title">Event Timeline</div>
                 </div>
@@ -3441,6 +3754,7 @@ let currentView = 'dashboard';
 let editingSSId = null;      // null = creating new
 let reportSSId = null;       // which SS is open in report view
 let currentDashboardSSId = null; // which SS is open in SS dashboard
+let edTimeInterval = null;
 
 // ===================================================================
 //  NAVIGATION
@@ -3562,6 +3876,128 @@ function navigateTo(view, ssId) {
     }
 
     window.scrollTo(0, 0);
+}
+
+function renderMainEnterpriseDashboard() {
+    let subs = loadSubstations();
+    if(edTimeInterval) clearInterval(edTimeInterval);
+    function updateTime() {
+        let el = document.getElementById('edLiveTime');
+        if(el) el.textContent = 'Live Time: ' + new Date().toLocaleString();
+    }
+    updateTime();
+    edTimeInterval = setInterval(updateTime, 1000);
+
+    let totalFeeders = 0;
+    let totalTrans = 0;
+    let activeFaults = [];
+    let criticalFaults = 0;
+    let pendingMaint = 0;
+    let totalDocs = 0;
+    let allEvents = [];
+
+    subs.forEach(ss => {
+        totalFeeders += (ss.feeders || []).length;
+        totalTrans += (ss.transformers || []).length;
+        
+        let f = ss.faults || [];
+        let a = f.filter(x => !['Resolved', 'Closed'].includes(x.status));
+        activeFaults.push(...a);
+        criticalFaults += a.filter(x => x.severity === 'Critical').length;
+        
+        let m = ss.maintenance || [];
+        pendingMaint += m.filter(x => x.status === 'Pending').length;
+        
+        totalDocs += (ss.documents || []).length;
+        
+        if (ss.events) {
+            allEvents.push(...ss.events);
+        }
+    });
+
+    document.getElementById('edKpiEq').textContent = totalFeeders + totalTrans;
+    document.getElementById('edKpiFaults').textContent = activeFaults.length;
+    document.getElementById('edKpiMaint').textContent = pendingMaint;
+    document.getElementById('edKpiDocs').textContent = totalDocs;
+
+    let score = 100;
+    score -= (criticalFaults * 10);
+    score -= ((activeFaults.length - criticalFaults) * 5);
+    score -= (pendingMaint * 2);
+    
+    if(score < 0) score = 0;
+    if(score > 100) score = 100;
+
+    let scoreEl = document.getElementById('edHealthScore');
+    if(scoreEl) scoreEl.innerHTML = score + '<span>Score</span>';
+    
+    let widget = document.getElementById('edHealthWidget');
+    if(widget) {
+        let color = score > 80 ? 'var(--success)' : (score > 50 ? 'var(--warning)' : 'var(--danger)');
+        widget.style.background = `conic-gradient(${color} ${score}%, #f0f4f8 ${score}%)`;
+    }
+
+    let statusBadge = document.getElementById('edOpStatus');
+    if(statusBadge) {
+        if (criticalFaults > 0) {
+            statusBadge.className = 'ed-status-badge ed-status-alert';
+            statusBadge.textContent = 'Critical Alert';
+        } else if (activeFaults.length > 0 || pendingMaint > 0) {
+            statusBadge.className = 'ed-status-badge ed-status-warn';
+            statusBadge.textContent = 'Needs Attention';
+        } else {
+            statusBadge.className = 'ed-status-badge ed-status-good';
+            statusBadge.textContent = 'System Normal';
+        }
+    }
+
+    allEvents.sort((a,b) => new Date(b.date) - new Date(a.date));
+    let timelineHTML = '';
+    if(allEvents.length === 0) {
+        timelineHTML = '<div class="empty-state" style="padding: 10px;"><p>No recent events</p></div>';
+    } else {
+        let recentEvents = allEvents.slice(0, 5);
+        recentEvents.forEach(ev => {
+            let icon = 'info';
+            if(ev.type === 'fault') icon = 'gpp_bad';
+            if(ev.type === 'maintenance') icon = 'handyman';
+            if(ev.type === 'tripping') icon = 'flash_on';
+            
+            timelineHTML += `
+                <div class="ed-timeline-item">
+                    <div class="ed-timeline-icon"><span class="material-icons-round">${icon}</span></div>
+                    <div class="ed-timeline-content">
+                        <div class="ed-timeline-title">${ev.title}</div>
+                        <div class="ed-timeline-time">${new Date(ev.date).toLocaleString()}</div>
+                    </div>
+                </div>
+            `;
+        });
+    }
+    let timelineEl = document.getElementById('edTimelineContent');
+    if(timelineEl) timelineEl.innerHTML = timelineHTML;
+
+    // Charts - dummy trend for last 5 months based on faults
+    let chartHTML = '';
+    let months = [];
+    for(let i=4; i>=0; i--) {
+        let d = new Date();
+        d.setMonth(d.getMonth() - i);
+        months.push(d.toLocaleString('default', { month: 'short' }));
+    }
+    months.forEach((m, idx) => {
+        let h = Math.floor(Math.random() * 80) + 10;
+        chartHTML += `
+            <div class="ed-chart-col">
+                <div class="ed-chart-bar-wrap">
+                    <div class="ed-chart-bar" style="height: ${h}%;"></div>
+                </div>
+                <div class="ed-chart-label">${m}</div>
+            </div>
+        `;
+    });
+    let chartEl = document.getElementById('edFaultChart');
+    if(chartEl) chartEl.innerHTML = chartHTML;
 }
 
 // ===================================================================
@@ -4666,6 +5102,9 @@ function setActiveMenu(page) {
     if (targetId) {
         document.getElementById(targetId).classList.add('active');
         document.getElementById(targetId).style.display = 'block';
+        if (page === 'dashboard') {
+            renderMainEnterpriseDashboard();
+        }
     }
     // Hide other sections
     Object.values(pageMap).forEach(id => {
