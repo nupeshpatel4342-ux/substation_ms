@@ -2192,6 +2192,349 @@
         .ed-status-good { background: #e8f5e9; color: var(--success); }
         .ed-status-warn { background: #fff8e1; color: var(--warning); }
         .ed-status-alert { background: #ffebee; color: var(--danger); }
+        /* ===== MEGA MENU ===== */
+        .mega-menu-wrapper {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            display: flex;
+            flex-direction: column;
+        }
+        .mega-menu-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--surface-variant);
+            border-radius: var(--radius) var(--radius) 0 0;
+        }
+        .mega-menu-search {
+            position: relative;
+            width: 300px;
+        }
+        .mega-menu-search input {
+            width: 100%;
+            padding: 10px 16px 10px 40px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            background: var(--surface);
+            transition: var(--transition);
+        }
+        .mega-menu-search input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(21,101,192,0.1);
+        }
+        .mega-menu-search .material-icons-round {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--on-surface-tertiary);
+            font-size: 20px;
+        }
+        .mega-menu-content {
+            padding: 24px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 24px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        .mega-menu-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .mega-menu-group h4 {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 4px;
+        }
+        .mega-menu-group h4 .material-icons-round {
+            font-size: 18px;
+        }
+        .mega-menu-item-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            color: var(--text);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            transition: var(--transition-smooth);
+            cursor: pointer;
+        }
+        .mega-menu-item-link:hover {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            transform: translateX(4px);
+        }
+        .mega-menu-item-link .material-icons-round {
+            font-size: 16px;
+            color: var(--on-surface-secondary);
+            transition: var(--transition);
+        }
+        .mega-menu-item-link:hover .material-icons-round {
+            color: var(--primary);
+        }
+
+        /* ===== EQUIPMENT MODULE CSS ===== */
+        .eq-dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .eq-kpi-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+        .eq-kpi-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 4px;
+            background: var(--primary);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+        .eq-kpi-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+        .eq-kpi-card:hover::after {
+            transform: scaleX(1);
+        }
+        .eq-kpi-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: var(--primary-light);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        .eq-kpi-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--on-surface-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .eq-kpi-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--on-surface);
+        }
+        .eq-list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .eq-list-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+        .eq-list-actions {
+            display: flex;
+            gap: 12px;
+        }
+        .eq-profile-header {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .eq-profile-title-area {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .eq-profile-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+        .eq-profile-name {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--on-surface);
+            margin-bottom: 4px;
+        }
+        .eq-profile-meta {
+            font-size: 13px;
+            color: var(--on-surface-secondary);
+            display: flex;
+            gap: 12px;
+        }
+        .eq-lifecycle-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+        .eq-lifecycle-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+        }
+        .eq-lifecycle-card-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .eq-lifecycle-stat {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .eq-lifecycle-stat:last-child {
+            border-bottom: none;
+        }
+        .eq-stat-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--on-surface-secondary);
+        }
+        .eq-stat-val {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--on-surface);
+        }
+        .eq-records-section {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            margin-bottom: 24px;
+        }
+        .eq-records-tabs {
+            display: flex;
+            gap: 24px;
+            border-bottom: 1px solid var(--border-light);
+            margin-bottom: 16px;
+        }
+        .eq-tab {
+            padding: 12px 4px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--on-surface-secondary);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: var(--transition-smooth);
+        }
+        .eq-tab.active, .eq-tab:hover {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+        /* ===== MODAL CSS ===== */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1000; 
+            left: 0; 
+            top: 0; 
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+        }
+        .modal-content {
+            background-color: var(--surface);
+            margin: 5% auto;
+            padding: 24px;
+            border: 1px solid var(--border);
+            width: 90%;
+            max-width: 600px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-xl);
+            position: relative;
+            animation: fadeSlideIn 0.3s ease;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-light);
+            padding-bottom: 12px;
+        }
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+        .close-modal {
+            color: var(--on-surface-tertiary);
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+        .close-modal:hover { color: var(--danger); }
+        .eq-form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
     </style>
 </head>
 <body>
@@ -2352,6 +2695,8 @@
                 </div>
             </button>
         </div>
+
+
     </nav>
 
     <!-- ===== MOBILE OVERLAY ===== -->
@@ -2557,7 +2902,7 @@
                     <span class="material-icons-round" style="color: #2e7d32; background: #e8f5e9;">handyman</span>
                     <div class="card-title">Maintenance</div>
                 </div>
-                <div class="ss-dashboard-card">
+                <div class="ss-dashboard-card" onclick="navigateTo('equipmentMaster', currentDashboardSSId)">
                     <span class="material-icons-round" style="color: #455a64; background: #eceff1;">precision_manufacturing</span>
                     <div class="card-title">Equipment Master</div>
                 </div>
@@ -2956,7 +3301,7 @@
                         </div>
                         <div class="form-group" style="grid-column: 1 / -1;">
                             <label class="form-label">Equipment Name / Identification</label>
-                            <input type="text" class="form-input" id="f_equipment_name" placeholder="e.g. 66KV Main Bus, TR-1">
+                            <select class="form-select" id="f_equipment_name"></select>
                         </div>
                     </div>
                 </div>
@@ -3583,14 +3928,342 @@
                 </div>
             </div>
         </div>
+    <!-- ===== PAGE: Equipment Master ===== -->
+    <div id="pageEquipmentMaster" class="view">
+        <div class="content">
+            <div class="eq-list-header">
+                <h2 class="eq-list-title">Equipment Dashboard</h2>
+                <div class="eq-list-actions">
+                    <button class="btn btn-outline" onclick="">📥 Export</button>
+                    <button class="btn btn-primary" onclick="openEquipmentModal()">➕ Add Equipment</button>
+                </div>
+            </div>
+
+            <div class="eq-dashboard-grid">
+                <div class="eq-kpi-card">
+                    <div class="eq-kpi-icon"><span class="material-icons-round">precision_manufacturing</span></div>
+                    <div class="eq-kpi-title">Total Equipment</div>
+                    <div class="eq-kpi-value" id="eqTotalCount">0</div>
+                </div>
+                <div class="eq-kpi-card">
+                    <div class="eq-kpi-icon"><span class="material-icons-round">bolt</span></div>
+                    <div class="eq-kpi-title">Transformers</div>
+                    <div class="eq-kpi-value" id="eqTransformerCount">0</div>
+                </div>
+                <div class="eq-kpi-card">
+                    <div class="eq-kpi-icon"><span class="material-icons-round">cable</span></div>
+                    <div class="eq-kpi-title">Feeders</div>
+                    <div class="eq-kpi-value" id="eqFeederCount">0</div>
+                </div>
+                <div class="eq-kpi-card">
+                    <div class="eq-kpi-icon"><span class="material-icons-round">settings_input_component</span></div>
+                    <div class="eq-kpi-title">Breakers</div>
+                    <div class="eq-kpi-value" id="eqBreakerCount">0</div>
+                </div>
+            </div>
+
+            <!-- Equipment List -->
+            <div class="fault-table-container">
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Voltage</th>
+                            <th>Manufacturer</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="eqListContainer">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Equipment Modal -->
+            <div id="equipmentModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Add / Edit Equipment</h3>
+                        <button class="close-modal" onclick="closeEquipmentModal()">✖</button>
+                    </div>
+                    <form id="equipmentForm" onsubmit="saveEquipment(event)">
+                        <input type="hidden" id="eqId">
+                        <div class="eq-form-grid">
+                            <div class="form-group">
+                                <label class="form-label">Name *</label>
+                                <input type="text" id="eqName" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Category *</label>
+                                <select id="eqCategory" class="form-input" required>
+                                    <option value="Transformer">Transformer</option>
+                                    <option value="Feeder">Feeder</option>
+                                    <option value="Breaker">Breaker</option>
+                                    <option value="Isolator">Isolator</option>
+                                    <option value="CT">Current Transformer</option>
+                                    <option value="PT">Potential Transformer</option>
+                                    <option value="Battery">Battery Bank</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Voltage Level</label>
+                                <select id="eqVoltage" class="form-input">
+                                    <option value="">N/A</option>
+                                    <option value="66KV">66 KV</option>
+                                    <option value="11KV">11 KV</option>
+                                    <option value="415V">415 V</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Bay Number</label>
+                                <input type="text" id="eqBayNumber" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Manufacturer</label>
+                                <input type="text" id="eqManufacturer" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Model</label>
+                                <input type="text" id="eqModel" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Serial No</label>
+                                <input type="text" id="eqSerial" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Capacity / Rating</label>
+                                <input type="text" id="eqCapacity" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Install Date</label>
+                                <input type="date" id="eqInstallDate" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Status</label>
+                                <select id="eqStatus" class="form-input">
+                                    <option value="In Service">In Service</option>
+                                    <option value="Under Maintenance">Under Maintenance</option>
+                                    <option value="Decommissioned">Decommissioned</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="grid-column: 1 / -1;">
+                                <label class="form-label">Location / Substation</label>
+                                <input type="text" id="eqLocation" class="form-input">
+                            </div>
+                            <div class="form-group" style="grid-column: 1 / -1;">
+                                <label class="form-label">Description / Notes</label>
+                                <textarea id="eqDescription" class="form-input" rows="3" style="resize:vertical;"></textarea>
+                            </div>
+                        </div>
+                        <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:20px; border-top:1px solid var(--border-light); padding-top:16px;">
+                            <button type="button" class="btn btn-outline" onclick="">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Save Equipment</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== PAGE: Equipment Profile ===== -->
+    <div id="pageEquipmentProfile" class="view">
+        <div class="content">
+            <button class="btn btn-outline" onclick="navigateTo('equipmentMaster', currentDashboardSSId)" style="margin-bottom: 16px;">
+                <span class="material-icons-round" style="font-size:16px;">arrow_back</span> Back to Master
+            </button>
+            
+            <div class="eq-profile-header">
+                <div class="eq-profile-title-area">
+                    <div class="eq-profile-icon"><span class="material-icons-round" id="profIcon">precision_manufacturing</span></div>
+                    <div>
+                        <div class="eq-profile-name" id="profName">Equipment Name</div>
+                        <div class="eq-profile-meta">
+                            <span id="profCategory">Category</span> • 
+                            <span id="profVoltage">Voltage</span> • 
+                            <span id="profBay">Bay No</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="eq-list-actions">
+                    <div class="status-badge stat-resolved" id="profStatusBadge">In Service</div>
+                    <button class="btn btn-outline" onclick="">Edit Profile</button>
+                </div>
+            </div>
+
+            <div class="eq-lifecycle-grid">
+                <!-- Lifecycle Summary -->
+                <div class="eq-lifecycle-card">
+                    <div class="eq-lifecycle-card-title"><span class="material-icons-round">analytics</span> Lifecycle Health</div>
+                    <div class="eq-lifecycle-stat">
+                        <span class="eq-stat-label">Health Score</span>
+                        <span class="eq-stat-val" id="profHealthScore" style="color:var(--success)">98%</span>
+                    </div>
+                    <div class="eq-lifecycle-stat">
+                        <span class="eq-stat-label">Total Faults</span>
+                        <span class="eq-stat-val" id="profTotalFaults">0</span>
+                    </div>
+                    <div class="eq-lifecycle-stat">
+                        <span class="eq-stat-label">Total Breakdowns</span>
+                        <span class="eq-stat-val" id="profTotalBreakdowns">0</span>
+                    </div>
+                    <div class="eq-lifecycle-stat">
+                        <span class="eq-stat-label">Last Maintenance</span>
+                        <span class="eq-stat-val" id="profLastMaintenance">-</span>
+                    </div>
+                </div>
+
+                <!-- Asset Details -->
+                <div class="eq-lifecycle-card">
+                    <div class="eq-lifecycle-card-title"><span class="material-icons-round">info</span> Asset Details</div>
+                    <div class="eq-lifecycle-stat">
+                        <span class="eq-stat-label">Manufacturer</span>
+                        <span class="eq-stat-val" id="profDetailManufacturer">-</span>
+                    </div>
+                    <div class="eq-lifecycle-stat">
+                        <span class="eq-stat-label">Model</span>
+                        <span class="eq-stat-val" id="profDetailModel">-</span>
+                    </div>
+                    <div class="eq-lifecycle-stat">
+                        <span class="eq-stat-label">Serial No</span>
+                        <span class="eq-stat-val" id="profDetailSerial">-</span>
+                    </div>
+                    <div class="eq-lifecycle-stat">
+                        <span class="eq-stat-label">Install Date</span>
+                        <span class="eq-stat-val" id="profDetailInstall">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Linked Records -->
+            <div class="eq-records-section">
+                <div class="eq-records-tabs">
+                    <div class="eq-tab active" onclick="">Faults</div>
+                    <div class="eq-tab" onclick="">Maintenance</div>
+                    <div class="eq-tab" onclick="">Trippings</div>
+                    <div class="eq-tab" onclick="">Breakdowns</div>
+                </div>
+                <div class="fault-table-container" style="box-shadow:none; margin-bottom:0;">
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Record Type</th>
+                                <th>Description</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="profRecordsContainer">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     </div><!-- /pageSubstations -->
 
     <!-- ===== PAGE: Reports ===== -->
     <div id="pageReports" class="page-section" style="display:none;">
-        <div class="page-content" style="text-align:center; padding: 80px 20px;">
-            <span class="material-icons-round" style="font-size:64px; color: var(--on-surface-tertiary); opacity:0.4;">assessment</span>
-            <h2 style="margin-top:16px; color: var(--on-surface-secondary);">Reports</h2>
-            <p style="color: var(--on-surface-tertiary);">Report management coming soon.</p>
+        <div class="page-content" style="padding: 20px;">
+            
+            <div class="mega-menu-wrapper" id="reportsMegaMenu">
+                <div class="mega-menu-header">
+                    <div class="mega-menu-title" style="font-weight: 700; color: var(--primary-dark); display: flex; align-items: center; gap: 8px;">
+                        <span class="material-icons-round">assessment</span>
+                        Report Center
+                    </div>
+                    <div class="mega-menu-search">
+                        <span class="material-icons-round">search</span>
+                        <input type="text" id="megaMenuSearch" placeholder="Search reports..." onkeyup="filterMegaMenu(this.value)">
+                    </div>
+                </div>
+                <div class="mega-menu-content" id="megaMenuContent">
+                    <div class="mega-menu-group">
+                        <h4><span class="material-icons-round">insert_chart</span> Monthly Reports</h4>
+                        <a href="#" class="mega-menu-item-link" onclick="handleMegaMenuItemClick(event, 'reports')"><span class="material-icons-round">visibility</span> View Monthly Reports</a>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">add_circle</span> Create Monthly Report</a>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">history</span> Report History</a>
+                    </div>
+                    <div class="mega-menu-group">
+                        <h4><span class="material-icons-round">photo_camera</span> Photo Reports</h4>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">image</span> Inspection Photos</a>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">collections</span> Equipment Photos</a>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">build</span> Maintenance Photos</a>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">history</span> Photo Report History</a>
+                    </div>
+                    <div class="mega-menu-group">
+                        <h4><span class="material-icons-round">warning</span> Fault Reports</h4>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">error</span> Active Faults</a>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">check_circle</span> Resolved Faults</a>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">assignment</span> Monthly Fault Report</a>
+                    </div>
+                    <div class="mega-menu-group">
+                        <h4><span class="material-icons-round">offline_bolt</span> Tripping Reports</h4>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">category</span> Equipment-wise Tripping Report</a>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">event_note</span> Monthly Tripping Report</a>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">verified_user</span> Reliability Report</a>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">summarize</span> T/T Summary</a>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">summarize</span> SF Summary</a>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">summarize</span> ESD Summary</a>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">summarize</span> PSD Summary</a>
+                    </div>
+                    <div class="mega-menu-group">
+                        <h4><span class="material-icons-round">build_circle</span> Breakdown Reports</h4>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">history</span> Breakdown History</a>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">timer</span> Downtime Report</a>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">troubleshoot</span> Root Cause Analysis</a>
+                    </div>
+                    <div class="mega-menu-group">
+                        <h4><span class="material-icons-round">handyman</span> Maintenance Reports</h4>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">engineering</span> Preventive Maintenance</a>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">healing</span> Corrective Maintenance</a>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">history</span> Maintenance History</a>
+                    </div>
+                    <div class="mega-menu-group">
+                        <h4><span class="material-icons-round">timeline</span> Event Timeline Reports</h4>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">today</span> Daily Events</a>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">calendar_month</span> Monthly Events</a>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">person_search</span> Operator Activity</a>
+                    </div>
+                    <div class="mega-menu-group">
+                        <h4><span class="material-icons-round">precision_manufacturing</span> Equipment Reports</h4>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">electrical_services</span> Transformer Report</a>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">power</span> Feeder Report</a>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">cable</span> 66 KV Line Report</a>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">health_and_safety</span> Equipment Health Report</a>
+                    </div>
+                    <div class="mega-menu-group">
+                        <h4><span class="material-icons-round">folder_open</span> Document Reports</h4>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">upload_file</span> Uploaded Documents</a>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">notification_important</span> Expiring Certificates</a>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">history</span> Document History</a>
+                    </div>
+                    <div class="mega-menu-group">
+                        <h4><span class="material-icons-round">insights</span> Analytics Reports</h4>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">dashboard</span> Dashboard Analytics</a>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">trending_up</span> Monthly Performance</a>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">bar_chart</span> Equipment Performance</a>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">pie_chart</span> Fault Analytics</a>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">show_chart</span> Tripping Analytics</a>
+                    </div>
+                    <div class="mega-menu-group">
+                        <h4><span class="material-icons-round">download</span> Export Center</h4>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">picture_as_pdf</span> Export PDF</a>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">table_view</span> Export Excel</a>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">print</span> Print Reports</a>
+                    </div>
+                    <div class="mega-menu-group">
+                        <h4><span class="material-icons-round">manage_history</span> Report History</h4>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">history</span> Previously Generated Reports</a>
+                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">download_for_offline</span> Download Reports</a>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -3611,6 +4284,8 @@
             <p style="color: var(--on-surface-tertiary);">Settings panel coming soon.</p>
         </div>
     </div>
+
+
 
     <!-- Toast -->
     <div class="toast" id="toast"></div>
@@ -3710,13 +4385,19 @@ const HALVAD3_SAMPLE = {
         { id:'tr1', name:'TR-1', hvFeederId:'f5', lvFeederId:'f7' },
         { id:'tr2', name:'TR-2', hvFeederId:'f6', lvFeederId:'f8' }
     ],
+    equipmentMaster: [], // Will be auto-populated by migration
     oppositeSSEntries: [
         { id:'o1', name:'MANSAR SS END (E)',         linkedFeederId:'f1' },
         { id:'o2', name:'MANSAR SS END (I)',         linkedFeederId:'f2' },
         { id:'o3', name:'GHANSHYAMGADH SS END (E)',  linkedFeederId:'f4' },
         { id:'o4', name:'GHANSHYAMGADH SS END (I)',  linkedFeederId:'f3' }
     ],
-    reports: {}
+    reports: {},
+    events: [],
+    faults: [],
+    trippings: [],
+    maintenance: [],
+    breakdowns: []
 };
 
 // ===================================================================
@@ -3726,13 +4407,75 @@ const STORAGE_KEY = '66kv_substations';
 
 function loadSubstations() {
     let data = localStorage.getItem(STORAGE_KEY);
+    let list;
     if (!data) {
         // First load: seed with Halvad-3 sample
-        let initial = [JSON.parse(JSON.stringify(HALVAD3_SAMPLE))];
-        saveSubstations(initial);
-        return initial;
+        list = [JSON.parse(JSON.stringify(HALVAD3_SAMPLE))];
+    } else {
+        list = JSON.parse(data);
     }
-    return JSON.parse(data);
+    
+    // Auto-migrate legacy equipment data to Equipment Master
+    let needsSave = false;
+    list.forEach(ss => {
+        if (!ss.equipmentMaster) {
+            ss.equipmentMaster = [];
+            needsSave = true;
+            
+            // Migrate Feeders
+            if (ss.feeders) {
+                ss.feeders.forEach(f => {
+                    let cat = '11 KV Feeder';
+                    if (f.role === '66kv_incoming') cat = '66 KV Incoming Line';
+                    if (f.role === '66kv_outgoing') cat = '66 KV Outgoing Line';
+                    if (f.role === 'tr_hv' || f.role === 'tr_lv') cat = 'Control Panel';
+                    
+                    ss.equipmentMaster.push({
+                        id: f.id,
+                        category: cat,
+                        name: f.name,
+                        voltageLevel: cat.includes('66') ? '66 KV' : '11 KV',
+                        manufacturer: '',
+                        capacity: '',
+                        status: 'Healthy',
+                        installDate: '',
+                        // Legacy mappings
+                        mf: f.mf,
+                        role: f.role
+                    });
+                });
+            }
+            
+            // Migrate Transformers
+            if (ss.transformers) {
+                ss.transformers.forEach(t => {
+                    ss.equipmentMaster.push({
+                        id: t.id,
+                        category: 'Power Transformer',
+                        name: t.name,
+                        voltageLevel: '66/11 KV',
+                        manufacturer: '',
+                        capacity: '',
+                        status: 'Healthy',
+                        installDate: '',
+                        hvFeederId: t.hvFeederId,
+                        lvFeederId: t.lvFeederId
+                    });
+                });
+            }
+        }
+        
+        // Ensure other arrays exist
+        ['events', 'faults', 'trippings', 'maintenance', 'breakdowns', 'documents', 'photos'].forEach(arr => {
+            if (!ss[arr]) { ss[arr] = []; needsSave = true; }
+        });
+    });
+    
+    if (needsSave) {
+        saveSubstations(list);
+    }
+    
+    return list;
 }
 
 function saveSubstations(list) {
@@ -3873,6 +4616,24 @@ function navigateTo(view, ssId) {
         let now = new Date();
         document.getElementById('mntMonthPicker').value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
         renderMaintenanceRegister();
+    } else if (view === 'equipmentMaster') {
+        document.getElementById('pageEquipmentMaster').classList.add('active');
+        headerBack.style.display = 'flex';
+        headerBack.onclick = () => navigateTo('ssDashboard', currentDashboardSSId);
+        currentDashboardSSId = ssId;
+        let ss = getSubstation(ssId);
+        document.getElementById('headerTitle').textContent = '⚙️ Equipment Master';
+        document.getElementById('headerSubtitle').textContent = ss.name;
+        renderEquipmentMaster();
+    } else if (view === 'equipmentProfile') {
+        document.getElementById('pageEquipmentProfile').classList.add('active');
+        headerBack.style.display = 'flex';
+        headerBack.onclick = () => navigateTo('equipmentMaster', currentDashboardSSId);
+        let eqId = arguments[2];
+        let ss = getSubstation(ssId);
+        document.getElementById('headerTitle').textContent = '📄 Equipment Profile';
+        document.getElementById('headerSubtitle').textContent = ss.name;
+        renderEquipmentProfile(eqId);
     }
 
     window.scrollTo(0, 0);
@@ -5371,6 +6132,13 @@ function openFaultForm(faultId = null) {
     let ss = getSubstation(currentDashboardSSId);
     if (!ss.faults) ss.faults = [];
     
+    let eqSelect = document.getElementById('f_equipment_name');
+    eqSelect.innerHTML = '<option value="">Select Equipment...</option>';
+    let eqList = getCleanTrippingEquipment(ss);
+    eqList.forEach(eq => {
+        eqSelect.innerHTML += `<option value="${eq.name}">${eq.name} (${eq.type})</option>`;
+    });
+    
     if (faultId) {
         let f = ss.faults.find(x => x.id === faultId);
         document.getElementById('f_id').value = f.id;
@@ -5536,47 +6304,10 @@ function exportFaults() {
 //  TRIPPING REGISTER LOGIC
 // ===================================================================
 function getCleanTrippingEquipment(ss) {
-    let eqList = [];
-    let addedNames = new Set();
-    
-    // Transformers
-    (ss.transformers || []).forEach(tr => {
-        let name = tr.name.trim();
-        if(name && !addedNames.has(name)) {
-            addedNames.add(name);
-            eqList.push({ name: name, type: 'Transformer' });
-        }
-    });
-    
-    // Lines & Feeders
-    let allowedRoles = ['66kv_incoming', '66kv_outgoing', 'tr_lv', '11kv_feeder', 'solar_import', 'solar_export'];
-    (ss.feeders || []).forEach(f => {
-        if (!allowedRoles.includes(f.role)) return;
-        
-        let name = f.name
-            .replace(/\(I\)/i, '')
-            .replace(/\(E\)/i, '')
-            .replace(/IMPORT/i, '')
-            .replace(/EXPORT/i, '')
-            .replace(/INPORT/i, '')
-            .replace(/\s+/g, ' ')
-            .trim();
-            
-        if(name && !addedNames.has(name)) {
-            addedNames.add(name);
-            let type = 'Feeder';
-            if (['66kv_incoming', '66kv_outgoing'].includes(f.role)) type = '66 KV Line';
-            else if (f.role === 'tr_lv') type = '11 KV Incoming';
-            else type = '11 KV Feeder';
-            
-            eqList.push({ name: name, type: type });
-        }
-    });
-    
-    let order = { '66 KV Line': 1, 'Transformer': 2, '11 KV Incoming': 3, '11 KV Feeder': 4, 'Feeder': 5 };
-    eqList.sort((a, b) => (order[a.type] || 99) - (order[b.type] || 99));
-    
-    return eqList;
+    if (ss.equipmentMaster && ss.equipmentMaster.length > 0) {
+        return ss.equipmentMaster.map(eq => ({ name: eq.name, type: eq.category, id: eq.id }));
+    }
+    return [];
 }
 
 function renderTrippingRegister() {
@@ -6604,13 +7335,9 @@ window.openDmsForm = function(id = null) {
     let ss = getSubstation(currentDashboardSSId);
     let eqSelect = document.getElementById('dmsEquipment');
     eqSelect.innerHTML = '<option value="">Select Equipment</option>';
-    let eqSet = new Set();
-    Object.keys(ss.feeders || {}).forEach(cat => {
-        (ss.feeders[cat] || []).forEach(f => eqSet.add(f.name));
-    });
-    (ss.transformers || []).forEach(t => eqSet.add(t.name));
-    eqSet.forEach(eq => {
-        eqSelect.innerHTML += `<option value="${eq}">${eq}</option>`;
+    let eqList = getCleanTrippingEquipment(ss);
+    eqList.forEach(eq => {
+        eqSelect.innerHTML += `<option value="${eq.name}">${eq.name} (${eq.type})</option>`;
     });
 
     document.getElementById('dmsFormSection').style.display = 'block';
@@ -6819,15 +7546,11 @@ function openPhotoForm(id = null) {
     let eqSelect = document.getElementById('ph_equipment');
     eqSelect.innerHTML = '<option value="">Select Equipment</option>';
     
-    let eqSet = new Set();
-    Object.keys(ss.feeders || {}).forEach(cat => {
-        (ss.feeders[cat] || []).forEach(f => eqSet.add(f.name));
-    });
-    (ss.transformers || []).forEach(t => eqSet.add(t.name));
-    Array.from(eqSet).sort().forEach(eq => {
+    let eqList = getCleanTrippingEquipment(ss);
+    eqList.forEach(eq => {
         let opt = document.createElement('option');
-        opt.value = eq;
-        opt.textContent = eq;
+        opt.value = eq.name;
+        opt.textContent = `${eq.name} (${eq.type})`;
         eqSelect.appendChild(opt);
     });
 
@@ -6964,6 +7687,237 @@ document.addEventListener('keydown', (e) => {
         document.getElementById('globalSearch').blur();
     }
 });
+
+// ===== MEGA MENU LOGIC =====
+function filterMegaMenu(query) {
+    const filter = query.toLowerCase();
+    const groups = document.querySelectorAll('.mega-menu-group');
+    
+    groups.forEach(group => {
+        const links = group.querySelectorAll('.mega-menu-item-link');
+        let hasVisibleLink = false;
+        
+        links.forEach(link => {
+            if (link.innerText.toLowerCase().includes(filter)) {
+                link.style.display = 'flex';
+                hasVisibleLink = true;
+            } else {
+                link.style.display = 'none';
+            }
+        });
+        
+        if (hasVisibleLink) {
+            group.style.display = 'flex';
+        } else {
+            group.style.display = 'none';
+        }
+    });
+}
+
+function handleMegaMenuItemClick(e, pageId) {
+    e.preventDefault();
+    setActiveMenu(pageId);
+}
+
+// ===================================================================
+// EQUIPMENT MASTER LOGIC
+// ===================================================================
+
+function renderEquipmentMaster() {
+    let ss = getSubstation(currentDashboardSSId);
+    let eqList = ss.equipmentMaster || [];
+    
+    // KPIs
+    document.getElementById('eqTotalCount').textContent = eqList.length;
+    document.getElementById('eqTransformerCount').textContent = eqList.filter(e => e.category.includes('Transformer')).length;
+    document.getElementById('eqFeederCount').textContent = eqList.filter(e => e.category.includes('Feeder') || e.category.includes('Line')).length;
+    document.getElementById('eqBreakerCount').textContent = eqList.filter(e => e.category === 'Breaker').length;
+    
+    // Table
+    let html = '';
+    eqList.forEach(eq => {
+        let statusColor = eq.status === 'Healthy' || eq.status === 'In Service' ? 'var(--success)' : (eq.status === 'Faulty' ? 'var(--danger)' : 'var(--warning)');
+        html += `
+            <tr style="cursor:pointer;" onclick="navigateTo('equipmentProfile', '${ss.id}', '${eq.id}')">
+                <td style="font-weight:600;">${eq.name}</td>
+                <td>${eq.category}</td>
+                <td>${eq.voltageLevel}</td>
+                <td>${eq.manufacturer || '-'}</td>
+                <td><span style="display:inline-block; padding:4px 8px; border-radius:4px; font-size:12px; font-weight:600; color:white; background:${statusColor};">${eq.status}</span></td>
+                <td>
+                    <button class="btn btn-outline" style="padding:4px 8px; font-size:12px;" onclick="event.stopPropagation(); openEquipmentModal('${eq.id}')">Edit</button>
+                </td>
+            </tr>
+        `;
+    });
+    
+    if (eqList.length === 0) {
+        html = '<tr><td colspan="6" style="text-align:center; padding:20px;">No equipment found.</td></tr>';
+    }
+    
+    document.getElementById('eqListContainer').innerHTML = html;
+}
+
+function openEquipmentModal(eqId) {
+    let ss = getSubstation(currentDashboardSSId);
+    let eq = eqId ? ss.equipmentMaster.find(e => e.id === eqId) : null;
+    
+    document.getElementById('eqId').value = eq ? eq.id : '';
+    document.getElementById('eqName').value = eq ? eq.name : '';
+    document.getElementById('eqCategory').value = eq ? eq.category : 'Feeder';
+    document.getElementById('eqVoltage').value = eq ? eq.voltageLevel : '11 KV';
+    document.getElementById('eqBayNumber').value = eq ? (eq.bayNumber || '') : '';
+    document.getElementById('eqManufacturer').value = eq ? (eq.manufacturer || '') : '';
+    document.getElementById('eqModel').value = eq ? (eq.model || '') : '';
+    document.getElementById('eqSerial').value = eq ? (eq.serialNo || '') : '';
+    document.getElementById('eqCapacity').value = eq ? (eq.capacity || '') : '';
+    document.getElementById('eqInstallDate').value = eq ? (eq.installDate || '') : '';
+    document.getElementById('eqStatus').value = eq ? eq.status : 'In Service';
+    document.getElementById('eqLocation').value = eq ? (eq.location || '') : '';
+    document.getElementById('eqDescription').value = eq ? (eq.description || '') : '';
+    
+    document.getElementById('equipmentModal').style.display = 'block';
+}
+
+function closeEquipmentModal() {
+    document.getElementById('equipmentModal').style.display = 'none';
+}
+
+function saveEquipment(event) {
+    event.preventDefault();
+    let ssId = currentDashboardSSId;
+    let subs = loadSubstations();
+    let ss = subs.find(s => s.id === ssId);
+    
+    let eqId = document.getElementById('eqId').value;
+    let name = document.getElementById('eqName').value.trim();
+    
+    if (!ss.equipmentMaster) ss.equipmentMaster = [];
+    
+    // Duplicate check
+    let duplicate = ss.equipmentMaster.find(e => e.name.toLowerCase() === name.toLowerCase() && e.id !== eqId);
+    if (duplicate) {
+        alert("Equipment with this name already exists in this substation!");
+        return;
+    }
+    
+    let eqData = {
+        name: name,
+        category: document.getElementById('eqCategory').value,
+        voltageLevel: document.getElementById('eqVoltage').value,
+        bayNumber: document.getElementById('eqBayNumber').value,
+        manufacturer: document.getElementById('eqManufacturer').value,
+        model: document.getElementById('eqModel').value,
+        serialNo: document.getElementById('eqSerial').value,
+        capacity: document.getElementById('eqCapacity').value,
+        installDate: document.getElementById('eqInstallDate').value,
+        status: document.getElementById('eqStatus').value,
+        location: document.getElementById('eqLocation').value,
+        description: document.getElementById('eqDescription').value
+    };
+    
+    let eventMsg = "";
+    if (eqId) {
+        let eq = ss.equipmentMaster.find(e => e.id === eqId);
+        if(eq.status !== eqData.status) {
+            eventMsg = `Equipment status changed: ${eqData.name} is now ${eqData.status}.`;
+        } else {
+            eventMsg = `Equipment updated: ${eqData.name}.`;
+        }
+        Object.assign(eq, eqData);
+    } else {
+        eqData.id = 'eq_' + Date.now();
+        ss.equipmentMaster.push(eqData);
+        eventMsg = `New equipment added: ${eqData.name}.`;
+    }
+    
+    // Add event timeline
+    if(!ss.events) ss.events = [];
+    ss.events.push({
+        id: 'ev_' + Date.now(),
+        date: new Date().toISOString().split('T')[0],
+        time: new Date().toTimeString().split(' ')[0].substring(0,5),
+        type: 'General',
+        description: eventMsg,
+        user: 'Admin'
+    });
+    
+    saveSubstations(subs);
+    closeEquipmentModal();
+    renderEquipmentMaster();
+}
+
+function renderEquipmentProfile(eqId) {
+    let ss = getSubstation(currentDashboardSSId);
+    let eq = ss.equipmentMaster.find(e => e.id === eqId);
+    if(!eq) return;
+    
+    document.getElementById('profName').textContent = eq.name;
+    document.getElementById('profCategory').textContent = eq.category;
+    document.getElementById('profVoltage').textContent = eq.voltageLevel || 'N/A';
+    document.getElementById('profBay').textContent = eq.bayNumber ? 'Bay: ' + eq.bayNumber : 'Bay: N/A';
+    
+    let statusColor = eq.status === 'Healthy' || eq.status === 'In Service' ? 'var(--success)' : (eq.status === 'Faulty' ? 'var(--danger)' : 'var(--warning)');
+    document.getElementById('profStatusBadge').textContent = eq.status;
+    document.getElementById('profStatusBadge').style.backgroundColor = statusColor;
+    document.getElementById('profStatusBadge').style.color = '#fff';
+    
+    document.getElementById('profDetailManufacturer').textContent = eq.manufacturer || '-';
+    document.getElementById('profDetailModel').textContent = eq.model || '-';
+    document.getElementById('profDetailSerial').textContent = eq.serialNo || '-';
+    document.getElementById('profDetailInstall').textContent = eq.installDate || '-';
+    
+    // Calculations
+    let faults = (ss.faults || []).filter(f => f.equipmentId === eq.id || f.equipmentName === eq.name);
+    let breakDowns = (ss.breakdowns || []).filter(b => b.equipmentId === eq.id || b.equipmentName === eq.name);
+    let mnts = (ss.maintenance || []).filter(m => m.equipmentId === eq.id || m.equipmentName === eq.name);
+    
+    let totalFaults = faults.length;
+    let totalBreakdowns = breakDowns.length;
+    let totalMnt = mnts.length;
+    
+    let healthScore = 100 - (totalFaults * 5) - (totalBreakdowns * 10) + (totalMnt * 2);
+    if(healthScore > 100) healthScore = 100;
+    if(healthScore < 0) healthScore = 0;
+    
+    if(eq.status === 'Faulty') healthScore = 0;
+    if(eq.status === 'Under Maintenance' || eq.status === 'Decommissioned') healthScore = Math.min(healthScore, 50);
+    
+    let healthColor = healthScore > 80 ? 'var(--success)' : (healthScore > 50 ? 'var(--warning)' : 'var(--danger)');
+    
+    document.getElementById('profHealthScore').textContent = healthScore + '%';
+    document.getElementById('profHealthScore').style.color = healthColor;
+    document.getElementById('profTotalFaults').textContent = totalFaults;
+    document.getElementById('profTotalBreakdowns').textContent = totalBreakdowns;
+    document.getElementById('profLastMaintenance').textContent = mnts.length > 0 ? mnts[mnts.length-1].date : '-';
+    
+    // Linked Records HTML
+    let recordsHtml = '';
+    
+    let allRecords = [];
+    faults.forEach(f => allRecords.push({ date: f.date, type: 'Fault', desc: f.description, status: f.status }));
+    breakDowns.forEach(b => allRecords.push({ date: b.date, type: 'Breakdown', desc: b.description, status: b.status || 'Logged' }));
+    mnts.forEach(m => allRecords.push({ date: m.date, type: 'Maintenance', desc: m.description, status: m.status || 'Logged' }));
+    
+    allRecords.sort((a,b) => new Date(b.date) - new Date(a.date));
+    
+    allRecords.forEach(rec => {
+        let typeColor = rec.type === 'Fault' ? 'var(--danger)' : (rec.type === 'Maintenance' ? 'var(--success)' : 'var(--warning)');
+        recordsHtml += `
+            <tr>
+                <td>${rec.date}</td>
+                <td><span style="font-weight:600; color:${typeColor}">${rec.type}</span></td>
+                <td>${rec.desc}</td>
+                <td>${rec.status}</td>
+            </tr>
+        `;
+    });
+    
+    if(!recordsHtml) {
+        recordsHtml = '<tr><td colspan="4" style="text-align:center; padding:20px;">No linked records found.</td></tr>';
+    }
+    document.getElementById('profRecordsContainer').innerHTML = recordsHtml;
+}
 
 // Set Substations as default active on load
 setActiveMenu('substations');
