@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>66 KV Substation - Monthly Report App</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
@@ -4411,6 +4411,36 @@ const HALVAD3_SAMPLE = {
     breakdowns: []
 };
 
+
+// ===================================================================
+//  SECURITY HELPERS — output encoding and URL validation
+// ===================================================================
+function escapeHtml(value) {
+    return String(value ?? '').replace(/[&<>"']/g, ch => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[ch]));
+}
+
+function sanitizeUrl(value, fallback = '#') {
+    try {
+        const url = new URL(String(value || ''), window.location.origin);
+        if (url.protocol === 'https:' || url.protocol === 'http:') return url.href;
+    } catch (e) {
+        // Invalid URLs intentionally fall through to fallback.
+    }
+    return fallback;
+}
+
+function openSafeUrl(value) {
+    const safeUrl = sanitizeUrl(value);
+    if (safeUrl === '#') {
+        alert('Invalid or unsupported URL.');
+        return;
+    }
+    const opened = window.open(safeUrl, '_blank', 'noopener,noreferrer');
+    if (opened) opened.opener = null;
+}
+
 // ===================================================================
 //  DATA MANAGEMENT — LocalStorage
 // ===================================================================
@@ -4423,7 +4453,13 @@ function loadSubstations() {
         // First load: seed with Halvad-3 sample
         list = [JSON.parse(JSON.stringify(HALVAD3_SAMPLE))];
     } else {
-        list = JSON.parse(data);
+        try {
+            list = JSON.parse(data);
+        } catch (e) {
+            console.error('Stored substation data is corrupted and could not be parsed.', e);
+            list = [JSON.parse(JSON.stringify(HALVAD3_SAMPLE))];
+            saveSubstations(list);
+        }
     }
     
     // Auto-migrate legacy equipment data to Equipment Master
@@ -4739,7 +4775,7 @@ function renderMainEnterpriseDashboard() {
                 <div class="ed-timeline-item">
                     <div class="ed-timeline-icon"><span class="material-icons-round">${icon}</span></div>
                     <div class="ed-timeline-content">
-                        <div class="ed-timeline-title">${ev.title}</div>
+                        <div class="ed-timeline-title">${escapeHtml(ev.title)}</div>
                         <div class="ed-timeline-time">${new Date(ev.date).toLocaleString()}</div>
                     </div>
                 </div>
@@ -4815,7 +4851,7 @@ function renderDashboard() {
 
         html += `
         <div class="ss-card">
-            <div class="card-name">${ss.name} ${sampleBadge}</div>
+            <div class="card-name">${escapeHtml(ss.name)} ${sampleBadge}</div>
             <div class="card-meta" style="flex-direction:column; gap:6px;">
                 <div style="display:flex; gap:12px; flex-wrap:wrap;">
                     <span style="color:#0d47a1;">🔌 ${cnt66kv} 66KV Line</span>
@@ -6126,7 +6162,7 @@ function renderFaultRegister() {
             </td>
             <td>
                 <div style="font-size:13px; font-weight:500;">${f.type}</div>
-                <div style="font-size:11px; color:var(--text-secondary); max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${f.description||''}</div>
+                <div style="font-size:11px; color:var(--text-secondary); max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(f.description||'')}</div>
             </td>
             <td><span class="status-badge ${sevBadge}">${f.severity}</span></td>
             <td><span class="status-badge ${statClass}">${f.status}</span></td>
@@ -6147,7 +6183,7 @@ function openFaultForm(faultId = null) {
     eqSelect.innerHTML = '<option value="">Select Equipment...</option>';
     let eqList = getCleanTrippingEquipment(ss);
     eqList.forEach(eq => {
-        eqSelect.innerHTML += `<option value="${eq.name}">${eq.name} (${eq.type})</option>`;
+        eqSelect.innerHTML += `<option value="${escapeHtml(eq.name)}">${escapeHtml(eq.name)} (${eq.type})</option>`;
     });
     
     if (faultId) {
@@ -6298,7 +6334,7 @@ function exportFaults() {
     let csv = 'ID,Date,Time,Voltage,Category,Equipment,Type,Severity,Status,Downtime,Description,Root Cause\n';
     ss.faults.forEach(f => {
         let row = [
-            f.id, f.date, f.time, f.voltage, f.category, `"${f.equipment_name||''}"`, f.type, f.severity, f.status, f.downtime||'', `"${f.description||''}"`, `"${f.root_cause||''}"`
+            f.id, f.date, f.time, f.voltage, f.category, `"${f.equipment_name||''}"`, f.type, f.severity, f.status, f.downtime||'', `"${escapeHtml(f.description||'')}"`, `"${f.root_cause||''}"`
         ];
         csv += row.join(',') + '\n';
     });
@@ -6382,7 +6418,7 @@ function renderTrippingRegister() {
         
         let tr = document.createElement('tr');
         tr.innerHTML = `
-            <td style="font-weight:600;">${eq.name}</td>
+            <td style="font-weight:600;">${escapeHtml(eq.name)}</td>
             <td>${eq.type}</td>
             <td class="center">${eq.tt_c}</td><td class="center">${eq.tt_h.toFixed(2)}</td>
             <td class="center">${eq.sf_c}</td><td class="center">${eq.sf_h.toFixed(2)}</td>
@@ -6665,7 +6701,7 @@ function openBreakdownForm(id = null) {
     eqSelect.innerHTML = '<option value="">Select Equipment...</option>';
     let eqList = getCleanTrippingEquipment(ss);
     eqList.forEach(eq => {
-        eqSelect.innerHTML += `<option value="${eq.name}">${eq.name} (${eq.type})</option>`;
+        eqSelect.innerHTML += `<option value="${escapeHtml(eq.name)}">${escapeHtml(eq.name)} (${eq.type})</option>`;
     });
     
     if (id) {
@@ -6948,7 +6984,7 @@ function openMaintenanceForm(id = null) {
     let eqList = getCleanTrippingEquipment(ss);
     equipSelect.innerHTML = '<option value="">-- Select Equipment --</option>';
     eqList.forEach(eq => {
-        equipSelect.innerHTML += `<option value="${eq.name}">${eq.name} (${eq.type})</option>`;
+        equipSelect.innerHTML += `<option value="${escapeHtml(eq.name)}">${escapeHtml(eq.name)} (${eq.type})</option>`;
     });
     
     document.getElementById('mntDashboardSection').style.display = 'none';
@@ -7289,23 +7325,23 @@ function renderPhotoReport() {
         let div = document.createElement('div');
         div.className = 'photo-card';
         div.innerHTML = `
-            <img src="${p.url}" class="photo-img" onerror="this.src='https://via.placeholder.com/400x200?text=Invalid+Image'">
+            <img src="${sanitizeUrl(p.url, 'https://via.placeholder.com/400x200?text=Invalid+Image')}" class="photo-img" onerror="this.src='https://via.placeholder.com/400x200?text=Invalid+Image'">
             <div class="photo-info" style="display:grid; grid-template-columns: 1fr; gap:6px; font-size:11px;">
-                <div class="photo-title" style="font-size:14px;">${p.caption || 'Untitled Photo'}</div>
+                <div class="photo-title" style="font-size:14px;">${escapeHtml(p.caption || 'Untitled Photo')}</div>
                 <div style="display:flex; justify-content:space-between; border-bottom:1px solid #eee; padding-bottom:4px;">
                     <span style="color:var(--text-secondary);"><span class="material-icons-round" style="font-size:12px;vertical-align:middle;">calendar_today</span> ${new Date(p.timestamp).toLocaleDateString()}</span>
                     <span style="color:var(--text-secondary);"><span class="material-icons-round" style="font-size:12px;vertical-align:middle;">schedule</span> ${new Date(p.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
                 </div>
                 <div style="display:grid; grid-template-columns: auto 1fr; gap:4px 8px; margin-top:4px;">
-                    <strong style="color:var(--text-secondary);">Substation:</strong> <span>${p.substation || ss.name}</span>
-                    <strong style="color:var(--text-secondary);">Category:</strong> <span>${p.category || 'N/A'}</span>
-                    <strong style="color:var(--text-secondary);">Equipment:</strong> <span>${p.equipment || 'N/A'}</span>
-                    <strong style="color:var(--text-secondary);">Record ID:</strong> <span style="color:var(--primary); font-weight:600;">${p.relatedRecord || '-'}</span>
-                    <strong style="color:var(--text-secondary);">By:</strong> <span>${p.user || 'Unknown'}</span>
-                    <strong style="color:var(--text-secondary);">GPS:</strong> <span>${p.gps || '-'}</span>
+                    <strong style="color:var(--text-secondary);">Substation:</strong> <span>${escapeHtml(p.substation || ss.name)}</span>
+                    <strong style="color:var(--text-secondary);">Category:</strong> <span>${escapeHtml(p.category || 'N/A')}</span>
+                    <strong style="color:var(--text-secondary);">Equipment:</strong> <span>${escapeHtml(p.equipment || 'N/A')}</span>
+                    <strong style="color:var(--text-secondary);">Record ID:</strong> <span style="color:var(--primary); font-weight:600;">${escapeHtml(p.relatedRecord || '-')}</span>
+                    <strong style="color:var(--text-secondary);">By:</strong> <span>${escapeHtml(p.user || 'Unknown')}</span>
+                    <strong style="color:var(--text-secondary);">GPS:</strong> <span>${escapeHtml(p.gps || '-')}</span>
                 </div>
                 <div style="margin-top:4px; padding:6px; background:#f8fafc; border-radius:4px; font-style:italic;">
-                    ${p.remarks || 'No remarks provided.'}
+                    ${escapeHtml(p.remarks || 'No remarks provided.')}
                 </div>
                 <div class="photo-actions" style="margin-top:auto; padding-top:8px;">
                     <button class="btn-photo-edit" onclick="openPhotoForm('${p.id}')">✏️ Edit</button>
@@ -7348,7 +7384,7 @@ window.openDmsForm = function(id = null) {
     eqSelect.innerHTML = '<option value="">Select Equipment</option>';
     let eqList = getCleanTrippingEquipment(ss);
     eqList.forEach(eq => {
-        eqSelect.innerHTML += `<option value="${eq.name}">${eq.name} (${eq.type})</option>`;
+        eqSelect.innerHTML += `<option value="${escapeHtml(eq.name)}">${escapeHtml(eq.name)} (${eq.type})</option>`;
     });
 
     document.getElementById('dmsFormSection').style.display = 'block';
@@ -7500,18 +7536,18 @@ window.renderDms = function() {
         let div = document.createElement('div');
         div.className = 'doc-card';
         div.innerHTML = `
-            <div class="doc-version">${d.version}</div>
+            <div class="doc-version">${escapeHtml(d.version)}</div>
             <div class="doc-icon">📄</div>
-            <div class="doc-title" title="${d.title}">${d.title}</div>
+            <div class="doc-title" title="${escapeHtml(d.title)}">${escapeHtml(d.title)}</div>
             <div class="doc-meta">
-                <span><strong>Status:</strong> <span style="color:${statusColor}">${d.status}</span></span>
-                ${d.equipment ? `<span><strong>Eq:</strong> ${d.equipment}</span>` : ''}
-                ${d.recordId ? `<span><strong>Ref:</strong> ${d.recordId}</span>` : ''}
-                ${d.expiry ? `<span><strong>Expiry:</strong> ${d.expiry}</span>` : ''}
+                <span><strong>Status:</strong> <span style="color:${statusColor}">${escapeHtml(d.status)}</span></span>
+                ${d.equipment ? `<span><strong>Eq:</strong> ${escapeHtml(d.equipment)}</span>` : ''}
+                ${d.recordId ? `<span><strong>Ref:</strong> ${escapeHtml(d.recordId)}</span>` : ''}
+                ${d.expiry ? `<span><strong>Expiry:</strong> ${escapeHtml(d.expiry)}</span>` : ''}
                 <span>${new Date(d.timestamp).toLocaleDateString()}</span>
             </div>
             <div class="doc-actions">
-                <button class="doc-btn-view" onclick="window.open('${d.url}', '_blank')">👁️ View</button>
+                <button class="doc-btn-view" data-url="${escapeHtml(sanitizeUrl(d.url))}" onclick="openSafeUrl(this.dataset.url)">👁️ View</button>
                 <button class="doc-btn-edit" onclick="openDmsForm('${d.id}')">✏️ Edit</button>
             </div>
         `;
@@ -7750,11 +7786,11 @@ function renderEquipmentMaster() {
         let statusColor = eq.status === 'Healthy' || eq.status === 'In Service' ? 'var(--success)' : (eq.status === 'Faulty' ? 'var(--danger)' : 'var(--warning)');
         html += `
             <tr style="cursor:pointer;" onclick="navigateTo('equipmentProfile', '${ss.id}', '${eq.id}')">
-                <td style="font-weight:600;">${eq.name}</td>
-                <td>${eq.category}</td>
-                <td>${eq.voltageLevel}</td>
-                <td>${eq.manufacturer || '-'}</td>
-                <td><span style="display:inline-block; padding:4px 8px; border-radius:4px; font-size:12px; font-weight:600; color:white; background:${statusColor};">${eq.status}</span></td>
+                <td style="font-weight:600;">${escapeHtml(eq.name)}</td>
+                <td>${escapeHtml(eq.category)}</td>
+                <td>${escapeHtml(eq.voltageLevel)}</td>
+                <td>${escapeHtml(eq.manufacturer || '-')}</td>
+                <td><span style="display:inline-block; padding:4px 8px; border-radius:4px; font-size:12px; font-weight:600; color:white; background:${statusColor};">${escapeHtml(eq.status)}</span></td>
                 <td>
                     <button class="btn btn-outline" style="padding:4px 8px; font-size:12px;" onclick="event.stopPropagation(); openEquipmentModal('${eq.id}')">Edit</button>
                 </td>
@@ -7917,10 +7953,10 @@ function renderEquipmentProfile(eqId) {
         let typeColor = rec.type === 'Fault' ? 'var(--danger)' : (rec.type === 'Maintenance' ? 'var(--success)' : 'var(--warning)');
         recordsHtml += `
             <tr>
-                <td>${rec.date}</td>
-                <td><span style="font-weight:600; color:${typeColor}">${rec.type}</span></td>
-                <td>${rec.desc}</td>
-                <td>${rec.status}</td>
+                <td>${escapeHtml(rec.date)}</td>
+                <td><span style="font-weight:600; color:${typeColor}">${escapeHtml(rec.type)}</span></td>
+                <td>${escapeHtml(rec.desc)}</td>
+                <td>${escapeHtml(rec.status)}</td>
             </tr>
         `;
     });
