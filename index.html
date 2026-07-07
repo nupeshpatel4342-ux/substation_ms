@@ -2496,6 +2496,17 @@
             background-color: rgba(0,0,0,0.5);
             backdrop-filter: blur(4px);
         }
+        .form-section-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 999;
+            overflow-y: auto;
+            backdrop-filter: blur(4px);
+        }
         .modal-content {
             background-color: var(--surface);
             margin: 5% auto;
@@ -3934,7 +3945,7 @@
             <div class="eq-list-header">
                 <h2 class="eq-list-title">Equipment Dashboard</h2>
                 <div class="eq-list-actions">
-                    <button class="btn btn-outline" onclick="">📥 Export</button>
+                    <button class="btn btn-outline" onclick="alert('Export functionality coming soon.')">📥 Export</button>
                     <button class="btn btn-primary" onclick="openEquipmentModal()">➕ Add Equipment</button>
                 </div>
             </div>
@@ -4059,7 +4070,7 @@
                             </div>
                         </div>
                         <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:20px; border-top:1px solid var(--border-light); padding-top:16px;">
-                            <button type="button" class="btn btn-outline" onclick="">Cancel</button>
+                            <button type="button" class="btn btn-outline" onclick="closeEquipmentModal()">Cancel</button>
                             <button type="submit" class="btn btn-primary">Save Equipment</button>
                         </div>
                     </form>
@@ -4089,7 +4100,7 @@
                 </div>
                 <div class="eq-list-actions">
                     <div class="status-badge stat-resolved" id="profStatusBadge">In Service</div>
-                    <button class="btn btn-outline" onclick="">Edit Profile</button>
+                    <button class="btn btn-outline" id="profEditBtn">Edit Profile</button>
                 </div>
             </div>
 
@@ -4140,10 +4151,10 @@
             <!-- Linked Records -->
             <div class="eq-records-section">
                 <div class="eq-records-tabs">
-                    <div class="eq-tab active" onclick="">Faults</div>
-                    <div class="eq-tab" onclick="">Maintenance</div>
-                    <div class="eq-tab" onclick="">Trippings</div>
-                    <div class="eq-tab" onclick="">Breakdowns</div>
+                    <div class="eq-tab active" onclick="alert('Faults view coming soon')">Faults</div>
+                    <div class="eq-tab" onclick="alert('Maintenance view coming soon')">Maintenance</div>
+                    <div class="eq-tab" onclick="alert('Trippings view coming soon')">Trippings</div>
+                    <div class="eq-tab" onclick="alert('Breakdowns view coming soon')">Breakdowns</div>
                 </div>
                 <div class="fault-table-container" style="box-shadow:none; margin-bottom:0;">
                     <table class="modern-table">
@@ -7890,6 +7901,7 @@ function renderEquipmentProfile(eqId) {
     document.getElementById('profTotalFaults').textContent = totalFaults;
     document.getElementById('profTotalBreakdowns').textContent = totalBreakdowns;
     document.getElementById('profLastMaintenance').textContent = mnts.length > 0 ? mnts[mnts.length-1].date : '-';
+    document.getElementById('profEditBtn').onclick = () => openEquipmentModal(eqId);
     
     // Linked Records HTML
     let recordsHtml = '';
