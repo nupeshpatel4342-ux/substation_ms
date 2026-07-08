@@ -1349,9 +1349,9 @@ const pageSubstationsTemplate = `
         
         <div style="flex-grow: 1;"></div>
         
-        <button class="reg-btn reg-btn-outline"><span class="material-icons-round">print</span> Print</button>
-        <button class="reg-btn reg-btn-outline"><span class="material-icons-round">picture_as_pdf</span> PDF</button>
-        <button class="reg-btn reg-btn-outline"><span class="material-icons-round">table_view</span> Excel</button>
+        <button class="reg-btn reg-btn-outline" onclick="showToast('Printing document...')"><span class="material-icons-round">print</span> Print</button>
+        <button class="reg-btn reg-btn-outline" onclick="showToast('Generating PDF report...')"><span class="material-icons-round">picture_as_pdf</span> PDF</button>
+        <button class="reg-btn reg-btn-outline" onclick="showToast('Exporting to Excel...')"><span class="material-icons-round">table_view</span> Excel</button>
         <button class="reg-btn reg-btn-primary" id="btnAddNewEntry" onclick="openRegisterEntryModal()"><span class="material-icons-round">add</span> Add New Entry</button>
     </div>
 
@@ -1386,9 +1386,9 @@ const pageSubstationsTemplate = `
                     <td>Normal</td>
                     <td>Nupesh Patel</td>
                     <td>
-                        <button class="icon-btn" title="View"><span class="material-icons-round" style="color: #1976d2; font-size:18px;">visibility</span></button>
-                        <button class="icon-btn edit-btn" title="Edit"><span class="material-icons-round" style="color: #f57c00; font-size:18px;">edit</span></button>
-                        <button class="icon-btn delete-btn" title="Delete"><span class="material-icons-round" style="color: #d32f2f; font-size:18px;">delete</span></button>
+                        <button class="icon-btn" title="View" onclick="alert('Viewing Entry:\\nDate: ' + this.closest('tr').children[0].innerText + '\\nTime: ' + this.closest('tr').children[1].innerText + '\\nShift: ' + this.closest('tr').children[2].innerText)"><span class="material-icons-round" style="color: #1976d2; font-size:18px;">visibility</span></button>
+                        <button class="icon-btn edit-btn" title="Edit" onclick="showToast('Edit mode activated. (UI to be implemented)')"><span class="material-icons-round" style="color: #f57c00; font-size:18px;">edit</span></button>
+                        <button class="icon-btn delete-btn" title="Delete" onclick="if(confirm('Are you sure you want to delete this entry?')) { this.closest('tr').remove(); showToast('Entry deleted successfully'); }"><span class="material-icons-round" style="color: #d32f2f; font-size:18px;">delete</span></button>
                     </td>
                 </tr>
             </tbody>
