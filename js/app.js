@@ -28,7 +28,7 @@ function navigateTo(view, ssId) {
         headerBack.style.display = 'flex';
         headerBack.onclick = () => navigateTo('ssDashboard', currentDashboardSSId);
         document.getElementById('headerTitle').textContent = 'Registers';
-        document.getElementById('headerSubtitle').textContent = 'Manage all operational registers of the 66 KV Substation from one place.';
+        document.getElementById('headerSubtitle').textContent = 'Manage Substation Registers';
     } else if (view === 'commonRegisterView') {
         document.getElementById('commonRegisterView').classList.add('active');
         headerBack.style.display = 'flex';

@@ -1,10 +1,43 @@
 const pageSubstationsTemplate = `
 <div class="page-section active" id="pageSubstations">
 <!-- ===== APP HEADER ===== -->
-<div class="app-header" id="appHeader">
-<button class="header-back" id="headerBack" onclick="navigateTo('dashboard')" style="display:none">←</button>
-<h1 id="headerTitle">⚡ 66 KV SUBSTATION REPORT</h1>
-<div class="subtitle" id="headerSubtitle">Monthly Report App</div>
+<div class="app-header ss-header" id="appHeader" style="border-radius: 0 0 24px 24px; margin-bottom: 0px;">
+    <div class="ss-circuit-grid"></div>
+    <div class="ss-glow g1"></div>
+    <div class="ss-glow g2"></div>
+    <div class="ss-glow g3"></div>
+    <div class="ss-current-line l1"></div>
+    <div class="ss-current-line l2"></div>
+    <div class="ss-current-line l3"></div>
+    <svg class="ss-pulse-bolt" viewBox="0 0 24 24" fill="#7CFFCB">
+        <path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z" />
+    </svg>
+    <div class="ss-spark s1"></div>
+    <div class="ss-spark s2"></div>
+    <div class="ss-spark s3"></div>
+    <div class="ss-spark s4"></div>
+    <div class="ss-glass" style="margin-top: 8px;">
+        <div class="ss-brand-row">
+            <button class="header-back" id="headerBack" onclick="navigateTo('dashboard')" style="display:none; position:relative; left:0; top:0; transform:none; margin-right: 12px; width: 42px; height: 42px; border-radius: 12px; font-size: 24px;">←</button>
+            <div class="ss-logo-badge" id="ssLogoBadge">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z" fill="#0b3d91" />
+                </svg>
+            </div>
+            <div class="ss-brand-text">
+                <span class="ss-brand-name">SubstationMS</span>
+                <span class="ss-brand-tag">
+                    <span class="ss-dot"></span>
+                    Substation &amp; Power Grid Management
+                </span>
+                <span id="headerTitle" style="display:none;"></span>
+                <span id="headerSubtitle" style="display:none;"></span>
+            </div>
+        </div>
+        <div class="ss-icon-row">
+            <div class="ss-avatar">NP</div>
+        </div>
+    </div>
 </div>
 <!-- ===== DASHBOARD VIEW ===== -->
 <div class="content">
@@ -1332,7 +1365,7 @@ const pageSubstationsTemplate = `
 </div>
 <!-- ===== REGISTERS MODULE VIEW ===== -->
 <div class="view" id="registersView">
-    <div class="reg-actions" style="margin-top: -16px; margin-bottom: 12px;">
+    <div class="reg-actions" style="margin-top: 0px; margin-bottom: 16px;">
         <input type="text" class="reg-search-input" id="regSearchInput" placeholder="🔍 Search Registers..." onkeyup="filterRegisters()" style="width: 100%;">
     </div>
     
