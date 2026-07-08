@@ -131,17 +131,17 @@
         gap: 10px;
     }
     .reg-card {
-        padding: 12px 8px;
+        padding: 8px 6px;
         align-items: center;
         text-align: center;
     }
     .reg-card-icon {
-        margin: 0 auto 8px auto;
-        width: 36px;
-        height: 36px;
+        margin: 0 auto 4px auto;
+        width: 28px;
+        height: 28px;
     }
     .reg-card-icon .material-icons-round {
-        font-size: 20px;
+        font-size: 16px;
     }
     .reg-card-title {
         font-size: 10.5px;
