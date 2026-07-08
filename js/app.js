@@ -307,14 +307,7 @@ function setActiveMenu(page) {
         document.getElementById('pageSubstations').style.display = 'block';
         document.getElementById('pageSubstations').classList.add('active');
         navigateTo('dashboard'); // Initialize substation dashboard
-    } else if (page === 'reports') {
-        mainContent.innerHTML = pageReportsTemplate;
-        document.getElementById('pageReports').style.display = 'block';
-        document.getElementById('pageReports').classList.add('active');
-    } else if (page === 'notifications') {
-        mainContent.innerHTML = pageNotificationsTemplate;
-        document.getElementById('pageNotifications').style.display = 'block';
-        document.getElementById('pageNotifications').classList.add('active');
+
     } else if (page === 'settings') {
         mainContent.innerHTML = pageSettingsTemplate;
         document.getElementById('pageSettings').style.display = 'block';
