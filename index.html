@@ -39,10 +39,6 @@
 <span>Substations</span>
 </button>
 
-<button class="nav-menu-item" data-page="settings" onclick="setActiveMenu('settings')">
-<span class="material-icons-round">settings</span>
-<span>Settings</span>
-</button>
 </div>
 <!-- Right Actions -->
 <div class="nav-actions">
@@ -141,9 +137,9 @@
 <span class="material-icons-round">lock</span>
                             Change Password
                         </a>
-<a class="dropdown-item" href="#">
-<span class="material-icons-round">tune</span>
-                            Preferences
+<a class="dropdown-item" data-page="settings" onclick="setActiveMenu('settings')">
+<span class="material-icons-round">settings</span>
+                            Settings
                         </a>
 <div class="dropdown-divider"></div>
 <a class="dropdown-item danger" href="#">
@@ -176,10 +172,6 @@
                 Substations
             </a>
 
-<a class="drawer-menu-item" data-page="settings" onclick="setActiveDrawer('settings')">
-<span class="material-icons-round">settings</span>
-                Settings
-            </a>
 <div class="drawer-divider"></div>
 <a class="drawer-menu-item" href="#">
 <span class="material-icons-round">help_outline</span>
