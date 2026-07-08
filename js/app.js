@@ -276,7 +276,7 @@ function showToast(msg) {
 //  INIT
 // ===================================================================
 document.addEventListener('DOMContentLoaded', () => {
-    renderDashboard();
+    setActiveMenu('dashboard');
 });
 
 // ===== NAVBAR - Page Navigation =====
@@ -288,33 +288,38 @@ function setActiveMenu(page) {
     document.querySelectorAll('.drawer-menu-item').forEach(item => {
         item.classList.toggle('active', item.dataset.page === page);
     });
-    // Show/hide page sections
-    document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
-    const pageMap = {
-        'dashboard': 'pageDashboard',
-        'substations': 'pageSubstations',
-        'reports': 'pageReports',
-        'notifications': 'pageNotifications',
-        'settings': 'pageSettings'
-    };
-    const targetId = pageMap[page];
-    if (targetId) {
-        document.getElementById(targetId).classList.add('active');
-        document.getElementById(targetId).style.display = 'block';
-        if (page === 'dashboard') {
-            renderMainEnterpriseDashboard();
-        }
+    
+    const mainContent = document.getElementById('main-content');
+    
+    // Inject respective page template
+    if (page === 'dashboard') {
+        mainContent.innerHTML = pageDashboardTemplate;
+        document.getElementById('pageDashboard').style.display = 'block';
+        document.getElementById('pageDashboard').classList.add('active');
+        renderMainEnterpriseDashboard();
+    } else if (page === 'substations') {
+        mainContent.innerHTML = pageSubstationsTemplate;
+        document.getElementById('pageSubstations').style.display = 'block';
+        document.getElementById('pageSubstations').classList.add('active');
+        navigateTo('dashboard'); // Initialize substation dashboard
+    } else if (page === 'reports') {
+        mainContent.innerHTML = pageReportsTemplate;
+        document.getElementById('pageReports').style.display = 'block';
+        document.getElementById('pageReports').classList.add('active');
+    } else if (page === 'notifications') {
+        mainContent.innerHTML = pageNotificationsTemplate;
+        document.getElementById('pageNotifications').style.display = 'block';
+        document.getElementById('pageNotifications').classList.add('active');
+    } else if (page === 'settings') {
+        mainContent.innerHTML = pageSettingsTemplate;
+        document.getElementById('pageSettings').style.display = 'block';
+        document.getElementById('pageSettings').classList.add('active');
     }
-    // Hide other sections
-    Object.values(pageMap).forEach(id => {
-        if (id !== targetId) {
-            document.getElementById(id).style.display = 'none';
-        }
-    });
-    // If switching to substations, refresh the dashboard
-    if (page === 'substations') {
-        navigateTo('dashboard');
-    }
+
+    // Explicitly hide drawer if open
+    document.getElementById('navDrawer').classList.remove('active');
+    document.getElementById('navOverlay').classList.remove('active');
+
     window.scrollTo(0, 0);
 }
 

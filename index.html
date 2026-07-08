@@ -1,1781 +1,240 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>66 KV Substation - Monthly Report App</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <link rel="stylesheet" href="css/variables.css">
-    <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/forms.css">
-    <link rel="stylesheet" href="css/dashboard.css">
-    <link rel="stylesheet" href="css/reports.css">
-    <link rel="stylesheet" href="css/maintenance.css">
-    <link rel="stylesheet" href="css/responsive.css">
-    </style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>66 KV Substation - Monthly Report App</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<link href="css/variables.css" rel="stylesheet"/>
+<link href="css/base.css" rel="stylesheet"/>
+<link href="css/forms.css" rel="stylesheet"/>
+<link href="css/dashboard.css" rel="stylesheet"/>
+<link href="css/reports.css" rel="stylesheet"/>
+<link href="css/maintenance.css" rel="stylesheet"/>
+<link href="css/responsive.css" rel="stylesheet"/>
+
 </head>
 <body>
-
-    <!-- ===== TOP NAVIGATION BAR ===== -->
-    <nav class="top-nav" id="topNav">
-
-        <!-- Hamburger (Mobile Only) -->
-        <button class="nav-hamburger" id="navHamburger" aria-label="Open menu">
-            <span class="material-icons-round">menu</span>
-        </button>
-
-        <!-- Brand / Logo -->
-        <a class="nav-brand" href="#" onclick="setActiveMenu('substations')">
-            <div class="nav-brand-logo">
-                <span class="material-icons-round">bolt</span>
-            </div>
-            <div class="nav-brand-text">Substation<span>MS</span></div>
-        </a>
-
-        <!-- Center Navigation Menu -->
-        <div class="nav-menu" id="navMenu">
-            <button class="nav-menu-item" data-page="dashboard" onclick="setActiveMenu('dashboard')">
-                <span class="material-icons-round">dashboard</span>
-                <span>Dashboard</span>
-            </button>
-            <button class="nav-menu-item active" data-page="substations" onclick="setActiveMenu('substations')">
-                <span class="material-icons-round">domain</span>
-                <span>Substations</span>
-            </button>
-            <button class="nav-menu-item" data-page="reports" onclick="setActiveMenu('reports')">
-                <span class="material-icons-round">assessment</span>
-                <span>Reports</span>
-            </button>
-            <button class="nav-menu-item" data-page="notifications" onclick="setActiveMenu('notifications')">
-                <span class="material-icons-round">notifications_none</span>
-                <span>Notifications</span>
-            </button>
-            <button class="nav-menu-item" data-page="settings" onclick="setActiveMenu('settings')">
-                <span class="material-icons-round">settings</span>
-                <span>Settings</span>
-            </button>
-        </div>
-
-        <!-- Right Actions -->
-        <div class="nav-actions">
-
-            <!-- Search Bar -->
-            <div class="nav-search">
-                <input type="text" class="nav-search-input" id="globalSearch" placeholder="Search..." autocomplete="off">
-                <span class="material-icons-round nav-search-icon">search</span>
-                <span class="search-shortcut">⌘K</span>
-            </div>
-
-            <!-- Notification Bell -->
-            <div style="position:relative;">
-                <button class="nav-icon-btn" id="notifBtn" data-tooltip="Notifications" aria-label="Notifications">
-                    <span class="material-icons-round">notifications_none</span>
-                    <span class="nav-badge" id="notifBadge">3</span>
-                </button>
-
-                <!-- Notification Dropdown Panel -->
-                <div class="notification-panel" id="notifPanel">
-                    <div class="notif-header">
-                        <h3>Notifications</h3>
-                        <button class="notif-mark-read" onclick="markAllRead()">Mark all read</button>
-                    </div>
-                    <div class="notif-list">
-                        <div class="notif-item unread">
-                            <div class="notif-icon alert">
-                                <span class="material-icons-round">warning</span>
-                            </div>
-                            <div class="notif-content">
-                                <div class="notif-title">Transformer Overload Alert</div>
-                                <div class="notif-desc">Halvad-3 T1 load exceeded 95% threshold at 14:32</div>
-                                <div class="notif-time">2 minutes ago</div>
-                            </div>
-                            <div class="notif-dot"></div>
-                        </div>
-                        <div class="notif-item unread">
-                            <div class="notif-icon info">
-                                <span class="material-icons-round">description</span>
-                            </div>
-                            <div class="notif-content">
-                                <div class="notif-title">Monthly Report Generated</div>
-                                <div class="notif-desc">June 2026 report for Dhrangadhra SS is ready for review</div>
-                                <div class="notif-time">1 hour ago</div>
-                            </div>
-                            <div class="notif-dot"></div>
-                        </div>
-                        <div class="notif-item unread">
-                            <div class="notif-icon success">
-                                <span class="material-icons-round">check_circle</span>
-                            </div>
-                            <div class="notif-content">
-                                <div class="notif-title">Maintenance Completed</div>
-                                <div class="notif-desc">Scheduled maintenance on Chotila SS breaker completed</div>
-                                <div class="notif-time">3 hours ago</div>
-                            </div>
-                            <div class="notif-dot"></div>
-                        </div>
-                        <div class="notif-item">
-                            <div class="notif-icon warning">
-                                <span class="material-icons-round">update</span>
-                            </div>
-                            <div class="notif-content">
-                                <div class="notif-title">System Update Available</div>
-                                <div class="notif-desc">Version 2.4.1 is ready. Includes new reporting features.</div>
-                                <div class="notif-time">Yesterday</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="notif-footer">
-                        <a href="#">View all notifications</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="nav-divider"></div>
-
-            <!-- Profile -->
-            <button class="nav-profile" id="navProfile" aria-label="User profile">
-                <div class="nav-profile-avatar">NP</div>
-                <div class="nav-profile-info">
-                    <div class="nav-profile-name">Nupesh Patel</div>
-                    <div class="nav-profile-role">Administrator</div>
-                </div>
-                <span class="material-icons-round nav-profile-arrow">expand_more</span>
-
-                <!-- Profile Dropdown -->
-                <div class="profile-dropdown" id="profileDropdown">
-                    <div class="dropdown-header">
-                        <div class="dropdown-header-avatar">NP</div>
-                        <div class="dropdown-header-info">
-                            <div class="dropdown-header-name">Nupesh Patel</div>
-                            <div class="dropdown-header-email">nupesh@substationms.in</div>
-                        </div>
-                    </div>
-                    <div class="dropdown-items">
-                        <a class="dropdown-item" href="#">
-                            <span class="material-icons-round">person</span>
+<!-- ===== TOP NAVIGATION BAR ===== -->
+<nav class="top-nav" id="topNav">
+<!-- Hamburger (Mobile Only) -->
+<button aria-label="Open menu" class="nav-hamburger" id="navHamburger">
+<span class="material-icons-round">menu</span>
+</button>
+<!-- Brand / Logo -->
+<a class="nav-brand" href="#" onclick="setActiveMenu('substations')">
+<div class="nav-brand-logo">
+<span class="material-icons-round">bolt</span>
+</div>
+<div class="nav-brand-text">Substation<span>MS</span></div>
+</a>
+<!-- Center Navigation Menu -->
+<div class="nav-menu" id="navMenu">
+<button class="nav-menu-item" data-page="dashboard" onclick="setActiveMenu('dashboard')">
+<span class="material-icons-round">dashboard</span>
+<span>Dashboard</span>
+</button>
+<button class="nav-menu-item active" data-page="substations" onclick="setActiveMenu('substations')">
+<span class="material-icons-round">domain</span>
+<span>Substations</span>
+</button>
+<button class="nav-menu-item" data-page="reports" onclick="setActiveMenu('reports')">
+<span class="material-icons-round">assessment</span>
+<span>Reports</span>
+</button>
+<button class="nav-menu-item" data-page="notifications" onclick="setActiveMenu('notifications')">
+<span class="material-icons-round">notifications_none</span>
+<span>Notifications</span>
+</button>
+<button class="nav-menu-item" data-page="settings" onclick="setActiveMenu('settings')">
+<span class="material-icons-round">settings</span>
+<span>Settings</span>
+</button>
+</div>
+<!-- Right Actions -->
+<div class="nav-actions">
+<!-- Search Bar -->
+<div class="nav-search">
+<input autocomplete="off" class="nav-search-input" id="globalSearch" placeholder="Search..." type="text"/>
+<span class="material-icons-round nav-search-icon">search</span>
+<span class="search-shortcut">⌘K</span>
+</div>
+<!-- Notification Bell -->
+<div style="position:relative;">
+<button aria-label="Notifications" class="nav-icon-btn" data-tooltip="Notifications" id="notifBtn">
+<span class="material-icons-round">notifications_none</span>
+<span class="nav-badge" id="notifBadge">3</span>
+</button>
+<!-- Notification Dropdown Panel -->
+<div class="notification-panel" id="notifPanel">
+<div class="notif-header">
+<h3>Notifications</h3>
+<button class="notif-mark-read" onclick="markAllRead()">Mark all read</button>
+</div>
+<div class="notif-list">
+<div class="notif-item unread">
+<div class="notif-icon alert">
+<span class="material-icons-round">warning</span>
+</div>
+<div class="notif-content">
+<div class="notif-title">Transformer Overload Alert</div>
+<div class="notif-desc">Halvad-3 T1 load exceeded 95% threshold at 14:32</div>
+<div class="notif-time">2 minutes ago</div>
+</div>
+<div class="notif-dot"></div>
+</div>
+<div class="notif-item unread">
+<div class="notif-icon info">
+<span class="material-icons-round">description</span>
+</div>
+<div class="notif-content">
+<div class="notif-title">Monthly Report Generated</div>
+<div class="notif-desc">June 2026 report for Dhrangadhra SS is ready for review</div>
+<div class="notif-time">1 hour ago</div>
+</div>
+<div class="notif-dot"></div>
+</div>
+<div class="notif-item unread">
+<div class="notif-icon success">
+<span class="material-icons-round">check_circle</span>
+</div>
+<div class="notif-content">
+<div class="notif-title">Maintenance Completed</div>
+<div class="notif-desc">Scheduled maintenance on Chotila SS breaker completed</div>
+<div class="notif-time">3 hours ago</div>
+</div>
+<div class="notif-dot"></div>
+</div>
+<div class="notif-item">
+<div class="notif-icon warning">
+<span class="material-icons-round">update</span>
+</div>
+<div class="notif-content">
+<div class="notif-title">System Update Available</div>
+<div class="notif-desc">Version 2.4.1 is ready. Includes new reporting features.</div>
+<div class="notif-time">Yesterday</div>
+</div>
+</div>
+</div>
+<div class="notif-footer">
+<a href="#">View all notifications</a>
+</div>
+</div>
+</div>
+<div class="nav-divider"></div>
+<!-- Profile -->
+<button aria-label="User profile" class="nav-profile" id="navProfile">
+<div class="nav-profile-avatar">NP</div>
+<div class="nav-profile-info">
+<div class="nav-profile-name">Nupesh Patel</div>
+<div class="nav-profile-role">Administrator</div>
+</div>
+<span class="material-icons-round nav-profile-arrow">expand_more</span>
+<!-- Profile Dropdown -->
+<div class="profile-dropdown" id="profileDropdown">
+<div class="dropdown-header">
+<div class="dropdown-header-avatar">NP</div>
+<div class="dropdown-header-info">
+<div class="dropdown-header-name">Nupesh Patel</div>
+<div class="dropdown-header-email">nupesh@substationms.in</div>
+</div>
+</div>
+<div class="dropdown-items">
+<a class="dropdown-item" href="#">
+<span class="material-icons-round">person</span>
                             My Profile
                         </a>
-                        <a class="dropdown-item" href="#">
-                            <span class="material-icons-round">lock</span>
+<a class="dropdown-item" href="#">
+<span class="material-icons-round">lock</span>
                             Change Password
                         </a>
-                        <a class="dropdown-item" href="#">
-                            <span class="material-icons-round">tune</span>
+<a class="dropdown-item" href="#">
+<span class="material-icons-round">tune</span>
                             Preferences
                         </a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item danger" href="#">
-                            <span class="material-icons-round">logout</span>
+<div class="dropdown-divider"></div>
+<a class="dropdown-item danger" href="#">
+<span class="material-icons-round">logout</span>
                             Logout
                         </a>
-                    </div>
-                </div>
-            </button>
-        </div>
-
-
-    </nav>
-
-    <!-- ===== MOBILE OVERLAY ===== -->
-    <div class="nav-overlay" id="navOverlay"></div>
-
-    <!-- ===== MOBILE DRAWER ===== -->
-    <div class="nav-drawer" id="navDrawer">
-        <div class="drawer-header">
-            <div class="drawer-brand">
-                <div class="drawer-brand-logo">
-                    <span class="material-icons-round">bolt</span>
-                </div>
-                <div class="drawer-brand-text">Substation<span>MS</span></div>
-            </div>
-            <button class="drawer-close" id="drawerClose" aria-label="Close menu">
-                <span class="material-icons-round">close</span>
-            </button>
-        </div>
-        <div class="drawer-menu">
-            <a class="drawer-menu-item" data-page="dashboard" onclick="setActiveDrawer('dashboard')">
-                <span class="material-icons-round">dashboard</span>
+</div>
+</div>
+</button>
+</div>
+</nav>
+<!-- ===== MOBILE OVERLAY ===== -->
+<div class="nav-overlay" id="navOverlay"></div>
+<!-- ===== MOBILE DRAWER ===== -->
+<div class="nav-drawer" id="navDrawer">
+<div class="drawer-header">
+<div class="drawer-brand">
+<div class="drawer-brand-logo">
+<span class="material-icons-round">bolt</span>
+</div>
+<div class="drawer-brand-text">Substation<span>MS</span></div>
+</div>
+<button aria-label="Close menu" class="drawer-close" id="drawerClose">
+<span class="material-icons-round">close</span>
+</button>
+</div>
+<div class="drawer-menu">
+<a class="drawer-menu-item" data-page="dashboard" onclick="setActiveDrawer('dashboard')">
+<span class="material-icons-round">dashboard</span>
                 Dashboard
             </a>
-            <a class="drawer-menu-item active" data-page="substations" onclick="setActiveDrawer('substations')">
-                <span class="material-icons-round">domain</span>
+<a class="drawer-menu-item active" data-page="substations" onclick="setActiveDrawer('substations')">
+<span class="material-icons-round">domain</span>
                 Substations
             </a>
-            <a class="drawer-menu-item" data-page="reports" onclick="setActiveDrawer('reports')">
-                <span class="material-icons-round">assessment</span>
+<a class="drawer-menu-item" data-page="reports" onclick="setActiveDrawer('reports')">
+<span class="material-icons-round">assessment</span>
                 Reports
             </a>
-            <a class="drawer-menu-item" data-page="notifications" onclick="setActiveDrawer('notifications')">
-                <span class="material-icons-round">notifications_none</span>
+<a class="drawer-menu-item" data-page="notifications" onclick="setActiveDrawer('notifications')">
+<span class="material-icons-round">notifications_none</span>
                 Notifications
             </a>
-            <a class="drawer-menu-item" data-page="settings" onclick="setActiveDrawer('settings')">
-                <span class="material-icons-round">settings</span>
+<a class="drawer-menu-item" data-page="settings" onclick="setActiveDrawer('settings')">
+<span class="material-icons-round">settings</span>
                 Settings
             </a>
-            <div class="drawer-divider"></div>
-            <a class="drawer-menu-item" href="#">
-                <span class="material-icons-round">help_outline</span>
-                Help & Support
+<div class="drawer-divider"></div>
+<a class="drawer-menu-item" href="#">
+<span class="material-icons-round">help_outline</span>
+                Help &amp; Support
             </a>
-        </div>
-        <div class="drawer-footer">
-            <div class="drawer-footer-avatar">NP</div>
-            <div class="drawer-footer-info">
-                <div class="drawer-footer-name">Nupesh Patel</div>
-                <div class="drawer-footer-role">Administrator</div>
-            </div>
-            <span class="material-icons-round" style="color: var(--on-surface-tertiary); cursor: pointer;">more_vert</span>
-        </div>
-    </div>
-
-    <!-- ===== PAGE: Dashboard Overview ===== -->
-    <div id="pageDashboard" class="page-section" style="display:none;">
-        <div class="page-content" style="max-width: 1200px; margin: 0 auto;">
-            <div class="ed-layout">
-                
-                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-                    <div>
-                        <h2 style="font-size: 22px; font-weight: 800; color: var(--text); margin-bottom: 4px;" id="edSSName">Global Enterprise Overview</h2>
-                        <div style="font-size: 13px; font-weight: 600; color: var(--text-secondary);" id="edLiveTime">Live Time: --:--:--</div>
-                    </div>
-                    <div id="edOpStatus" class="ed-status-badge ed-status-good" style="font-size: 14px; padding: 6px 12px;">System Normal</div>
-                </div>
-
-                <div class="ed-kpi-grid">
-                    <div class="ed-kpi-card">
-                        <div class="ed-kpi-label">Total Equipment</div>
-                        <div class="ed-kpi-val" id="edKpiEq">0</div>
-                    </div>
-                    <div class="ed-kpi-card">
-                        <div class="ed-kpi-label">Active Faults</div>
-                        <div class="ed-kpi-val" id="edKpiFaults" style="color: var(--danger);">0</div>
-                    </div>
-                    <div class="ed-kpi-card">
-                        <div class="ed-kpi-label">Pending Maint.</div>
-                        <div class="ed-kpi-val" id="edKpiMaint" style="color: var(--warning);">0</div>
-                    </div>
-                    <div class="ed-kpi-card">
-                        <div class="ed-kpi-label">Total Documents</div>
-                        <div class="ed-kpi-val" id="edKpiDocs">0</div>
-                    </div>
-                </div>
-
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
-                    <div class="ed-section" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                        <div class="ed-section-title" style="align-self: flex-start; margin-bottom: 20px;">
-                            <span class="material-icons-round">health_and_safety</span> Global Network Health
-                        </div>
-                        <div class="ed-health-widget" id="edHealthWidget">
-                            <div class="ed-health-score" id="edHealthScore">100<span>Score</span></div>
-                        </div>
-                    </div>
-                    <div class="ed-section">
-                        <div class="ed-section-title">
-                            <span class="material-icons-round">bar_chart</span> System Faults Trend
-                        </div>
-                        <div class="ed-chart-container" id="edFaultChart">
-                            <!-- Dynamic Bars -->
-                        </div>
-                    </div>
-                </div>
-
-                <div class="ed-section">
-                    <div class="ed-section-header">
-                        <div class="ed-section-title"><span class="material-icons-round">apps</span> Jump to Substations</div>
-                    </div>
-                    <div class="ed-quick-actions">
-                        <div class="ed-qa-btn" onclick="setActiveMenu('substations'); showToast('Please select a Substation first');">
-                            <span class="material-icons-round">assessment</span>
-                            <span>Monthly Report</span>
-                        </div>
-                        <div class="ed-qa-btn" onclick="setActiveMenu('substations'); showToast('Please select a Substation first');">
-                            <span class="material-icons-round">photo_camera</span>
-                            <span>Photo Report</span>
-                        </div>
-                        <div class="ed-qa-btn" onclick="setActiveMenu('substations'); showToast('Please select a Substation first');">
-                            <span class="material-icons-round">gpp_bad</span>
-                            <span>Faults</span>
-                        </div>
-                        <div class="ed-qa-btn" onclick="setActiveMenu('substations'); showToast('Please select a Substation first');">
-                            <span class="material-icons-round">flash_on</span>
-                            <span>Tripping</span>
-                        </div>
-                        <div class="ed-qa-btn" onclick="setActiveMenu('substations'); showToast('Please select a Substation first');">
-                            <span class="material-icons-round">build</span>
-                            <span>Breakdowns</span>
-                        </div>
-                        <div class="ed-qa-btn" onclick="setActiveMenu('substations'); showToast('Please select a Substation first');">
-                            <span class="material-icons-round">handyman</span>
-                            <span>Maintenance</span>
-                        </div>
-                        <div class="ed-qa-btn" onclick="setActiveMenu('substations'); showToast('Please select a Substation first');">
-                            <span class="material-icons-round">folder</span>
-                            <span>Documents</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="ed-section">
-                    <div class="ed-section-header">
-                        <div class="ed-section-title"><span class="material-icons-round">history</span> Global Recent Events</div>
-                    </div>
-                    <div class="ed-timeline" id="edTimelineContent">
-                        <!-- Dynamic Timeline -->
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <!-- ===== PAGE: Substations (Main App) ===== -->
-    <div id="pageSubstations" class="page-section active">
-
-    <!-- ===== APP HEADER ===== -->
-    <div class="app-header" id="appHeader">
-        <button class="header-back" id="headerBack" style="display:none" onclick="navigateTo('dashboard')">←</button>
-        <h1 id="headerTitle">⚡ 66 KV SUBSTATION REPORT</h1>
-        <div class="subtitle" id="headerSubtitle">Monthly Report App</div>
-    </div>
-
-    <!-- ===== DASHBOARD VIEW ===== -->
-    <div class="content">
-        <div id="dashboardView" class="view active">
-            <div class="section-title">📋 Your Substations</div>
-            <div class="card-grid" id="ssCardGrid">
-                <!-- Cards rendered by JS -->
-            </div>
-        </div>
-
-        <!-- ===== SS SPECIFIC DASHBOARD VIEW ===== -->
-        <div id="ssDashboardView" class="view">
-            <div class="ss-dashboard-grid">
-                <div class="ss-dashboard-card" onclick="navigateTo('report', currentDashboardSSId)">
-                    <span class="material-icons-round" style="color: #1976d2; background: #e3f2fd;">assessment</span>
-                    <div class="card-title">Monthly Reports</div>
-                </div>
-                <div class="ss-dashboard-card" onclick="navigateTo('photoReport', currentDashboardSSId)">
-                    <span class="material-icons-round" style="color: #9c27b0; background: #f3e5f5;">photo_camera</span>
-                    <div class="card-title">Photo Reports</div>
-                </div>
-                <div class="ss-dashboard-card" onclick="navigateTo('faultRegister', currentDashboardSSId)">
-                    <span class="material-icons-round" style="color: #d32f2f; background: #ffebee;">gpp_bad</span>
-                    <div class="card-title">Fault Register</div>
-                </div>
-                <div class="ss-dashboard-card" onclick="navigateTo('trippingRegister', currentDashboardSSId)">
-                    <span class="material-icons-round" style="color: #ed6c02; background: #fff3e0;">flash_on</span>
-                    <div class="card-title">Tripping Calculations</div>
-                </div>
-                <div class="ss-dashboard-card" onclick="navigateTo('breakdownRegister', currentDashboardSSId)">
-                    <span class="material-icons-round" style="color: #d81b60; background: #fce4ec;">build</span>
-                    <div class="card-title">Breakdown Reports</div>
-                </div>
-                <div class="ss-dashboard-card" onclick="navigateTo('eventTimeline', currentDashboardSSId)">
-                    <span class="material-icons-round" style="color: #0288d1; background: #e1f5fe;">timeline</span>
-                    <div class="card-title">Event Timeline</div>
-                </div>
-                <div class="ss-dashboard-card" onclick="navigateTo('maintenanceRegister', currentDashboardSSId)">
-                    <span class="material-icons-round" style="color: #2e7d32; background: #e8f5e9;">handyman</span>
-                    <div class="card-title">Maintenance</div>
-                </div>
-                <div class="ss-dashboard-card" onclick="navigateTo('equipmentMaster', currentDashboardSSId)">
-                    <span class="material-icons-round" style="color: #455a64; background: #eceff1;">precision_manufacturing</span>
-                    <div class="card-title">Equipment Master</div>
-                </div>
-                <div class="ss-dashboard-card">
-                    <span class="material-icons-round" style="color: #00838f; background: #e0f7fa;">analytics</span>
-                    <div class="card-title">Analytics</div>
-                </div>
-                <div class="ss-dashboard-card" onclick="navigateTo('dms', currentDashboardSSId)">
-                    <span class="material-icons-round" style="color: #795548; background: #efebe9;">folder</span>
-                    <div class="card-title">Documents</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ===== DMS VIEW ===== -->
-        <div id="dmsView" class="view">
-            <div class="dms-layout">
-                <!-- Sidebar -->
-                <div class="dms-sidebar">
-                    <h3 style="margin-bottom:15px; font-size:16px;">📂 Folders</h3>
-                    <div class="dms-folder active" onclick="setDmsFolder('Monthly Reports')">Monthly Reports</div>
-                    <div class="dms-folder" onclick="setDmsFolder('Shutdown Permits')">Shutdown Permits</div>
-                    <div class="dms-folder" onclick="setDmsFolder('Maintenance Reports')">Maintenance Reports</div>
-                    <div class="dms-folder" onclick="setDmsFolder('Fault Reports')">Fault Reports</div>
-                    <div class="dms-folder" onclick="setDmsFolder('Tripping Reports')">Tripping Reports</div>
-                    <div class="dms-folder" onclick="setDmsFolder('Breakdown Reports')">Breakdown Reports</div>
-                    <div class="dms-folder" onclick="setDmsFolder('Equipment Manuals')">Equipment Manuals</div>
-                    <div class="dms-folder" onclick="setDmsFolder('SOPs')">SOPs</div>
-                    <div class="dms-folder" onclick="setDmsFolder('Others')">Others</div>
-                </div>
-                
-                <!-- Main Content -->
-                <div class="dms-main">
-                    <!-- Action Bar -->
-                    <div class="dms-action-bar">
-                        <button class="btn btn-primary" onclick="openDmsForm()">➕ Add Document</button>
-                        <input type="text" class="form-input" id="dmsSearch" placeholder="🔍 Search docs..." oninput="renderDms()" style="width:250px;">
-                        <input type="text" class="form-input" id="dmsFilterRecordId" placeholder="Ref ID (e.g. FLT-123)" oninput="renderDms()" style="width:150px;">
-                        <button class="btn btn-outline" onclick="exportDmsPdf()">Export PDF</button>
-                    </div>
-
-                    <!-- Summary Widgets -->
-                    <div style="display:flex; gap:15px; margin-bottom:20px; flex-wrap:wrap;">
-                        <div class="dms-widget">
-                            <div>Total Documents</div>
-                            <div id="dmsTotalDocs" style="font-size:24px; font-weight:700; color:var(--primary);">0</div>
-                        </div>
-                        <div class="dms-widget">
-                            <div>Pending Review</div>
-                            <div id="dmsPendingDocs" style="font-size:24px; font-weight:700; color:var(--warning);">0</div>
-                        </div>
-                        <div class="dms-widget">
-                            <div>Expiring Soon</div>
-                            <div id="dmsExpiringDocs" style="font-size:24px; font-weight:700; color:var(--danger);">0</div>
-                        </div>
-                    </div>
-
-                    <!-- Grid -->
-                    <div class="dms-grid" id="dmsGrid"></div>
-                </div>
-            </div>
-            
-            <!-- DMS Form Modal -->
-            <div id="dmsFormSection" class="form-section-overlay" style="display:none;">
-                <div class="form-card" style="position:relative; max-width:600px; margin:40px auto;">
-                    <button class="btn-close" onclick="closeDmsForm()" style="position:absolute; top:15px; right:15px; background:transparent; border:none; font-size:20px; cursor:pointer;">✖</button>
-                    <h3 id="dmsFormTitle">Upload Document</h3>
-                    <input type="hidden" id="dmsId">
-                    
-                    <div class="form-row">
-                        <div class="form-group" style="flex:1;">
-                            <label class="form-label">Title <span style="color:var(--danger)">*</span></label>
-                            <input type="text" class="form-input" id="dmsDocTitle" placeholder="e.g. Transformer Manual">
-                        </div>
-                        <div class="form-group" style="flex:1;">
-                            <label class="form-label">Folder <span style="color:var(--danger)">*</span></label>
-                            <select class="form-input" id="dmsDocFolder">
-                                <option>Monthly Reports</option>
-                                <option>Shutdown Permits</option>
-                                <option>Maintenance Reports</option>
-                                <option>Fault Reports</option>
-                                <option>Tripping Reports</option>
-                                <option>Breakdown Reports</option>
-                                <option>Equipment Manuals</option>
-                                <option>SOPs</option>
-                                <option>Others</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Document URL (Drive/Server Link) <span style="color:var(--danger)">*</span></label>
-                        <input type="url" class="form-input" id="dmsDocUrl" placeholder="https://...">
-                        <small style="color:var(--text-secondary); margin-top:5px; display:block;">Pasting URL prevents browser storage crash (5MB limit).</small>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group" style="flex:1;">
-                            <label class="form-label">Related Equipment</label>
-                            <select class="form-input" id="dmsEquipment"></select>
-                        </div>
-                        <div class="form-group" style="flex:1;">
-                            <label class="form-label">Related Record ID</label>
-                            <input type="text" class="form-input" id="dmsRecordId" placeholder="e.g. FLT-12345">
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group" style="flex:1;">
-                            <label class="form-label">Status</label>
-                            <select class="form-input" id="dmsStatus">
-                                <option>Draft</option>
-                                <option>Pending Review</option>
-                                <option>Approved</option>
-                            </select>
-                        </div>
-                        <div class="form-group" style="flex:1;">
-                            <label class="form-label">Expiry Date</label>
-                            <input type="date" class="form-input" id="dmsExpiry">
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Remarks</label>
-                        <textarea class="form-input" id="dmsRemarks" rows="2"></textarea>
-                    </div>
-                    
-                    <div style="display:flex; justify-content:space-between; margin-top:20px;">
-                        <button type="button" class="btn btn-danger" id="btnDeleteDms" style="display:none;" onclick="deleteDocument()">Delete</button>
-                        <div style="margin-left:auto; display:flex; gap:10px;">
-                            <button type="button" class="btn btn-outline" onclick="closeDmsForm()">Cancel</button>
-                            <button type="button" class="btn btn-primary" onclick="saveDocument()">Save Document</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ===== SETUP VIEW ===== -->
-        <div id="setupView" class="view">
-            <div class="form-card">
-                <div class="form-group">
-                    <label class="form-label">Substation Name</label>
-                    <input type="text" class="form-input" id="setupName" placeholder="e.g., 66 K.V. HALVAD-3 S/S">
-                </div>
-            </div>
-
-            <!-- Feeders Section — Category-wise -->
-            <div id="feederCategorySetup"></div>
-
-            <!-- Transformers Section -->
-            <div class="section-title">🔌 Transformers</div>
-            <div id="transformerList"></div>
-            <button class="btn btn-add" onclick="addTransformerRow()">+ Add Transformer</button>
-
-            <!-- Opposite SS Section -->
-            <div class="section-title">📡 Opposite SS Entries (Line Loss)</div>
-            <div id="oppositeList"></div>
-            <button class="btn btn-add" onclick="addOppositeRow()">+ Add Opposite SS Entry</button>
-
-            <div class="btn-group">
-                <button class="btn btn-success" onclick="saveSubstation()">💾 Save Substation</button>
-                <button class="btn btn-danger" id="btnDeleteSS" style="display:none" onclick="deleteSubstation()">🗑️ Delete</button>
-            </div>
-        </div>
-
-        <!-- ===== REPORT VIEW ===== -->
-        <div id="reportView" class="view">
-            <div class="month-bar no-print">
-                <label for="reportMonth">📅 MONTH :</label>
-                <input type="text" id="reportMonth" placeholder="e.g., JUN-2026">
-            </div>
-
-            <!-- Status Bar -->
-            <div class="report-status-bar no-print" style="background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
-                <div style="display:flex; align-items:center; gap: 8px;">
-                    <span style="font-size: 13px; font-weight: 700; color: var(--text-secondary);">STATUS:</span>
-                    <span id="reportStatusBadge" class="status-badge stat-pending">Draft</span>
-                </div>
-                <div style="display:flex; gap: 8px; flex-wrap: wrap;">
-                    <button class="btn btn-outline" onclick="submitReport()" id="btnSubmitReport" style="padding: 8px 16px; font-size: 12px;">Submit</button>
-                    <button class="btn btn-success" onclick="approveReport()" id="btnApproveReport" style="padding: 8px 16px; font-size: 12px;">Approve</button>
-                    <button class="btn btn-danger" onclick="rejectReport()" id="btnRejectReport" style="padding: 8px 16px; font-size: 12px;">Reject</button>
-                    <button class="btn btn-outline" onclick="toggleLockReport()" id="btnLockReport" style="padding: 8px 16px; font-size: 12px;">Lock/Unlock</button>
-                    <button class="btn btn-primary" onclick="exportData()" style="padding: 8px 16px; font-size: 12px;">Export Excel</button>
-                    <button class="btn btn-primary" onclick="window.print()" style="padding: 8px 16px; font-size: 12px;">Export PDF</button>
-                </div>
-            </div>
-
-            <!-- Feeder Readings — Category-wise (rendered by JS) -->
-            <div id="feederCategoryContainer"></div>
-
-            <!-- Opposite SS Inputs -->
-            <div class="report-card" id="oppositeCard" style="display:none">
-                <div class="report-card-header">📡 Opposite SS End Units (Line Loss)</div>
-                <div id="oppositeInputs" style="padding: 12px;"></div>
-            </div>
-
-            <!-- Calculate Button -->
-            <div class="btn-group no-print" style="margin-bottom: 16px;">
-                <button class="btn btn-success" onclick="calculateReport()" style="flex:2">📊 Calculate & Generate Report</button>
-                <button class="btn btn-outline" onclick="resetReport()">↺ Reset</button>
-            </div>
-
-            <!-- Totals Section -->
-            <div class="report-card" id="totalsCard" style="display:none">
-                <div class="report-card-header">📊 Totals</div>
-                <div id="totalsBody"></div>
-            </div>
-
-            <!-- Loss Calculation Section -->
-            <div class="report-card" id="lossCard" style="display:none">
-                <div class="report-card-header">📉 Loss Calculation</div>
-                <div id="lossBody"></div>
-            </div>
-
-            <!-- PDF Button -->
-            <div class="btn-group no-print" id="pdfBtnGroup" style="display:none">
-                <button class="btn btn-primary" onclick="exportPDF()">📄 Save as PDF</button>
-            </div>
-        </div>
-
-        <!-- ===== PHOTO REPORT VIEW ===== -->
-        <div id="photoReportView" class="view">
-            <div id="photoDashboardSection">
-                <div class="fault-action-bar">
-                    <div class="fault-action-left">
-                        <select class="form-select" id="photoFilterEquipment" onchange="renderPhotoReport()" style="width:160px;">
-                            <option value="">All Equipment</option>
-                        </select>
-                        <select class="form-select" id="photoFilterCategory" onchange="renderPhotoReport()" style="width:160px;">
-                            <option value="">All Categories</option>
-                            <option value="Fault Photo">Fault Photo</option>
-                            <option value="Tripping Evidence">Tripping Evidence</option>
-                            <option value="Breakdown">Breakdown</option>
-                            <option value="Before Maintenance">Before Maintenance</option>
-                            <option value="During Maintenance">During Maintenance</option>
-                            <option value="After Maintenance">After Maintenance</option>
-                            <option value="Safety Inspection">Safety Inspection</option>
-                        </select>
-                        <input type="text" id="photoFilterRecordId" placeholder="Search Record ID..." class="form-input" onkeyup="renderPhotoReport()" style="width:160px;">
-                    </div>
-                    <div class="fault-action-right">
-                        <button class="btn btn-outline" onclick="exportPhotoReportPDF()">📥 Export PDF</button>
-                        <button class="btn btn-primary" onclick="openPhotoForm()">➕ Add Photo</button>
-                    </div>
-                </div>
-
-                <div class="photo-grid" id="photoGridContainer">
-                    <!-- Photos will be rendered here -->
-                </div>
-            </div>
-
-            <!-- Form Section -->
-            <div id="photoFormSection" style="display:none;">
-                <input type="hidden" id="ph_id">
-                <div class="form-card">
-                    <div class="section-title" style="margin-top:0;">📷 Photo Details</div>
-                    <div class="fault-form-grid">
-                        <div class="form-group" style="grid-column: 1 / -1;">
-                            <label class="form-label">Photo Image URL</label>
-                            <input type="text" class="form-input" id="ph_url" placeholder="https://example.com/photo.jpg" oninput="document.getElementById('ph_preview').src = this.value || 'https://via.placeholder.com/400x200?text=No+Image'">
-                        </div>
-                        <div class="form-group" style="grid-column: 1 / -1;">
-                            <img id="ph_preview" src="https://via.placeholder.com/400x200?text=No+Image" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border);">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Equipment</label>
-                            <select class="form-select" id="ph_equipment">
-                                <option value="">Select Equipment</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Category</label>
-                            <select class="form-select" id="ph_category">
-                                <option value="Fault Photo">Fault Photo</option>
-                                <option value="Tripping Evidence">Tripping Evidence</option>
-                                <option value="Breakdown">Breakdown</option>
-                                <option value="Before Maintenance">Before Maintenance</option>
-                                <option value="During Maintenance">During Maintenance</option>
-                                <option value="After Maintenance">After Maintenance</option>
-                                <option value="Safety Inspection">Safety Inspection</option>
-                            </select>
-                        </div>
-                        <div class="form-group" style="grid-column: 1 / -1;">
-                            <label class="form-label">Caption / Title</label>
-                            <input type="text" class="form-input" id="ph_caption" placeholder="Short description of the photo">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Related Record ID (Optional)</label>
-                            <input type="text" class="form-input" id="ph_related_record" placeholder="e.g. FLT-1234">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">GPS Coordinates (Optional)</label>
-                            <input type="text" class="form-input" id="ph_gps" placeholder="e.g. 23.0225, 72.5714">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Remarks</label>
-                            <input type="text" class="form-input" id="ph_remarks" placeholder="Any additional notes">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="btn-group" style="margin-top:20px;">
-                    <button class="btn btn-outline" onclick="closePhotoForm()">Cancel</button>
-                    <button class="btn btn-primary" onclick="savePhotoReport()">Save Photo</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- ===== FAULT REGISTER VIEW ===== -->
-        <div id="faultRegisterView" class="view">
-            <!-- Dashboard Section -->
-            <div id="faultDashboardSection">
-                <div class="fault-action-bar">
-                    <div class="fault-action-left">
-                        <input type="text" class="form-input" id="faultSearch" placeholder="🔍 Search faults..." oninput="renderFaultRegister()" style="flex:1;">
-                        <select class="form-select" id="faultFilterStatus" onchange="renderFaultRegister()" style="width:140px;">
-                            <option value="">All Statuses</option>
-                            <option value="Pending">Pending</option>
-                            <option value="Under Investigation">Under Investigation</option>
-                            <option value="In Progress">In Progress</option>
-                            <option value="Resolved">Resolved</option>
-                            <option value="Closed">Closed</option>
-                        </select>
-                    </div>
-                    <div class="fault-action-right">
-                        <button class="btn btn-outline" onclick="exportFaults()">📥 Export CSV</button>
-                        <button class="btn btn-primary" onclick="openFaultForm()">➕ Register Fault</button>
-                    </div>
-                </div>
-
-                <div class="fault-summary-grid" id="faultSummaryGrid">
-                    <!-- Summary Cards -->
-                </div>
-                
-                <div class="analytics-grid" id="faultAnalyticsGrid">
-                    <!-- Analytics -->
-                </div>
-
-                <div class="section-title">🕒 Fault History</div>
-                <div class="fault-table-container">
-                    <table class="modern-table">
-                        <thead>
-                            <tr>
-                                <th>ID & Date</th>
-                                <th>Equipment</th>
-                                <th>Fault Type</th>
-                                <th>Severity</th>
-                                <th>Status</th>
-                                <th>Downtime</th>
-                            </tr>
-                        </thead>
-                        <tbody id="faultTableBody">
-                            <!-- Rows generated by JS -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Form Section -->
-            <div id="faultFormSection" style="display:none;">
-                <input type="hidden" id="f_id">
-                
-                <div class="form-card">
-                    <div class="section-title" style="margin-top:0;">📝 General Information</div>
-                    <div class="fault-form-grid">
-                        <div class="form-group">
-                            <label class="form-label">Fault Date</label>
-                            <input type="date" class="form-input" id="f_date">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Fault Time</label>
-                            <input type="time" class="form-input" id="f_time">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Voltage Level</label>
-                            <select class="form-select" id="f_voltage">
-                                <option value="66KV">66 KV</option>
-                                <option value="11KV">11 KV</option>
-                                <option value="LV">LV (415V/230V)</option>
-                                <option value="DC">DC System</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Equipment Category</label>
-                            <select class="form-select" id="f_category">
-                                <option value="Transformer">Transformer</option>
-                                <option value="Breaker">Breaker (CB)</option>
-                                <option value="Isolator">Isolator</option>
-                                <option value="CT/PT">CT / PT</option>
-                                <option value="Control Panel">Control & Relay Panel</option>
-                                <option value="Battery/Charger">Battery & Charger</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </div>
-                        <div class="form-group" style="grid-column: 1 / -1;">
-                            <label class="form-label">Equipment Name / Identification</label>
-                            <select class="form-select" id="f_equipment_name"></select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-card">
-                    <div class="section-title" style="margin-top:0;">🔍 Fault Details</div>
-                    <div class="fault-form-grid">
-                        <div class="form-group">
-                            <label class="form-label">Fault Type</label>
-                            <select class="form-select" id="f_type">
-                                <option value="Transient">Transient</option>
-                                <option value="Permanent">Permanent</option>
-                                <option value="Mechanical">Mechanical</option>
-                                <option value="Electrical">Electrical</option>
-                                <option value="Insulation">Insulation Failure</option>
-                                <option value="Relay Operation">Relay Operation</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Severity</label>
-                            <select class="form-select" id="f_severity">
-                                <option value="Low">Low</option>
-                                <option value="Medium">Medium</option>
-                                <option value="High">High</option>
-                                <option value="Critical">Critical</option>
-                            </select>
-                        </div>
-                        <div class="form-group" style="grid-column: 1 / -1;">
-                            <label class="form-label">Description of Fault</label>
-                            <input type="text" class="form-input" id="f_description" placeholder="Briefly describe what happened">
-                        </div>
-                        <div class="form-group" style="grid-column: 1 / -1;">
-                            <label class="form-label">Probable Root Cause</label>
-                            <input type="text" class="form-input" id="f_root_cause" placeholder="e.g. Weather, Aging, Overload">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Reported By</label>
-                            <input type="text" class="form-input" id="f_reported_by">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Assigned To</label>
-                            <input type="text" class="form-input" id="f_assigned_to">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-card">
-                    <div class="section-title" style="margin-top:0;">📍 Location Details</div>
-                    <div class="fault-form-grid">
-                        <div class="form-group">
-                            <label class="form-label">Bay No.</label>
-                            <input type="text" class="form-input" id="f_bay">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Feeder / Line</label>
-                            <input type="text" class="form-input" id="f_feeder">
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="form-card">
-                    <div class="section-title" style="margin-top:0;">📋 Status & Resolution</div>
-                    <div class="fault-form-grid">
-                        <div class="form-group">
-                            <label class="form-label">Current Status</label>
-                            <select class="form-select" id="f_status">
-                                <option value="Pending">Pending</option>
-                                <option value="Under Investigation">Under Investigation</option>
-                                <option value="In Progress">In Progress</option>
-                                <option value="Resolved">Resolved</option>
-                                <option value="Closed">Closed</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Downtime (Hours)</label>
-                            <input type="number" class="form-input" id="f_downtime" step="0.1" min="0">
-                        </div>
-                        <div class="form-group" style="grid-column: 1 / -1;">
-                            <label class="form-label">Corrective Action Taken</label>
-                            <input type="text" class="form-input" id="f_corrective">
-                        </div>
-                        <div class="form-group" style="grid-column: 1 / -1;">
-                            <label class="form-label">Preventive Action Recommended</label>
-                            <input type="text" class="form-input" id="f_preventive">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Resolution Date</label>
-                            <input type="date" class="form-input" id="f_resolution_date">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Resolution Notes</label>
-                            <input type="text" class="form-input" id="f_resolution_notes">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="btn-group">
-                    <button class="btn btn-success" onclick="saveFault()">💾 Save Fault Record</button>
-                    <button class="btn btn-outline" onclick="closeFaultForm()">✖ Cancel</button>
-                    <button class="btn btn-danger" id="btnDeleteFault" style="display:none;" onclick="deleteFault()">🗑️ Delete</button>
-                    <button type="button" class="btn btn-outline" id="btnViewAttachedPhotosFault" style="display:none;" onclick="viewRelatedPhotos(document.getElementById('f_id').value)">📷 View Attached Photos</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-        <!-- ===== TRIPPING REGISTER VIEW ===== -->
-        <div id="trippingRegisterView" class="view">
-            <!-- Dashboard Section -->
-            <div id="tripDashboardSection">
-                <div class="trip-action-bar">
-                    <div class="trip-action-left">
-                        <label style="font-weight:700; color:var(--primary-dark);">Month:</label>
-                        <input type="month" class="form-input" id="tripMonthPicker" onchange="renderTrippingRegister()" style="width: auto;">
-                    </div>
-                    <div class="trip-action-right">
-                        <button class="btn btn-outline" onclick="exportTrips()">📥 Export CSV</button>
-                        <button class="btn btn-primary" onclick="openTripForm()">➕ New Trip</button>
-                    </div>
-                </div>
-
-                <div class="section-title">📊 Grand Totals</div>
-                <div class="trip-summary-grid" id="tripGrandTotals">
-                    <!-- Cards injected by JS -->
-                </div>
-
-                <div class="section-title">🏭 Equipment Summary</div>
-                <div class="trip-table-container">
-                    <table class="trip-table">
-                        <thead>
-                            <tr>
-                                <th rowspan="2">Equipment Name</th>
-                                <th rowspan="2">Type</th>
-                                <th colspan="2" class="center" style="border-bottom: 1px solid var(--border);">T/T (Trial Tripping)</th>
-                                <th colspan="2" class="center" style="border-bottom: 1px solid var(--border);">S/F (Sustain Fault)</th>
-                                <th colspan="2" class="center" style="border-bottom: 1px solid var(--border);">ESD (Emergency)</th>
-                                <th colspan="2" class="center" style="border-bottom: 1px solid var(--border);">PSD (Planned)</th>
-                                <th colspan="2" class="center" style="border-bottom: 1px solid var(--border); border-left: 2px solid var(--border);">Total</th>
-                            </tr>
-                            <tr>
-                                <th class="center">Cnt</th><th class="center">Time (H)</th>
-                                <th class="center">Cnt</th><th class="center">Time (H)</th>
-                                <th class="center">Cnt</th><th class="center">Time (H)</th>
-                                <th class="center">Cnt</th><th class="center">Time (H)</th>
-                                <th class="center" style="border-left: 2px solid var(--border);">Cnt</th><th class="center">Time (H)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tripSummaryTableBody">
-                            <!-- Rows generated by JS -->
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="section-title">🕒 Trip History</div>
-                <div class="trip-table-container">
-                    <table class="trip-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Equipment</th>
-                                <th>Trip Type</th>
-                                <th>Trip D&T</th>
-                                <th>Restore D&T</th>
-                                <th>Duration (H)</th>
-                                <th>Remarks</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tripHistoryTableBody">
-                            <!-- Rows generated by JS -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Form Section -->
-            <div id="tripFormSection" style="display:none;">
-                <input type="hidden" id="t_id">
-                
-                <div class="form-card">
-                    <div class="section-title" style="margin-top:0;">⚡ Trip Details</div>
-                    <div class="trip-form-grid">
-                        <div class="form-group" style="grid-column: 1 / -1;">
-                            <label class="form-label">Equipment</label>
-                            <select class="form-select" id="t_equipment">
-                                <!-- Populated dynamically -->
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Trip Type</label>
-                            <select class="form-select" id="t_type">
-                                <option value="TT">T/T (Trial Tripping)</option>
-                                <option value="SF">S/F (Sustain Fault)</option>
-                                <option value="ESD">ESD (Emergency Shut Down)</option>
-                                <option value="PSD">PSD (Planned Shut Down)</option>
-                            </select>
-                        </div>
-                        <div class="form-group" style="grid-column: 1 / -1;">
-                            <label class="form-label">Remarks / Description</label>
-                            <input type="text" class="form-input" id="t_remarks" placeholder="Brief reason for tripping">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Trip Date</label>
-                            <input type="date" class="form-input" id="t_trip_date">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Trip Time</label>
-                            <input type="time" class="form-input" id="t_trip_time">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Restore Date</label>
-                            <input type="date" class="form-input" id="t_restore_date">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Restore Time</label>
-                            <input type="time" class="form-input" id="t_restore_time">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="btn-group">
-                    <button class="btn btn-success" onclick="saveTrip()">💾 Save Trip Record</button>
-                    <button class="btn btn-outline" onclick="closeTripForm()">✖ Cancel</button>
-                    <button class="btn btn-danger" id="btnDeleteTrip" style="display:none;" onclick="deleteTrip()">🗑️ Delete</button>
-                    <button type="button" class="btn btn-outline" id="btnViewAttachedPhotosTrip" style="display:none;" onclick="viewRelatedPhotos(document.getElementById('t_id').value)">📷 View Attached Photos</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- ===== BREAKDOWN REGISTER VIEW ===== -->
-        <div id="breakdownRegisterView" class="view">
-            <!-- Dashboard Section -->
-            <div id="bdDashboardSection">
-                <div class="breakdown-action-bar">
-                    <div class="breakdown-action-left">
-                        <label style="font-weight:700; color:var(--primary-dark);">Month:</label>
-                        <input type="month" class="form-input" id="bdMonthPicker" onchange="renderBreakdownRegister()" style="width: auto;">
-                    </div>
-                    <div class="breakdown-action-right">
-                        <button class="btn btn-outline" onclick="exportBreakdowns()">📥 Export CSV</button>
-                        <button class="btn btn-primary" onclick="openBreakdownForm()">➕ New Breakdown</button>
-                    </div>
-                </div>
-
-                <div class="section-title">📊 Dashboard</div>
-                <div class="breakdown-summary-grid">
-                    <div class="breakdown-summary-card">
-                        <span class="title">Total Breakdowns</span>
-                        <span class="value" id="bdTotalCount">0</span>
-                    </div>
-                    <div class="breakdown-summary-card pending">
-                        <span class="title">Active</span>
-                        <span class="value" id="bdActiveCount">0</span>
-                    </div>
-                    <div class="breakdown-summary-card resolved">
-                        <span class="title">Resolved</span>
-                        <span class="value" id="bdResolvedCount">0</span>
-                    </div>
-                    <div class="breakdown-summary-card critical">
-                        <span class="title">Critical</span>
-                        <span class="value" id="bdCriticalCount">0</span>
-                    </div>
-                    <div class="breakdown-summary-card">
-                        <span class="title">Total Downtime</span>
-                        <span class="value" id="bdTotalDowntime">0h</span>
-                    </div>
-                    <div class="breakdown-summary-card">
-                        <span class="title">Avg Restore</span>
-                        <span class="value" id="bdAvgRestore">0h</span>
-                    </div>
-                </div>
-
-                <div class="section-title">📋 Breakdown History</div>
-                <div class="breakdown-table-container">
-                    <table class="modern-table">
-                        <thead>
-                            <tr>
-                                <th>BD ID</th>
-                                <th>Equipment</th>
-                                <th>Start Time</th>
-                                <th>Restore Time</th>
-                                <th>Severity</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="bdTableBody">
-                            <!-- Populated dynamically -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Form Section -->
-            <div id="bdFormSection" style="display:none;">
-                <div class="section-title" id="bdFormTitle">📝 Report New Breakdown</div>
-                <input type="hidden" id="bdId">
-                <input type="hidden" id="bdNumber">
-                
-                <div class="breakdown-form-section">
-                    <h4>General Information</h4>
-                    <div class="breakdown-form-grid col-3">
-                        <div class="form-group">
-                            <label class="form-label">Breakdown Start Date & Time</label>
-                            <input type="datetime-local" class="form-input" id="bdStartTime" onchange="calcBdTimes()">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Reported By</label>
-                            <input type="text" class="form-input" id="bdReportedBy" placeholder="Name / Designation">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Severity Level</label>
-                            <select class="form-select" id="bdSeverity">
-                                <option value="Low">Low (No immediate impact)</option>
-                                <option value="Medium" selected>Medium (Partial loss)</option>
-                                <option value="High">High (Significant impact)</option>
-                                <option value="Critical">Critical (Total failure/safety risk)</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="breakdown-form-section">
-                    <h4>Equipment Details</h4>
-                    <div class="breakdown-form-grid">
-                        <div class="form-group">
-                            <label class="form-label">Equipment Name</label>
-                            <select class="form-select" id="bdEquipmentName">
-                                <!-- Populated dynamically based on SS -->
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Make / Manufacturer</label>
-                            <input type="text" class="form-input" id="bdMake">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="breakdown-form-section">
-                    <h4>Breakdown Details</h4>
-                    <div class="form-group">
-                        <label class="form-label">Nature of Breakdown / Observations</label>
-                        <textarea class="form-input" id="bdNature" rows="3" placeholder="Describe the issue in detail..."></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Root Cause (if known)</label>
-                        <textarea class="form-input" id="bdRootCause" rows="2" placeholder="e.g. Moisture ingress, mechanical wear..."></textarea>
-                    </div>
-                </div>
-
-                <div class="breakdown-form-section">
-                    <h4>Repair & Restoration</h4>
-                    <div class="breakdown-form-grid col-3">
-                        <div class="form-group">
-                            <label class="form-label">Repair Start Time</label>
-                            <input type="datetime-local" class="form-input" id="bdRepairStartTime" onchange="calcBdTimes()">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Repair End Time</label>
-                            <input type="datetime-local" class="form-input" id="bdRepairEndTime" onchange="calcBdTimes()">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Restoration Time</label>
-                            <input type="datetime-local" class="form-input" id="bdRestoreTime" onchange="calcBdTimes()">
-                        </div>
-                    </div>
-                    <div class="breakdown-form-grid col-3" style="margin-top:10px;">
-                        <div class="form-group">
-                            <label class="form-label">Total Outage (Hours)</label>
-                            <input type="number" class="form-input" id="bdTotalOutage" readonly style="background:#f1f5f9;">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Repair Duration (Hours)</label>
-                            <input type="number" class="form-input" id="bdRepairDuration" readonly style="background:#f1f5f9;">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Cost of Repair (₹)</label>
-                            <input type="number" class="form-input" id="bdCost" placeholder="Optional">
-                        </div>
-                    </div>
-                    <div class="form-group" style="margin-top:16px;">
-                        <label class="form-label">Actions Taken / Remarks</label>
-                        <textarea class="form-input" id="bdActionsTaken" rows="2" placeholder="What was done to fix it? Parts replaced?"></textarea>
-                    </div>
-                </div>
-
-                <div class="breakdown-form-section">
-                    <h4>Photos & Documents</h4>
-                    <p style="font-size:12px; color:var(--text-secondary); margin-bottom:12px;">Enter valid URLs to cloud storage (Google Drive, Dropbox, etc.) to keep the report lightweight.</p>
-                    <div class="breakdown-form-grid">
-                        <div class="form-group">
-                            <label class="form-label">Link to Before Photo</label>
-                            <input type="url" class="form-input" id="bdLinkBefore" placeholder="https://...">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Link to After Photo</label>
-                            <input type="url" class="form-input" id="bdLinkAfter" placeholder="https://...">
-                        </div>
-                        <div class="form-group" style="grid-column: span 2;">
-                            <label class="form-label">Link to Additional Document (PDF/Report)</label>
-                            <input type="url" class="form-input" id="bdLinkDoc" placeholder="https://...">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="breakdown-form-section">
-                    <h4>Status Tracking</h4>
-                    <div class="form-group">
-                        <label class="form-label">Current Status</label>
-                        <select class="form-select" id="bdStatus">
-                            <option value="Pending">Pending / Open</option>
-                            <option value="Under Repair">Under Repair</option>
-                            <option value="Resolved">Resolved / Restored</option>
-                            <option value="Closed">Closed</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="btn-group">
-                    <button class="btn btn-success" onclick="saveBreakdown()">💾 Save Breakdown Report</button>
-                    <button class="btn btn-outline" onclick="closeBreakdownForm()">✖ Cancel</button>
-                    <button class="btn btn-danger" id="btnDeleteBreakdown" style="display:none;" onclick="deleteBreakdown()">🗑️ Delete</button>
-                    <button type="button" class="btn btn-outline" id="btnViewAttachedPhotosBd" style="display:none;" onclick="viewRelatedPhotos(document.getElementById('bdNumber').value)">📷 View Attached Photos</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- ===== EVENT TIMELINE VIEW ===== -->
-        <div id="eventTimelineView" class="view">
-            <div class="fault-action-bar">
-                <div class="fault-action-left">
-                    <input type="month" id="timelineMonthFilter" class="form-input" style="max-width:200px" onchange="renderEventTimeline()">
-                    <select id="timelineActionFilter" class="form-select" style="max-width:200px" onchange="renderEventTimeline()">
-                        <option value="">All Modules</option>
-                        <option value="Monthly Report">Monthly Report</option>
-                        <option value="Maintenance">Maintenance</option>
-                        <option value="Fault Register">Fault Register</option>
-                        <option value="Tripping History">Tripping History</option>
-                        <option value="Breakdown Report">Breakdown Report</option>
-                        <option value="Photo Report">Photo Report</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div class="fault-table-container">
-                <table class="modern-table">
-                    <thead>
-                        <tr>
-                            <th>Date & Time</th>
-                            <th>Operator</th>
-                            <th>Role</th>
-                            <th>Module</th>
-                            <th>Action</th>
-                            <th>Remarks</th>
-                        </tr>
-                    </thead>
-                    <tbody id="timelineTableBody">
-                    </tbody>
-                </table>
-            </div>
-            <div id="timelineEmptyState" class="empty-state" style="display:none">
-                <div class="empty-icon">🕒</div>
-                <p>No events found for the selected filters.</p>
-            </div>
-        </div>
-
-        <!-- ===== MAINTENANCE REGISTER VIEW ===== -->
-        <div id="maintenanceRegisterView" class="view">
-            <div id="mntDashboardSection">
-                <div class="mnt-action-bar">
-                    <div class="mnt-action-left">
-                        <h2 style="color:var(--primary-dark); font-size:18px;">Maintenance Management</h2>
-                        <input type="month" id="mntMonthPicker" class="form-input" style="width:auto; font-weight:700;" onchange="renderMaintenanceRegister()">
-                    </div>
-                    <div class="mnt-action-right">
-                        <button class="btn btn-outline" onclick="exportMaintenance()">📥 Export CSV</button>
-                        <button class="btn btn-primary" onclick="openMaintenanceForm()">➕ New Maintenance</button>
-                    </div>
-                </div>
-
-                <div class="mnt-summary-grid" id="mntSummaryGrid">
-                    <!-- Populated by JS -->
-                </div>
-
-                <div class="mnt-table-container">
-                    <table class="modern-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Equipment</th>
-                                <th>Type</th>
-                                <th>Scheduled Date</th>
-                                <th>Status</th>
-                                <th>Duration</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="mntTableBody">
-                            <!-- Populated by JS -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div id="mntFormSection" style="display:none;">
-                <div class="form-card">
-                    <h3 id="mntFormTitle" style="color:var(--primary-dark); margin-bottom:16px;">New Maintenance</h3>
-                    <input type="hidden" id="mntId">
-                    
-                    <div class="mnt-form-section">
-                        <h4>General Info & Equipment</h4>
-                        <div class="mnt-form-grid">
-                            <div class="form-group">
-                                <label class="form-label">Equipment Name</label>
-                                <select class="form-select" id="mntEquipmentName" onchange="loadMaintenanceChecklist()">
-                                    <!-- Populated dynamically -->
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Maintenance Type</label>
-                                <select class="form-select" id="mntType">
-                                    <option value="Preventive">Preventive</option>
-                                    <option value="Corrective">Corrective</option>
-                                    <option value="Predictive">Predictive</option>
-                                    <option value="Condition-Based">Condition-Based</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mnt-form-section">
-                        <h4>Work Details</h4>
-                        <div class="form-group">
-                            <label class="form-label">Description of Work</label>
-                            <textarea class="form-input" id="mntDescription" rows="3" placeholder="Describe the maintenance work..."></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Parts Replaced / Consumables Used</label>
-                            <textarea class="form-input" id="mntParts" rows="2" placeholder="List parts replaced..."></textarea>
-                        </div>
-                    </div>
-
-                    <div id="mntChecklistSection" class="mnt-form-section" style="display:none;">
-                        <h4>Smart Checklist</h4>
-                        <div class="checklist-container">
-                            <div class="progress-container">
-                                <div class="progress-text">
-                                    <span>Completion Progress</span>
-                                    <span id="mntChecklistText">0 / 0 Completed (0%)</span>
-                                </div>
-                                <div class="progress-bar">
-                                    <div class="progress-bar-fill" id="mntChecklistBarFill"></div>
-                                </div>
-                            </div>
-                            <div class="checklist-grid" id="mntChecklistGrid">
-                                <!-- Checkboxes injected here -->
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mnt-form-section">
-                        <h4>Schedule & Status</h4>
-                        <div class="mnt-form-grid col-3">
-                            <div class="form-group">
-                                <label class="form-label">Scheduled Date</label>
-                                <input type="date" class="form-input" id="mntScheduledDate">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Actual Start</label>
-                                <input type="datetime-local" class="form-input" id="mntStartTime" onchange="calcMntTimes()">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Actual End</label>
-                                <input type="datetime-local" class="form-input" id="mntEndTime" onchange="calcMntTimes()">
-                            </div>
-                        </div>
-                        <div class="mnt-form-grid col-3" style="margin-top:10px;">
-                            <div class="form-group">
-                                <label class="form-label">Duration (Hours)</label>
-                                <input type="number" step="0.01" class="form-input" id="mntDuration" readonly style="background:#f1f5f9;">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Status</label>
-                                <select class="form-select" id="mntStatus">
-                                    <option value="Scheduled">Scheduled</option>
-                                    <option value="In Progress">In Progress</option>
-                                    <option value="Completed">Completed</option>
-                                    <option value="Cancelled">Cancelled</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Maintenance Agency</label>
-                                <input type="text" class="form-input" id="mntAgency" placeholder="Internal/Contractor">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mnt-form-section">
-                        <h4>Photos & Documents</h4>
-                        <p style="font-size:12px; color:var(--text-secondary); margin-bottom:12px;">Enter valid URLs to cloud storage.</p>
-                        <div class="mnt-form-grid">
-                            <div class="form-group">
-                                <label class="form-label">Link to Before Photo</label>
-                                <input type="url" class="form-input" id="mntLinkBefore" placeholder="https://...">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Link to After Photo</label>
-                                <input type="url" class="form-input" id="mntLinkAfter" placeholder="https://...">
-                            </div>
-                            <div class="form-group" style="grid-column: span 2;">
-                                <label class="form-label">Link to Additional Document (PDF/Report)</label>
-                                <input type="url" class="form-input" id="mntLinkDoc" placeholder="https://...">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="btn-group">
-                        <button class="btn btn-success" onclick="saveMaintenance()">💾 Save Maintenance</button>
-                        <button class="btn btn-outline" onclick="closeMaintenanceForm()">✖ Cancel</button>
-                        <button class="btn btn-danger" id="btnDeleteMaintenance" style="display:none;" onclick="deleteMaintenance()">🗑️ Delete</button>
-                        <button type="button" class="btn btn-outline" id="btnViewAttachedPhotosMnt" style="display:none;" onclick="viewRelatedPhotos(document.getElementById('mntId').value)">📷 View Attached Photos</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    <!-- ===== PAGE: Equipment Master ===== -->
-    <div id="pageEquipmentMaster" class="view">
-        <div class="content">
-            <div class="eq-list-header">
-                <h2 class="eq-list-title">Equipment Dashboard</h2>
-                <div class="eq-list-actions">
-                    <button class="btn btn-outline" onclick="alert('Export functionality coming soon.')">📥 Export</button>
-                    <button class="btn btn-primary" onclick="openEquipmentModal()">➕ Add Equipment</button>
-                </div>
-            </div>
-
-            <div class="eq-dashboard-grid">
-                <div class="eq-kpi-card">
-                    <div class="eq-kpi-icon"><span class="material-icons-round">precision_manufacturing</span></div>
-                    <div class="eq-kpi-title">Total Equipment</div>
-                    <div class="eq-kpi-value" id="eqTotalCount">0</div>
-                </div>
-                <div class="eq-kpi-card">
-                    <div class="eq-kpi-icon"><span class="material-icons-round">bolt</span></div>
-                    <div class="eq-kpi-title">Transformers</div>
-                    <div class="eq-kpi-value" id="eqTransformerCount">0</div>
-                </div>
-                <div class="eq-kpi-card">
-                    <div class="eq-kpi-icon"><span class="material-icons-round">cable</span></div>
-                    <div class="eq-kpi-title">Feeders</div>
-                    <div class="eq-kpi-value" id="eqFeederCount">0</div>
-                </div>
-                <div class="eq-kpi-card">
-                    <div class="eq-kpi-icon"><span class="material-icons-round">settings_input_component</span></div>
-                    <div class="eq-kpi-title">Breakers</div>
-                    <div class="eq-kpi-value" id="eqBreakerCount">0</div>
-                </div>
-            </div>
-
-            <!-- Equipment List -->
-            <div class="fault-table-container">
-                <table class="modern-table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Category</th>
-                            <th>Voltage</th>
-                            <th>Manufacturer</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="eqListContainer">
-                        <!-- Populated by JS -->
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Equipment Modal -->
-            <div id="equipmentModal" class="modal">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3 class="modal-title">Add / Edit Equipment</h3>
-                        <button class="close-modal" onclick="closeEquipmentModal()">✖</button>
-                    </div>
-                    <form id="equipmentForm" onsubmit="saveEquipment(event)">
-                        <input type="hidden" id="eqId">
-                        <div class="eq-form-grid">
-                            <div class="form-group">
-                                <label class="form-label">Name *</label>
-                                <input type="text" id="eqName" class="form-input" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Category *</label>
-                                <select id="eqCategory" class="form-input" required>
-                                    <option value="Transformer">Transformer</option>
-                                    <option value="Feeder">Feeder</option>
-                                    <option value="Breaker">Breaker</option>
-                                    <option value="Isolator">Isolator</option>
-                                    <option value="CT">Current Transformer</option>
-                                    <option value="PT">Potential Transformer</option>
-                                    <option value="Battery">Battery Bank</option>
-                                    <option value="Other">Other</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Voltage Level</label>
-                                <select id="eqVoltage" class="form-input">
-                                    <option value="">N/A</option>
-                                    <option value="66KV">66 KV</option>
-                                    <option value="11KV">11 KV</option>
-                                    <option value="415V">415 V</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Bay Number</label>
-                                <input type="text" id="eqBayNumber" class="form-input">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Manufacturer</label>
-                                <input type="text" id="eqManufacturer" class="form-input">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Model</label>
-                                <input type="text" id="eqModel" class="form-input">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Serial No</label>
-                                <input type="text" id="eqSerial" class="form-input">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Capacity / Rating</label>
-                                <input type="text" id="eqCapacity" class="form-input">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Install Date</label>
-                                <input type="date" id="eqInstallDate" class="form-input">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Status</label>
-                                <select id="eqStatus" class="form-input">
-                                    <option value="In Service">In Service</option>
-                                    <option value="Under Maintenance">Under Maintenance</option>
-                                    <option value="Decommissioned">Decommissioned</option>
-                                </select>
-                            </div>
-                            <div class="form-group" style="grid-column: 1 / -1;">
-                                <label class="form-label">Location / Substation</label>
-                                <input type="text" id="eqLocation" class="form-input">
-                            </div>
-                            <div class="form-group" style="grid-column: 1 / -1;">
-                                <label class="form-label">Description / Notes</label>
-                                <textarea id="eqDescription" class="form-input" rows="3" style="resize:vertical;"></textarea>
-                            </div>
-                        </div>
-                        <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:20px; border-top:1px solid var(--border-light); padding-top:16px;">
-                            <button type="button" class="btn btn-outline" onclick="closeEquipmentModal()">Cancel</button>
-                            <button type="submit" class="btn btn-primary">Save Equipment</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ===== PAGE: Equipment Profile ===== -->
-    <div id="pageEquipmentProfile" class="view">
-        <div class="content">
-            <button class="btn btn-outline" onclick="navigateTo('equipmentMaster', currentDashboardSSId)" style="margin-bottom: 16px;">
-                <span class="material-icons-round" style="font-size:16px;">arrow_back</span> Back to Master
-            </button>
-            
-            <div class="eq-profile-header">
-                <div class="eq-profile-title-area">
-                    <div class="eq-profile-icon"><span class="material-icons-round" id="profIcon">precision_manufacturing</span></div>
-                    <div>
-                        <div class="eq-profile-name" id="profName">Equipment Name</div>
-                        <div class="eq-profile-meta">
-                            <span id="profCategory">Category</span> • 
-                            <span id="profVoltage">Voltage</span> • 
-                            <span id="profBay">Bay No</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="eq-list-actions">
-                    <div class="status-badge stat-resolved" id="profStatusBadge">In Service</div>
-                    <button class="btn btn-outline" id="profEditBtn">Edit Profile</button>
-                </div>
-            </div>
-
-            <div class="eq-lifecycle-grid">
-                <!-- Lifecycle Summary -->
-                <div class="eq-lifecycle-card">
-                    <div class="eq-lifecycle-card-title"><span class="material-icons-round">analytics</span> Lifecycle Health</div>
-                    <div class="eq-lifecycle-stat">
-                        <span class="eq-stat-label">Health Score</span>
-                        <span class="eq-stat-val" id="profHealthScore" style="color:var(--success)">98%</span>
-                    </div>
-                    <div class="eq-lifecycle-stat">
-                        <span class="eq-stat-label">Total Faults</span>
-                        <span class="eq-stat-val" id="profTotalFaults">0</span>
-                    </div>
-                    <div class="eq-lifecycle-stat">
-                        <span class="eq-stat-label">Total Breakdowns</span>
-                        <span class="eq-stat-val" id="profTotalBreakdowns">0</span>
-                    </div>
-                    <div class="eq-lifecycle-stat">
-                        <span class="eq-stat-label">Last Maintenance</span>
-                        <span class="eq-stat-val" id="profLastMaintenance">-</span>
-                    </div>
-                </div>
-
-                <!-- Asset Details -->
-                <div class="eq-lifecycle-card">
-                    <div class="eq-lifecycle-card-title"><span class="material-icons-round">info</span> Asset Details</div>
-                    <div class="eq-lifecycle-stat">
-                        <span class="eq-stat-label">Manufacturer</span>
-                        <span class="eq-stat-val" id="profDetailManufacturer">-</span>
-                    </div>
-                    <div class="eq-lifecycle-stat">
-                        <span class="eq-stat-label">Model</span>
-                        <span class="eq-stat-val" id="profDetailModel">-</span>
-                    </div>
-                    <div class="eq-lifecycle-stat">
-                        <span class="eq-stat-label">Serial No</span>
-                        <span class="eq-stat-val" id="profDetailSerial">-</span>
-                    </div>
-                    <div class="eq-lifecycle-stat">
-                        <span class="eq-stat-label">Install Date</span>
-                        <span class="eq-stat-val" id="profDetailInstall">-</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Linked Records -->
-            <div class="eq-records-section">
-                <div class="eq-records-tabs">
-                    <div class="eq-tab active" onclick="alert('Faults view coming soon')">Faults</div>
-                    <div class="eq-tab" onclick="alert('Maintenance view coming soon')">Maintenance</div>
-                    <div class="eq-tab" onclick="alert('Trippings view coming soon')">Trippings</div>
-                    <div class="eq-tab" onclick="alert('Breakdowns view coming soon')">Breakdowns</div>
-                </div>
-                <div class="fault-table-container" style="box-shadow:none; margin-bottom:0;">
-                    <table class="modern-table">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Record Type</th>
-                                <th>Description</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="profRecordsContainer">
-                            <!-- Populated by JS -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    </div><!-- /pageSubstations -->
-
-    <!-- ===== PAGE: Reports ===== -->
-    <div id="pageReports" class="page-section" style="display:none;">
-        <div class="page-content" style="padding: 20px;">
-            
-            <div class="mega-menu-wrapper" id="reportsMegaMenu">
-                <div class="mega-menu-header">
-                    <div class="mega-menu-title" style="font-weight: 700; color: var(--primary-dark); display: flex; align-items: center; gap: 8px;">
-                        <span class="material-icons-round">assessment</span>
-                        Report Center
-                    </div>
-                    <div class="mega-menu-search">
-                        <span class="material-icons-round">search</span>
-                        <input type="text" id="megaMenuSearch" placeholder="Search reports..." onkeyup="filterMegaMenu(this.value)">
-                    </div>
-                </div>
-                <div class="mega-menu-content" id="megaMenuContent">
-                    <div class="mega-menu-group">
-                        <h4><span class="material-icons-round">insert_chart</span> Monthly Reports</h4>
-                        <a href="#" class="mega-menu-item-link" onclick="handleMegaMenuItemClick(event, 'reports')"><span class="material-icons-round">visibility</span> View Monthly Reports</a>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">add_circle</span> Create Monthly Report</a>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">history</span> Report History</a>
-                    </div>
-                    <div class="mega-menu-group">
-                        <h4><span class="material-icons-round">photo_camera</span> Photo Reports</h4>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">image</span> Inspection Photos</a>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">collections</span> Equipment Photos</a>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">build</span> Maintenance Photos</a>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">history</span> Photo Report History</a>
-                    </div>
-                    <div class="mega-menu-group">
-                        <h4><span class="material-icons-round">warning</span> Fault Reports</h4>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">error</span> Active Faults</a>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">check_circle</span> Resolved Faults</a>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">assignment</span> Monthly Fault Report</a>
-                    </div>
-                    <div class="mega-menu-group">
-                        <h4><span class="material-icons-round">offline_bolt</span> Tripping Reports</h4>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">category</span> Equipment-wise Tripping Report</a>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">event_note</span> Monthly Tripping Report</a>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">verified_user</span> Reliability Report</a>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">summarize</span> T/T Summary</a>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">summarize</span> SF Summary</a>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">summarize</span> ESD Summary</a>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">summarize</span> PSD Summary</a>
-                    </div>
-                    <div class="mega-menu-group">
-                        <h4><span class="material-icons-round">build_circle</span> Breakdown Reports</h4>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">history</span> Breakdown History</a>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">timer</span> Downtime Report</a>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">troubleshoot</span> Root Cause Analysis</a>
-                    </div>
-                    <div class="mega-menu-group">
-                        <h4><span class="material-icons-round">handyman</span> Maintenance Reports</h4>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">engineering</span> Preventive Maintenance</a>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">healing</span> Corrective Maintenance</a>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">history</span> Maintenance History</a>
-                    </div>
-                    <div class="mega-menu-group">
-                        <h4><span class="material-icons-round">timeline</span> Event Timeline Reports</h4>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">today</span> Daily Events</a>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">calendar_month</span> Monthly Events</a>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">person_search</span> Operator Activity</a>
-                    </div>
-                    <div class="mega-menu-group">
-                        <h4><span class="material-icons-round">precision_manufacturing</span> Equipment Reports</h4>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">electrical_services</span> Transformer Report</a>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">power</span> Feeder Report</a>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">cable</span> 66 KV Line Report</a>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">health_and_safety</span> Equipment Health Report</a>
-                    </div>
-                    <div class="mega-menu-group">
-                        <h4><span class="material-icons-round">folder_open</span> Document Reports</h4>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">upload_file</span> Uploaded Documents</a>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">notification_important</span> Expiring Certificates</a>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">history</span> Document History</a>
-                    </div>
-                    <div class="mega-menu-group">
-                        <h4><span class="material-icons-round">insights</span> Analytics Reports</h4>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">dashboard</span> Dashboard Analytics</a>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">trending_up</span> Monthly Performance</a>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">bar_chart</span> Equipment Performance</a>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">pie_chart</span> Fault Analytics</a>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">show_chart</span> Tripping Analytics</a>
-                    </div>
-                    <div class="mega-menu-group">
-                        <h4><span class="material-icons-round">download</span> Export Center</h4>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">picture_as_pdf</span> Export PDF</a>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">table_view</span> Export Excel</a>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">print</span> Print Reports</a>
-                    </div>
-                    <div class="mega-menu-group">
-                        <h4><span class="material-icons-round">manage_history</span> Report History</h4>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">history</span> Previously Generated Reports</a>
-                        <a href="#" class="mega-menu-item-link"><span class="material-icons-round">download_for_offline</span> Download Reports</a>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- ===== PAGE: Notifications ===== -->
-    <div id="pageNotifications" class="page-section" style="display:none;">
-        <div class="page-content" style="text-align:center; padding: 80px 20px;">
-            <span class="material-icons-round" style="font-size:64px; color: var(--on-surface-tertiary); opacity:0.4;">notifications</span>
-            <h2 style="margin-top:16px; color: var(--on-surface-secondary);">Notifications</h2>
-            <p style="color: var(--on-surface-tertiary);">Notification center coming soon.</p>
-        </div>
-    </div>
-
-    <!-- ===== PAGE: Settings ===== -->
-    <div id="pageSettings" class="page-section" style="display:none;">
-        <div class="page-content" style="text-align:center; padding: 80px 20px;">
-            <span class="material-icons-round" style="font-size:64px; color: var(--on-surface-tertiary); opacity:0.4;">settings</span>
-            <h2 style="margin-top:16px; color: var(--on-surface-secondary);">Settings</h2>
-            <p style="color: var(--on-surface-tertiary);">Settings panel coming soon.</p>
-        </div>
-    </div>
-
-
-
-    <!-- Toast -->
-    <div class="toast" id="toast"></div>
-    <script src="js/utils.js"></script>
-    <script src="js/dashboard.js"></script>
-    <script src="js/setup.js"></script>
-    <script src="js/reports.js"></script>
-    <script src="js/maintenance.js"></script>
-    <script src="js/app.js"></script>
-</script>
+</div>
+<div class="drawer-footer">
+<div class="drawer-footer-avatar">NP</div>
+<div class="drawer-footer-info">
+<div class="drawer-footer-name">Nupesh Patel</div>
+<div class="drawer-footer-role">Administrator</div>
+</div>
+<span class="material-icons-round" style="color: var(--on-surface-tertiary); cursor: pointer;">more_vert</span>
+</div>
+</div><main id="main-content"></main>
+<!-- ===== PAGE: Dashboard Overview ===== -->
+
+<!-- ===== PAGE: Substations (Main App) ===== -->
+<!-- /pageSubstations -->
+<!-- ===== PAGE: Reports ===== -->
+
+<!-- ===== PAGE: Notifications ===== -->
+
+<!-- ===== PAGE: Settings ===== -->
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+<script src="js/pages/pageDashboard.js"></script><script src="js/pages/pageSubstations.js"></script><script src="js/pages/pageReports.js"></script><script src="js/pages/pageNotifications.js"></script><script src="js/pages/pageSettings.js"></script><script src="js/utils.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/setup.js"></script>
+<script src="js/reports.js"></script>
+<script src="js/maintenance.js"></script>
+<script src="js/app.js"></script>
 
 </body>
 </html>

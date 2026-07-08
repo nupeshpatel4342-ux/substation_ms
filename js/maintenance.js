@@ -1963,4 +1963,3 @@ function renderEquipmentProfile(eqId) {
 }
 
 // Set Substations as default active on load
-setActiveMenu('substations');
