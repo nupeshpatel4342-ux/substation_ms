@@ -130,7 +130,41 @@
 
 @media (max-width: 767px) {
     .reg-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+    }
+    .reg-card {
+        padding: 12px 8px;
+        align-items: center;
+        text-align: center;
+    }
+    .reg-card-icon {
+        margin: 0 auto 8px auto;
+        width: 36px;
+        height: 36px;
+    }
+    .reg-card-icon .material-icons-round {
+        font-size: 20px;
+    }
+    .reg-card-title {
+        font-size: 11px;
+        margin-bottom: 4px;
+        line-height: 1.3;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .reg-card-desc {
+        display: none;
+    }
+    .reg-card-action {
+        padding-top: 8px;
+        justify-content: center;
+        width: 100%;
+    }
+    .reg-card-action span:first-child {
+        display: none;
     }
     .reg-actions {
         flex-direction: column;
@@ -138,6 +172,13 @@
     }
     .reg-search-input {
         width: 100%;
+    }
+    .reg-tabs {
+        gap: 8px;
+    }
+    .reg-tab {
+        padding: 8px 12px;
+        font-size: 13px;
     }
 }
 
