@@ -106,8 +106,8 @@
 /* Responsive Grid */
 .reg-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 24px;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 16px;
     animation: fadeIn 0.4s ease-in-out;
 }
 
@@ -116,11 +116,19 @@
     to { opacity: 1; transform: translateY(0); }
 }
 
-@media (max-width: 1024px) {
-    /* Auto-fill takes care of this inherently now, but kept for legacy */
+@media (max-width: 1199px) {
+    .reg-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 991px) {
+    .reg-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 767px) {
     .reg-grid {
         grid-template-columns: 1fr;
     }
@@ -138,7 +146,7 @@
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 12px;
-    padding: 24px;
+    padding: 16px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -171,19 +179,23 @@
 
 /* Titles and Descriptions */
 .reg-card-title {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 700;
     color: var(--text);
-    margin-bottom: 8px;
-    line-height: 1.3;
+    margin-bottom: 6px;
+    line-height: 1.2;
 }
 
 .reg-card-desc {
-    font-size: 14px;
+    font-size: 13px;
     color: var(--text-secondary);
-    line-height: 1.5;
-    margin-bottom: 20px;
+    line-height: 1.4;
+    margin-bottom: 16px;
     flex-grow: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 /* Action Button Inside Card */
