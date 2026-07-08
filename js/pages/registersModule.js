@@ -77,34 +77,23 @@ function renderRegistersCards() {
     const container = document.getElementById('registersContainer');
     if (!container) return;
     
-    // Validate index
-    if (currentRegCatIndex < 0 || currentRegCatIndex >= registerCategories.length) {
-        currentRegCatIndex = 0;
-    }
-    
-    let html = '<div class="reg-tabs">';
-    registerCategories.forEach((cat, idx) => {
-        const activeClass = (idx === currentRegCatIndex) ? 'active' : '';
-        html += `<button class="reg-tab ${activeClass}" onclick="switchRegisterCategory(${idx})">${cat.title}</button>`;
-    });
-    html += '</div>';
-    
-    const activeCategory = registerCategories[currentRegCatIndex];
-    html += `<div class="reg-grid">`;
-    activeCategory.items.forEach(item => {
-        html += `
-            <div class="reg-card ${item.theme} register-item" data-title="${item.title.toLowerCase()}" onclick="openCommonRegister('${item.title}')" style="cursor: pointer;">
-                <div>
-                    <div class="reg-card-icon"><span class="material-icons-round">${item.icon}</span></div>
-                    <div class="reg-card-title">${item.title}</div>
-                    <div class="reg-card-desc">${item.desc}</div>
+    let html = `<div class="reg-grid">`;
+    registerCategories.forEach(cat => {
+        cat.items.forEach(item => {
+            html += `
+                <div class="reg-card ${item.theme} register-item" data-title="${item.title.toLowerCase()}" onclick="openCommonRegister('${item.title}')" style="cursor: pointer;">
+                    <div>
+                        <div class="reg-card-icon"><span class="material-icons-round">${item.icon}</span></div>
+                        <div class="reg-card-title">${item.title}</div>
+                        <div class="reg-card-desc">${item.desc}</div>
+                    </div>
+                    <div class="reg-card-action">
+                        <span>Open Register</span>
+                        <span class="material-icons-round">arrow_forward</span>
+                    </div>
                 </div>
-                <div class="reg-card-action">
-                    <span>Open Register</span>
-                    <span class="material-icons-round">arrow_forward</span>
-                </div>
-            </div>
-        `;
+            `;
+        });
     });
     html += `</div>`;
     

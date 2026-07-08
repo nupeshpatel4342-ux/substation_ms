@@ -1332,9 +1332,8 @@ const pageSubstationsTemplate = `
 </div>
 <!-- ===== REGISTERS MODULE VIEW ===== -->
 <div class="view" id="registersView">
-    <div class="reg-actions">
-        <input type="text" class="reg-search-input" id="regSearchInput" placeholder="🔍 Search Registers..." onkeyup="filterRegisters()">
-        <button class="reg-btn reg-btn-outline"><span class="material-icons-round">filter_list</span> Filter</button>
+    <div class="reg-actions" style="margin-top: -16px; margin-bottom: 12px;">
+        <input type="text" class="reg-search-input" id="regSearchInput" placeholder="🔍 Search Registers..." onkeyup="filterRegisters()" style="width: 100%;">
     </div>
     
     <div id="registersContainer"></div>
