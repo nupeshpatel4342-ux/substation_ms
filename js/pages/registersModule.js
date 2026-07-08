@@ -81,13 +81,13 @@ function renderRegistersCards() {
     html += `<div class="reg-grid">`;
     activeCategory.items.forEach(item => {
         html += `
-            <div class="reg-card ${item.theme} register-item" data-title="${item.title.toLowerCase()}" onclick="openCommonRegister('${item.title}')" style="cursor: pointer;">
+            <div class="reg-card ${item.theme} register-item" data-title="${item.title.toLowerCase()}">
                 <div>
                     <div class="reg-card-icon"><span class="material-icons-round">${item.icon}</span></div>
                     <div class="reg-card-title">${item.title}</div>
                     <div class="reg-card-desc">${item.desc}</div>
                 </div>
-                <div class="reg-card-action">
+                <div class="reg-card-action" onclick="openCommonRegister('${item.title}')">
                     <span>Open Register</span>
                     <span class="material-icons-round">arrow_forward</span>
                 </div>
@@ -143,17 +143,7 @@ function openCommonRegister(title) {
         const headerSubtitle = document.getElementById('headerSubtitle');
         
         if(headerTitle) headerTitle.textContent = title;
-        if(headerSubtitle) {
-            let desc = 'Manage entries for ' + title;
-            for(let cat of registerCategories) {
-                const found = cat.items.find(i => i.title === title);
-                if (found) {
-                    desc = found.desc;
-                    break;
-                }
-            }
-            headerSubtitle.textContent = desc;
-        }
+        if(headerSubtitle) headerSubtitle.textContent = 'Manage entries for ' + title;
         
         // Setup Back Button to return to Registers View instead of ssDashboard
         const headerBack = document.getElementById('headerBack');
