@@ -13,6 +13,16 @@ function navigateTo(view, ssId) {
         document.getElementById('headerTitle').textContent = '⚡ 66 KV SUBSTATION REPORT';
         document.getElementById('headerSubtitle').textContent = 'Monthly Report App';
         renderDashboard();
+    } else if (view === 'executiveDashboard') {
+        document.getElementById('executiveDashboardView').classList.add('active');
+        headerBack.style.display = 'flex';
+        headerBack.onclick = () => navigateTo('ssDashboard', currentDashboardSSId);
+        let ss = getSubstation(ssId);
+        document.getElementById('headerTitle').textContent = '📊 Overview Dashboard';
+        document.getElementById('headerSubtitle').textContent = ss.name;
+        document.getElementById('edSSName').textContent = ss.name + ' Overview';
+        // Note: For now we'll just render the global one, but we can customize it for specific SS later
+        renderMainEnterpriseDashboard();
     } else if (view === 'setup') {
         document.getElementById('setupView').classList.add('active');
         headerBack.style.display = 'flex';
@@ -276,7 +286,7 @@ function showToast(msg) {
 //  INIT
 // ===================================================================
 document.addEventListener('DOMContentLoaded', () => {
-    setActiveMenu('dashboard');
+    setActiveMenu('substations');
 });
 
 // ===== NAVBAR - Page Navigation =====
@@ -292,12 +302,7 @@ function setActiveMenu(page) {
     const mainContent = document.getElementById('main-content');
     
     // Inject respective page template
-    if (page === 'dashboard') {
-        mainContent.innerHTML = pageDashboardTemplate;
-        document.getElementById('pageDashboard').style.display = 'block';
-        document.getElementById('pageDashboard').classList.add('active');
-        renderMainEnterpriseDashboard();
-    } else if (page === 'substations') {
+    if (page === 'substations') {
         mainContent.innerHTML = pageSubstationsTemplate;
         document.getElementById('pageSubstations').style.display = 'block';
         document.getElementById('pageSubstations').classList.add('active');
