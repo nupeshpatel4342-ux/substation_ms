@@ -1,0 +1,219 @@
+/* css/registers.css */
+
+/* Registers Module Header Actions */
+.reg-actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.reg-search-input {
+    padding: 10px 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    width: 250px;
+    outline: none;
+    transition: all 0.2s;
+    background: var(--surface);
+    color: var(--text);
+}
+
+.reg-search-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(103, 58, 183, 0.1);
+}
+
+.reg-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+.reg-btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.reg-btn-primary:hover {
+    background: var(--primary-dark);
+    box-shadow: 0 4px 12px rgba(103, 58, 183, 0.2);
+}
+
+.reg-btn-outline {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+.reg-btn-outline:hover {
+    background: var(--surface-hover);
+}
+
+/* Category Tabs */
+.reg-tabs {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--border-light);
+    overflow-x: auto;
+    padding-bottom: 8px;
+}
+
+.reg-tab {
+    padding: 12px 24px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: transparent;
+    border: none;
+    border-radius: 8px 8px 0 0;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.reg-tab:hover {
+    color: var(--primary);
+    background: rgba(103, 58, 183, 0.05);
+}
+
+.reg-tab.active {
+    color: var(--primary);
+}
+
+.reg-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -9px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--primary);
+    border-radius: 3px 3px 0 0;
+}
+
+/* Responsive Grid */
+.reg-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 1024px) {
+    /* Auto-fill takes care of this inherently now, but kept for legacy */
+}
+
+@media (max-width: 600px) {
+    .reg-grid {
+        grid-template-columns: 1fr;
+    }
+    .reg-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .reg-search-input {
+        width: 100%;
+    }
+}
+
+/* Card Design */
+.reg-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    position: relative;
+    overflow: hidden;
+}
+
+.reg-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+    border-color: var(--primary-light);
+}
+
+/* Top Icon */
+.reg-card-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.reg-card-icon .material-icons-round {
+    font-size: 28px;
+}
+
+/* Titles and Descriptions */
+.reg-card-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+    line-height: 1.3;
+}
+
+.reg-card-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 20px;
+    flex-grow: 1;
+}
+
+/* Action Button Inside Card */
+.reg-card-action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-light);
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.reg-card-action .material-icons-round {
+    font-size: 20px;
+    transition: transform 0.2s;
+}
+
+.reg-card:hover .reg-card-action .material-icons-round {
+    transform: translateX(4px);
+}
+
+/* Color Themes for specific cards */
+.theme-log .reg-card-icon { background: #e3f2fd; color: #1976d2; }
+.theme-switch .reg-card-icon { background: #fff3e0; color: #ed6c02; }
+.theme-trip .reg-card-icon { background: #ffebee; color: #d32f2f; }
+.theme-maint .reg-card-icon { background: #e8f5e9; color: #2e7d32; }
+.theme-inspect .reg-card-icon { background: #e0f7fa; color: #00838f; }
+.theme-meter .reg-card-icon { background: #ede7f6; color: #673ab7; }
+.theme-shutdown .reg-card-icon { background: #fce4ec; color: #d81b60; }
+.theme-visitor .reg-card-icon { background: #eceff1; color: #455a64; }

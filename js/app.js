@@ -23,6 +23,12 @@ function navigateTo(view, ssId) {
         document.getElementById('edSSName').textContent = ss.name + ' Overview';
         // Note: For now we'll just render the global one, but we can customize it for specific SS later
         renderMainEnterpriseDashboard();
+    } else if (view === 'registersView') {
+        document.getElementById('registersView').classList.add('active');
+        headerBack.style.display = 'flex';
+        headerBack.onclick = () => navigateTo('ssDashboard', currentDashboardSSId);
+        document.getElementById('headerTitle').textContent = 'Registers';
+        document.getElementById('headerSubtitle').textContent = 'Manage all operational registers of the 66 KV Substation from one place.';
     } else if (view === 'setup') {
         document.getElementById('setupView').classList.add('active');
         headerBack.style.display = 'flex';

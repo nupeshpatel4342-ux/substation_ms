@@ -49,6 +49,10 @@ const pageSubstationsTemplate = `
 <span class="material-icons-round" style="color: #2e7d32; background: #e8f5e9;">handyman</span>
 <div class="card-title">Maintenance</div>
 </div>
+<div class="ss-dashboard-card" onclick="navigateTo('registersView', currentDashboardSSId)">
+<span class="material-icons-round" style="color: #00796b; background: #e0f2f1;">library_books</span>
+<div class="card-title">Registers Module</div>
+</div>
 <div class="ss-dashboard-card" onclick="navigateTo('equipmentMaster', currentDashboardSSId)">
 <span class="material-icons-round" style="color: #455a64; background: #eceff1;">precision_manufacturing</span>
 <div class="card-title">Equipment Master</div>
@@ -1326,6 +1330,78 @@ const pageSubstationsTemplate = `
 </div>
 </div>
 </div>
+<!-- ===== REGISTERS MODULE VIEW ===== -->
+<div class="view" id="registersView">
+    <div class="reg-actions">
+        <input type="text" class="reg-search-input" id="regSearchInput" placeholder="🔍 Search Registers..." onkeyup="filterRegisters()">
+        <button class="reg-btn reg-btn-outline"><span class="material-icons-round">filter_list</span> Filter</button>
+    </div>
+    
+    <div id="registersContainer"></div>
+</div>
+
+<!-- ===== COMMON REGISTER TEMPLATE VIEW ===== -->
+<div class="view" id="commonRegisterView">
+    <div class="reg-actions" style="margin-bottom: 20px;">
+        <input type="text" class="reg-search-input" placeholder="🔍 Search Entries...">
+        <button class="reg-btn reg-btn-outline"><span class="material-icons-round">filter_alt</span> Advanced Filter</button>
+        <button class="reg-btn reg-btn-outline"><span class="material-icons-round">date_range</span> Date</button>
+        
+        <div style="flex-grow: 1;"></div>
+        
+        <button class="reg-btn reg-btn-outline"><span class="material-icons-round">print</span> Print</button>
+        <button class="reg-btn reg-btn-outline"><span class="material-icons-round">picture_as_pdf</span> PDF</button>
+        <button class="reg-btn reg-btn-outline"><span class="material-icons-round">table_view</span> Excel</button>
+        <button class="reg-btn reg-btn-primary" id="btnAddNewEntry" onclick="openRegisterEntryModal()"><span class="material-icons-round">add</span> Add New Entry</button>
+    </div>
+
+    <!-- Responsive Table Container -->
+    <div class="card" style="padding: 0; overflow-x: auto;">
+        <table class="data-table" id="commonRegisterTable">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Shift</th>
+                    <th>Details</th>
+                    <th>Remarks</th>
+                    <th>Added By</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Empty State -->
+                <tr id="commonRegisterEmpty">
+                    <td colspan="7" style="text-align: center; padding: 40px;">
+                        <span class="material-icons-round" style="font-size: 48px; color: #ccc;">folder_open</span>
+                        <div style="margin-top: 10px; color: #888;">No entries found. Click 'Add New Entry' to start.</div>
+                    </td>
+                </tr>
+                <!-- Dummy Row for preview -->
+                <tr class="dummy-row" style="display:none;">
+                    <td>2026-07-08</td>
+                    <td>10:30 AM</td>
+                    <td>Shift 1</td>
+                    <td>Sample entry data...</td>
+                    <td>Normal</td>
+                    <td>Nupesh Patel</td>
+                    <td>
+                        <button class="icon-btn" title="View"><span class="material-icons-round" style="color: #1976d2; font-size:18px;">visibility</span></button>
+                        <button class="icon-btn edit-btn" title="Edit"><span class="material-icons-round" style="color: #f57c00; font-size:18px;">edit</span></button>
+                        <button class="icon-btn delete-btn" title="Delete"><span class="material-icons-round" style="color: #d32f2f; font-size:18px;">delete</span></button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; color: #666; font-size: 14px;">
+        <div>Showing 0 to 0 of 0 entries</div>
+        <div style="display: flex; gap: 8px;">
+            <button class="reg-btn reg-btn-outline" style="padding: 4px 8px;" disabled>Prev</button>
+            <button class="reg-btn reg-btn-outline" style="padding: 4px 8px;" disabled>Next</button>
+        </div>
+    </div>
 </div>
 `;
 
