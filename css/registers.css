@@ -62,45 +62,42 @@
 /* Category Tabs */
 .reg-tabs {
     display: flex;
-    gap: 12px;
+    gap: 16px;
     margin-bottom: 24px;
-    border-bottom: 1px solid var(--border-light);
-    overflow-x: auto;
     padding-bottom: 8px;
+    overflow-x: auto;
+    border-bottom: none; /* Removed old border */
 }
 
 .reg-tab {
     padding: 12px 24px;
     font-size: 15px;
     font-weight: 600;
-    color: var(--text-secondary);
-    background: transparent;
-    border: none;
-    border-radius: 8px 8px 0 0;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
     cursor: pointer;
-    position: relative;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .reg-tab:hover {
+    background: var(--surface-hover);
+    border-color: var(--primary);
     color: var(--primary);
-    background: rgba(103, 58, 183, 0.05);
 }
 
 .reg-tab.active {
-    color: var(--primary);
-}
-
-.reg-tab.active::after {
-    content: '';
-    position: absolute;
-    bottom: -9px;
-    left: 0;
-    width: 100%;
-    height: 3px;
     background: var(--primary);
-    border-radius: 3px 3px 0 0;
+    color: white;
+    font-weight: 700;
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px rgba(103, 58, 183, 0.3);
+    transform: scale(1.02);
 }
 
 /* Responsive Grid */
@@ -177,8 +174,12 @@
         gap: 8px;
     }
     .reg-tab {
-        padding: 8px 12px;
-        font-size: 13px;
+        padding: 8px;
+        font-size: 11px;
+        flex: 1;
+        white-space: normal;
+        text-align: center;
+        line-height: 1.2;
     }
 }
 
