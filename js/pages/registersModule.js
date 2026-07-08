@@ -77,9 +77,20 @@ function renderRegistersCards() {
     const container = document.getElementById('registersContainer');
     if (!container) return;
     
-    let html = `<div class="reg-grid">`;
-    registerCategories.forEach(cat => {
-        cat.items.forEach(item => {
+    // Category Tabs
+    let html = `<div class="reg-tabs">`;
+    registerCategories.forEach((cat, index) => {
+        const isActive = index === currentRegCatIndex ? 'active' : '';
+        // Extract "Operational", "Testing", "Safety" from "📝 Operational Registers"
+        let shortTitle = cat.title.split(' ')[1]; 
+        html += `<div class="reg-tab ${isActive}" onclick="switchRegisterCategory(${index})">${shortTitle}</div>`;
+    });
+    html += `</div>`;
+    
+    html += `<div class="reg-grid">`;
+    const activeCat = registerCategories[currentRegCatIndex];
+    if (activeCat && activeCat.items) {
+        activeCat.items.forEach(item => {
             html += `
                 <div class="reg-card ${item.theme} register-item" data-title="${item.title.toLowerCase()}" onclick="openCommonRegister('${item.title}')" style="cursor: pointer;">
                     <div>
@@ -94,7 +105,7 @@ function renderRegistersCards() {
                 </div>
             `;
         });
-    });
+    }
     html += `</div>`;
     
     container.innerHTML = html;
