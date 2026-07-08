@@ -539,3 +539,26 @@
         .mega-menu-item-link:hover .material-icons-round {
             color: var(--primary);
         }
+
+        /* Mobile Optimization for Manage Substation Menu */
+        @media (max-width: 600px) {
+            .ss-dashboard-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+            .ss-dashboard-card {
+                padding: 12px 4px;
+                gap: 6px;
+            }
+            .ss-dashboard-card .material-icons-round {
+                font-size: 22px;
+                padding: 8px;
+            }
+            .ss-dashboard-card .card-title {
+                font-size: 10px;
+                line-height: 1.2;
+                white-space: normal;
+                overflow: visible;
+                text-overflow: clip;
+            }
+        }
