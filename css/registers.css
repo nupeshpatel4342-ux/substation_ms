@@ -113,67 +113,6 @@
     to { opacity: 1; transform: translateY(0); }
 }
 
-@media (max-width: 1199px) {
-    .reg-grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-}
-
-@media (max-width: 991px) {
-    .reg-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-}
-
-@media (max-width: 767px) {
-    .reg-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 10px;
-    }
-    .reg-card {
-        padding: 8px 6px;
-        align-items: center;
-        text-align: center;
-    }
-    .reg-card-icon {
-        margin: 0 auto 4px auto;
-        width: 28px;
-        height: 28px;
-    }
-    .reg-card-icon .material-icons-round {
-        font-size: 16px;
-    }
-    .reg-card-title {
-        font-size: 10.5px;
-        font-weight: 600;
-        margin-bottom: 0;
-        line-height: 1.2;
-        text-align: center;
-        white-space: normal;
-    }
-    .reg-card-desc,
-    .reg-card-action {
-        display: none;
-    }
-    .reg-actions {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    .reg-search-input {
-        width: 100%;
-    }
-    .reg-tabs {
-        gap: 8px;
-    }
-    .reg-tab {
-        padding: 8px;
-        font-size: 11px;
-        flex: 1;
-        white-space: normal;
-        text-align: center;
-        line-height: 1.2;
-    }
-}
 
 /* Card Design */
 .reg-card {
@@ -263,3 +202,66 @@
 .theme-meter .reg-card-icon { background: #ede7f6; color: #673ab7; }
 .theme-shutdown .reg-card-icon { background: #fce4ec; color: #d81b60; }
 .theme-visitor .reg-card-icon { background: #eceff1; color: #455a64; }
+
+/* Responsive Overrides */
+@media (max-width: 1199px) {
+    .reg-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 991px) {
+    .reg-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 767px) {
+    .reg-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+    }
+    .reg-card {
+        padding: 8px 6px;
+        align-items: center;
+        text-align: center;
+    }
+    .reg-card-icon {
+        margin: 0 auto 4px auto;
+        width: 28px;
+        height: 28px;
+    }
+    .reg-card-icon .material-icons-round {
+        font-size: 16px;
+    }
+    .reg-card-title {
+        font-size: 10.5px;
+        font-weight: 600;
+        margin-bottom: 0;
+        line-height: 1.2;
+        text-align: center;
+        white-space: normal;
+    }
+    .reg-card-desc,
+    .reg-card-action {
+        display: none !important;
+    }
+    .reg-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .reg-search-input {
+        width: 100%;
+    }
+    .reg-tabs {
+        gap: 8px;
+    }
+    .reg-tab {
+        padding: 8px;
+        font-size: 11px;
+        flex: 1;
+        white-space: normal;
+        text-align: center;
+        line-height: 1.2;
+    }
+}
