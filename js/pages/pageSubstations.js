@@ -25,7 +25,7 @@ const pageSubstationsTemplate = `
                 </svg>
             </div>
             <div class="ss-brand-text">
-                <span class="ss-brand-name">SubstationMS</span>
+                <span class="ss-brand-name">Substation<span style="color: #7CFFCB; text-shadow: 0 0 10px rgba(124, 255, 203, 0.7), 0 0 20px rgba(124, 255, 203, 0.4);">MS</span></span>
                 <span class="ss-brand-tag">
                     <span class="ss-dot"></span>
                     Substation &amp; Power Grid Management
