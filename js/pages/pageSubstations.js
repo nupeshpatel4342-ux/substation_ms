@@ -1109,13 +1109,25 @@ const pageSubstationsTemplate = `
 <div class="form-group">
 <label class="form-label">Category *</label>
 <select class="form-input" id="eqCategory" required="">
-<option value="Transformer">Transformer</option>
-<option value="Feeder">Feeder</option>
+<option value="Power Transformer">Power Transformer</option>
+<option value="66 KV Incoming Line">66 KV Incoming Line</option>
+<option value="66 KV Outgoing Line">66 KV Outgoing Line</option>
+<option value="11 KV Feeder">11 KV Feeder</option>
 <option value="Breaker">Breaker</option>
 <option value="Isolator">Isolator</option>
-<option value="CT">Current Transformer</option>
-<option value="PT">Potential Transformer</option>
+<option value="CT/PT">CT / PT</option>
+<option value="Control Panel">Control Panel</option>
+<option value="Relay">Relay</option>
 <option value="Battery">Battery Bank</option>
+<option value="Charger">Battery Charger</option>
+<option value="Earthing">Earthing System</option>
+<option value="Auxiliary">Auxiliary</option>
+<option value="Safety">Safety / Fire Fighting</option>
+<option value="Communication">Communication</option>
+<option value="Capacitor Bank">Capacitor Bank</option>
+<option value="Lightning Arrester">Lightning Arrester</option>
+<option value="Structural">Structural</option>
+<option value="Bus Bar">Bus Bar</option>
 <option value="Other">Other</option>
 </select>
 </div>
@@ -1123,9 +1135,14 @@ const pageSubstationsTemplate = `
 <label class="form-label">Voltage Level</label>
 <select class="form-input" id="eqVoltage">
 <option value="">N/A</option>
-<option value="66KV">66 KV</option>
-<option value="11KV">11 KV</option>
-<option value="415V">415 V</option>
+<option value="66 KV">66 KV</option>
+<option value="11 KV">11 KV</option>
+<option value="66/11 KV">66/11 KV</option>
+<option value="415V AC">415V AC</option>
+<option value="230V AC">230V AC</option>
+<option value="220V DC">220V DC</option>
+<option value="110V DC">110V DC</option>
+<option value="48V DC">48V DC</option>
 </select>
 </div>
 <div class="form-group">
@@ -1155,7 +1172,8 @@ const pageSubstationsTemplate = `
 <div class="form-group">
 <label class="form-label">Status</label>
 <select class="form-input" id="eqStatus">
-<option value="In Service">In Service</option>
+<option value="Healthy">Healthy (In Service)</option>
+<option value="Faulty">Faulty</option>
 <option value="Under Maintenance">Under Maintenance</option>
 <option value="Decommissioned">Decommissioned</option>
 </select>

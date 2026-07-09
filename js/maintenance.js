@@ -1787,7 +1787,10 @@ function renderEquipmentMaster() {
                 <td>${escapeHtml(eq.manufacturer || '-')}</td>
                 <td><span style="display:inline-block; padding:4px 8px; border-radius:4px; font-size:12px; font-weight:600; color:white; background:${statusColor};">${escapeHtml(eq.status)}</span></td>
                 <td>
-                    <button class="btn btn-outline" style="padding:4px 8px; font-size:12px;" onclick="event.stopPropagation(); openEquipmentModal('${eq.id}')">Edit</button>
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn btn-outline" style="padding:4px 8px; font-size:12px;" onclick="event.stopPropagation(); openEquipmentModal('${eq.id}')">Edit</button>
+                        <button class="btn btn-outline" style="padding:4px 8px; font-size:12px; color:var(--danger); border-color:var(--danger);" onclick="event.stopPropagation(); deleteEquipment('${eq.id}')">Delete</button>
+                    </div>
                 </td>
             </tr>
         `;
@@ -1814,7 +1817,13 @@ function openEquipmentModal(eqId) {
     document.getElementById('eqSerial').value = eq ? (eq.serialNo || '') : '';
     document.getElementById('eqCapacity').value = eq ? (eq.capacity || '') : '';
     document.getElementById('eqInstallDate').value = eq ? (eq.installDate || '') : '';
-    document.getElementById('eqStatus').value = eq ? eq.status : 'In Service';
+    let currentStatus = eq ? eq.status : 'Healthy';
+    if (!['Healthy', 'In Service', 'Faulty', 'Under Maintenance', 'Decommissioned'].includes(currentStatus)) {
+        currentStatus = 'Healthy';
+    } else if (currentStatus === 'In Service') {
+        currentStatus = 'Healthy';
+    }
+    document.getElementById('eqStatus').value = currentStatus;
     document.getElementById('eqLocation').value = eq ? (eq.location || '') : '';
     document.getElementById('eqDescription').value = eq ? (eq.description || '') : '';
     
@@ -1823,6 +1832,20 @@ function openEquipmentModal(eqId) {
 
 function closeEquipmentModal() {
     document.getElementById('equipmentModal').style.display = 'none';
+}
+
+function deleteEquipment(eqId) {
+    if (confirm("Are you sure you want to delete this equipment? This action cannot be undone.")) {
+        let ssId = currentDashboardSSId;
+        let subs = loadSubstations();
+        let ss = subs.find(s => s.id === ssId);
+        
+        if (ss && ss.equipmentMaster) {
+            ss.equipmentMaster = ss.equipmentMaster.filter(e => e.id !== eqId);
+            saveSubstations(subs);
+            renderEquipmentMaster(ss.id);
+        }
+    }
 }
 
 function saveEquipment(event) {
