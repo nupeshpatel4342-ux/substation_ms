@@ -1160,7 +1160,7 @@ const pageSubstationsTemplate = `
 <!-- ===== PAGE: Equipment Profile ===== -->
 <div class="view" id="pageEquipmentProfile">
 <div class="content">
-<button class="btn btn-outline" onclick="navigateTo('equipmentMaster', currentDashboardSSId)" style="margin-bottom: 16px;">
+<button class="btn btn-outline" onclick="goBackTo('equipmentMaster', currentDashboardSSId)" style="margin-bottom: 16px;">
 <span class="material-icons-round" style="font-size:16px;">arrow_back</span> Back to Master
             </button>
 <div class="eq-profile-header">

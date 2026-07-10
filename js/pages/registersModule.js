@@ -168,43 +168,14 @@ function saveToLocalStorage() {
 
 function openCommonRegister(title) {
     if (typeof navigateTo === 'function') {
+        navigateTo('commonRegisterView', window.currentDashboardSSId || 1, title);
+    } else {
         window.currentActiveRegisterTitle = title;
-        navigateTo('commonRegisterView', window.currentDashboardSSId || 1);
-        
-        // Update Header
-        const headerTitle = document.getElementById('headerTitle');
-        const headerSubtitle = document.getElementById('headerSubtitle');
-        
-        if (headerTitle) headerTitle.textContent = title;
-        if (headerSubtitle) {
-            // Find desc
-            let desc = "Manage entries for " + title;
-            if (typeof registerCategories !== 'undefined') {
-                for (const cat of registerCategories) {
-                    const found = cat.items.find(i => i.title === title);
-                    if (found) {
-                        desc = found.desc;
-                        break;
-                    }
-                }
-            }
-            headerSubtitle.textContent = desc;
-        }
-        
-        // Setup Back Button to return to Registers View instead of ssDashboard
-        const headerBack = document.getElementById('headerBack');
-        if (headerBack) {
-            headerBack.onclick = () => {
-                navigateTo('registersView', window.currentDashboardSSId || 1);
-            };
-        }
+        renderRegisterTableEntries(title);
+        setTimeout(() => {
+            applyRolePermissions();
+        }, 500);
     }
-    
-    renderRegisterTableEntries(title);
-    
-    setTimeout(() => {
-        applyRolePermissions();
-    }, 500);
 }
 
 function renderRegisterTableEntries(title) {

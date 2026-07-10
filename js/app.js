@@ -1,7 +1,32 @@
 // ===================================================================
 //  NAVIGATION
 // ===================================================================
+let isNavigatingFromHistory = false;
+let appHistoryCount = 0;
+
+function goBackTo() {
+    if (appHistoryCount > 0) {
+        history.back();
+    } else {
+        navigateTo.apply(null, arguments);
+    }
+}
+
 function navigateTo(view, ssId) {
+    let args = Array.from(arguments);
+    
+    if (!isNavigatingFromHistory) {
+        let hashStr = '#' + args.map(encodeURIComponent).join('/');
+        if (window.location.hash !== hashStr) {
+            if (appHistoryCount === 0 && !window.location.hash) {
+                history.replaceState({ args: args, appHistoryCount: appHistoryCount }, '', hashStr);
+            } else {
+                appHistoryCount++;
+                history.pushState({ args: args, appHistoryCount: appHistoryCount }, '', hashStr);
+            }
+        }
+    }
+
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     currentView = view;
 
@@ -16,7 +41,7 @@ function navigateTo(view, ssId) {
     } else if (view === 'executiveDashboard') {
         document.getElementById('executiveDashboardView').classList.add('active');
         headerBack.style.display = 'flex';
-        headerBack.onclick = () => navigateTo('ssDashboard', currentDashboardSSId);
+        headerBack.onclick = () => goBackTo('ssDashboard', currentDashboardSSId);
         let ss = getSubstation(ssId);
         document.getElementById('headerTitle').textContent = '📊 Overview Dashboard';
         document.getElementById('headerSubtitle').textContent = ss.name;
@@ -26,16 +51,39 @@ function navigateTo(view, ssId) {
     } else if (view === 'registersView') {
         document.getElementById('registersView').classList.add('active');
         headerBack.style.display = 'flex';
-        headerBack.onclick = () => navigateTo('ssDashboard', currentDashboardSSId);
+        headerBack.onclick = () => goBackTo('ssDashboard', currentDashboardSSId);
         document.getElementById('headerTitle').textContent = 'Registers';
         document.getElementById('headerSubtitle').textContent = 'Manage Substation Registers';
     } else if (view === 'commonRegisterView') {
         document.getElementById('commonRegisterView').classList.add('active');
         headerBack.style.display = 'flex';
+        headerBack.onclick = () => goBackTo('registersView', currentDashboardSSId || ssId || 1);
+        
+        let title = arguments[2];
+        if (title) {
+            window.currentActiveRegisterTitle = title;
+            let headerTitle = document.getElementById('headerTitle');
+            let headerSubtitle = document.getElementById('headerSubtitle');
+            if (headerTitle) headerTitle.textContent = title;
+            
+            if (headerSubtitle && typeof registerCategories !== 'undefined') {
+                let desc = "Manage entries for " + title;
+                for (const cat of registerCategories) {
+                    const found = cat.items.find(i => i.title === title);
+                    if (found) { desc = found.desc; break; }
+                }
+                headerSubtitle.textContent = desc;
+            }
+            
+            if (typeof renderRegisterTableEntries === 'function') {
+                renderRegisterTableEntries(title);
+                setTimeout(() => { if (typeof applyRolePermissions === 'function') applyRolePermissions(); }, 500);
+            }
+        }
     } else if (view === 'setup') {
         document.getElementById('setupView').classList.add('active');
         headerBack.style.display = 'flex';
-        headerBack.onclick = () => navigateTo('dashboard');
+        headerBack.onclick = () => goBackTo('dashboard');
         editingSSId = ssId || null;
         if (editingSSId) {
             let ss = getSubstation(editingSSId);
@@ -49,7 +97,7 @@ function navigateTo(view, ssId) {
     } else if (view === 'ssDashboard') {
         document.getElementById('ssDashboardView').classList.add('active');
         headerBack.style.display = 'flex';
-        headerBack.onclick = () => navigateTo('dashboard');
+        headerBack.onclick = () => goBackTo('dashboard');
         currentDashboardSSId = ssId;
         let ss = getSubstation(ssId);
         document.getElementById('headerTitle').textContent = '🏠 ' + ss.name;
@@ -57,7 +105,7 @@ function navigateTo(view, ssId) {
     } else if (view === 'dms') {
         document.getElementById('dmsView').classList.add('active');
         headerBack.style.display = 'flex';
-        headerBack.onclick = () => navigateTo('ssDashboard', currentDashboardSSId);
+        headerBack.onclick = () => goBackTo('ssDashboard', currentDashboardSSId);
         currentDashboardSSId = ssId;
         let ss = getSubstation(ssId);
         document.getElementById('headerTitle').textContent = '📁 Documents (DMS)';
@@ -66,7 +114,7 @@ function navigateTo(view, ssId) {
     } else if (view === 'eventTimeline') {
         document.getElementById('eventTimelineView').classList.add('active');
         headerBack.style.display = 'flex';
-        headerBack.onclick = () => navigateTo('ssDashboard', currentDashboardSSId);
+        headerBack.onclick = () => goBackTo('ssDashboard', currentDashboardSSId);
         document.getElementById('headerTitle').textContent = '🕒 Event Timeline';
         let now = new Date();
         document.getElementById('timelineMonthFilter').value = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
@@ -74,7 +122,7 @@ function navigateTo(view, ssId) {
     } else if (view === 'report') {
         document.getElementById('reportView').classList.add('active');
         headerBack.style.display = 'flex';
-        headerBack.onclick = () => navigateTo('ssDashboard', currentDashboardSSId);
+        headerBack.onclick = () => goBackTo('ssDashboard', currentDashboardSSId);
         reportSSId = ssId;
         let ss = getSubstation(ssId);
         document.getElementById('headerTitle').textContent = '📊 ' + ss.name;
@@ -83,7 +131,7 @@ function navigateTo(view, ssId) {
     } else if (view === 'photoReport') {
         document.getElementById('photoReportView').classList.add('active');
         headerBack.style.display = 'flex';
-        headerBack.onclick = () => navigateTo('ssDashboard', currentDashboardSSId);
+        headerBack.onclick = () => goBackTo('ssDashboard', currentDashboardSSId);
         currentDashboardSSId = ssId;
         let ss = getSubstation(ssId);
         document.getElementById('headerTitle').textContent = '📷 Photo Report';
@@ -92,7 +140,7 @@ function navigateTo(view, ssId) {
     } else if (view === 'faultRegister') {
         document.getElementById('faultRegisterView').classList.add('active');
         headerBack.style.display = 'flex';
-        headerBack.onclick = () => navigateTo('ssDashboard', currentDashboardSSId);
+        headerBack.onclick = () => goBackTo('ssDashboard', currentDashboardSSId);
         currentDashboardSSId = ssId;
         let ss = getSubstation(ssId);
         document.getElementById('headerTitle').textContent = '🚨 Fault Register';
@@ -101,7 +149,7 @@ function navigateTo(view, ssId) {
     } else if (view === 'trippingRegister') {
         document.getElementById('trippingRegisterView').classList.add('active');
         headerBack.style.display = 'flex';
-        headerBack.onclick = () => navigateTo('ssDashboard', currentDashboardSSId);
+        headerBack.onclick = () => goBackTo('ssDashboard', currentDashboardSSId);
         currentDashboardSSId = ssId;
         let ss = getSubstation(ssId);
         document.getElementById('headerTitle').textContent = '⚡ Tripping Calculations';
@@ -113,7 +161,7 @@ function navigateTo(view, ssId) {
     } else if (view === 'breakdownRegister') {
         document.getElementById('breakdownRegisterView').classList.add('active');
         headerBack.style.display = 'flex';
-        headerBack.onclick = () => navigateTo('ssDashboard', currentDashboardSSId);
+        headerBack.onclick = () => goBackTo('ssDashboard', currentDashboardSSId);
         currentDashboardSSId = ssId;
         let ss = getSubstation(ssId);
         document.getElementById('headerTitle').textContent = '🛠️ Breakdown Reports';
@@ -125,7 +173,7 @@ function navigateTo(view, ssId) {
     } else if (view === 'maintenanceRegister') {
         document.getElementById('maintenanceRegisterView').classList.add('active');
         headerBack.style.display = 'flex';
-        headerBack.onclick = () => navigateTo('ssDashboard', currentDashboardSSId);
+        headerBack.onclick = () => goBackTo('ssDashboard', currentDashboardSSId);
         currentDashboardSSId = ssId;
         let ss = getSubstation(ssId);
         document.getElementById('headerTitle').textContent = '🛠️ Maintenance Register';
@@ -137,7 +185,7 @@ function navigateTo(view, ssId) {
     } else if (view === 'equipmentMaster') {
         document.getElementById('pageEquipmentMaster').classList.add('active');
         headerBack.style.display = 'flex';
-        headerBack.onclick = () => navigateTo('ssDashboard', currentDashboardSSId);
+        headerBack.onclick = () => goBackTo('ssDashboard', currentDashboardSSId);
         currentDashboardSSId = ssId;
         let ss = getSubstation(ssId);
         document.getElementById('headerTitle').textContent = '⚙️ Equipment Master';
@@ -146,7 +194,7 @@ function navigateTo(view, ssId) {
     } else if (view === 'equipmentProfile') {
         document.getElementById('pageEquipmentProfile').classList.add('active');
         headerBack.style.display = 'flex';
-        headerBack.onclick = () => navigateTo('equipmentMaster', currentDashboardSSId);
+        headerBack.onclick = () => goBackTo('equipmentMaster', currentDashboardSSId);
         let eqId = arguments[2];
         let ss = getSubstation(ssId);
         document.getElementById('headerTitle').textContent = '📄 Equipment Profile';
@@ -291,15 +339,39 @@ function showToast(msg) {
     setTimeout(() => toast.classList.remove('show'), 2500);
 }
 
-// ===================================================================
-//  INIT
-// ===================================================================
+// ===== INIT & POPSTATE =====
+window.addEventListener('popstate', (event) => {
+    isNavigatingFromHistory = true;
+    if (event.state && event.state.args) {
+        appHistoryCount = event.state.appHistoryCount || 0;
+        setActiveMenu('substations', false); // Ensure UI is in substations mode
+        navigateTo.apply(null, event.state.args);
+    } else if (window.location.hash) {
+        let hash = window.location.hash.substring(1);
+        if (hash) {
+            let args = hash.split('/').map(decodeURIComponent);
+            setActiveMenu('substations', false);
+            navigateTo.apply(null, args);
+        }
+    }
+    isNavigatingFromHistory = false;
+});
+
 document.addEventListener('DOMContentLoaded', () => {
-    setActiveMenu('substations');
+    if (window.location.hash && window.location.hash.length > 1) {
+        let hash = window.location.hash.substring(1);
+        let args = hash.split('/').map(decodeURIComponent);
+        isNavigatingFromHistory = true;
+        setActiveMenu('substations', false);
+        navigateTo.apply(null, args);
+        isNavigatingFromHistory = false;
+    } else {
+        setActiveMenu('substations', true);
+    }
 });
 
 // ===== NAVBAR - Page Navigation =====
-function setActiveMenu(page) {
+function setActiveMenu(page, initNav = true) {
     // Update nav menu active states
     document.querySelectorAll('.nav-menu-item').forEach(item => {
         item.classList.toggle('active', item.dataset.page === page);
@@ -312,10 +384,14 @@ function setActiveMenu(page) {
     
     // Inject respective page template
     if (page === 'substations') {
-        mainContent.innerHTML = pageSubstationsTemplate;
+        if (!document.getElementById('pageSubstations')) {
+            mainContent.innerHTML = pageSubstationsTemplate;
+        }
         document.getElementById('pageSubstations').style.display = 'block';
         document.getElementById('pageSubstations').classList.add('active');
-        navigateTo('dashboard'); // Initialize substation dashboard
+        if (initNav) {
+            navigateTo('dashboard'); // Initialize substation dashboard
+        }
 
     } else if (page === 'settings') {
         mainContent.innerHTML = pageSettingsTemplate;
@@ -324,8 +400,10 @@ function setActiveMenu(page) {
     }
 
     // Explicitly hide drawer if open
-    document.getElementById('navDrawer').classList.remove('active');
-    document.getElementById('navOverlay').classList.remove('active');
+    const navDrawerEl = document.getElementById('navDrawer');
+    if (navDrawerEl) navDrawerEl.classList.remove('active');
+    const navOverlayEl = document.getElementById('navOverlay');
+    if (navOverlayEl) navOverlayEl.classList.remove('active');
 
     window.scrollTo(0, 0);
 }
@@ -342,13 +420,13 @@ const navOverlay = document.getElementById('navOverlay');
 const drawerCloseBtn = document.getElementById('drawerClose');
 
 function openDrawer() {
-    drawer.classList.add('open');
-    navOverlay.classList.add('show');
+    if (drawer) drawer.classList.add('open');
+    if (navOverlay) navOverlay.classList.add('show');
     document.body.style.overflow = 'hidden';
 }
 function closeDrawer() {
-    drawer.classList.remove('open');
-    navOverlay.classList.remove('show');
+    if (drawer) drawer.classList.remove('open');
+    if (navOverlay) navOverlay.classList.remove('show');
     document.body.style.overflow = '';
 }
 
