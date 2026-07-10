@@ -32,23 +32,28 @@ function renderAssetLifecycleDashboard() {
     let kpiHtml = `
         <div class="alc-kpi-grid">
             <div class="alc-kpi-card">
+                <span class="alc-kpi-icon"><span class="material-icons-round">inventory_2</span></span>
                 <div class="alc-kpi-value">${totalAssets}</div>
                 <div class="alc-kpi-label">Total Assets</div>
             </div>
             <div class="alc-kpi-card healthy">
-                <div class="alc-kpi-value" style="color:var(--success-color)">${healthyCount}</div>
+                <span class="alc-kpi-icon"><span class="material-icons-round">verified</span></span>
+                <div class="alc-kpi-value">${healthyCount}</div>
                 <div class="alc-kpi-label">Healthy Assets</div>
             </div>
             <div class="alc-kpi-card maintenance">
-                <div class="alc-kpi-value" style="color:var(--warning-color)">${maintenanceCount}</div>
+                <span class="alc-kpi-icon"><span class="material-icons-round">build_circle</span></span>
+                <div class="alc-kpi-value">${maintenanceCount}</div>
                 <div class="alc-kpi-label">Under Maintenance</div>
             </div>
             <div class="alc-kpi-card warning">
-                <div class="alc-kpi-value" style="color:#ff9800">${warningCount}</div>
-                <div class="alc-kpi-label">Warning / End of Life</div>
+                <span class="alc-kpi-icon"><span class="material-icons-round">report_problem</span></span>
+                <div class="alc-kpi-value">${warningCount}</div>
+                <div class="alc-kpi-label">Warning / EOL</div>
             </div>
             <div class="alc-kpi-card failed">
-                <div class="alc-kpi-value" style="color:var(--danger-color)">${failedCount}</div>
+                <span class="alc-kpi-icon"><span class="material-icons-round">dangerous</span></span>
+                <div class="alc-kpi-value">${failedCount}</div>
                 <div class="alc-kpi-label">Failed Equipment</div>
             </div>
         </div>
@@ -73,12 +78,12 @@ function renderAssetLifecycleDashboard() {
             </div>
         </div>
         <div class="table-responsive">
-            <table class="data-table">
+            <table class="data-table alc-mobile-table">
                 <thead>
                     <tr>
                         <th>Asset ID</th>
                         <th>Equipment Name</th>
-                        <th>Type</th>
+                        <th>Category</th>
                         <th>Bay</th>
                         <th>Health Status</th>
                         <th>Actions</th>
@@ -87,12 +92,12 @@ function renderAssetLifecycleDashboard() {
                 <tbody id="alcTableBody">
                     ${eqMaster.map(eq => `
                         <tr class="alc-row" data-status="${eq.healthStatus}" data-name="${(eq.name || '').toLowerCase()}">
-                            <td>${eq.id}</td>
-                            <td style="font-weight:600">${eq.name || 'N/A'}</td>
-                            <td>${eq.type || 'N/A'}</td>
-                            <td>${eq.bayNumber || 'N/A'}</td>
-                            <td><span class="alc-badge alc-badge-${getBadgeColor(eq.healthStatus)}">${eq.healthStatus}</span></td>
-                            <td>
+                            <td data-label="Asset ID">${eq.id}</td>
+                            <td data-label="Equipment" style="font-weight:600">${eq.name || 'N/A'}</td>
+                            <td data-label="Category">${eq.category || 'N/A'}</td>
+                            <td data-label="Bay">${eq.bayNumber || 'N/A'}</td>
+                            <td data-label="Status"><span class="alc-badge alc-badge-${getBadgeColor(eq.healthStatus)}">${eq.healthStatus}</span></td>
+                            <td data-label="Action">
                                 <button class="btn btn-primary" style="padding:4px 8px; font-size:12px;" onclick="navigateTo('assetLifecycleProfile', '${ss.id}', '${eq.id}')">View Profile</button>
                             </td>
                         </tr>
@@ -147,7 +152,7 @@ function renderAssetLifecycleProfile(eqId) {
                 </div>
                 <div>
                     <div class="alc-profile-name">${eq.name || 'Unknown Equipment'}</div>
-                    <div class="alc-profile-sub">Asset ID: ${eq.id} | Type: ${eq.type || 'Generic'}</div>
+                    <div class="alc-profile-sub">Asset ID: ${eq.id} &nbsp;|&nbsp; ${eq.category || 'Equipment'} &nbsp;|&nbsp; ${eq.voltageLevel || ''}</div>
                 </div>
             </div>
             <div class="alc-health-score">
@@ -169,18 +174,18 @@ function renderAssetLifecycleProfile(eqId) {
             <div class="alc-info-grid">
                 <div class="alc-info-section">
                     <h3>Technical Details</h3>
-                    <div class="alc-kv-pair"><span class="alc-kv-key">Equipment Type</span><span class="alc-kv-val">${eq.type || '-'}</span></div>
-                    <div class="alc-kv-pair"><span class="alc-kv-key">Manufacturer</span><span class="alc-kv-val">${eq.manufacturer || 'ABB Ltd.'}</span></div>
-                    <div class="alc-kv-pair"><span class="alc-kv-key">Model Number</span><span class="alc-kv-val">MDL-${Math.floor(Math.random()*10000)}</span></div>
-                    <div class="alc-kv-pair"><span class="alc-kv-key">Serial Number</span><span class="alc-kv-val">SN-${Math.floor(Math.random()*1000000)}</span></div>
-                    <div class="alc-kv-pair"><span class="alc-kv-key">Voltage Level</span><span class="alc-kv-val">${eq.voltage || '66 KV'}</span></div>
+                    <div class="alc-kv-pair"><span class="alc-kv-key">Category</span><span class="alc-kv-val">${eq.category || '-'}</span></div>
+                    <div class="alc-kv-pair"><span class="alc-kv-key">Manufacturer</span><span class="alc-kv-val">${eq.manufacturer || '-'}</span></div>
+                    <div class="alc-kv-pair"><span class="alc-kv-key">Model Number</span><span class="alc-kv-val">${eq.model || '-'}</span></div>
+                    <div class="alc-kv-pair"><span class="alc-kv-key">Serial Number</span><span class="alc-kv-val">${eq.serialNo || '-'}</span></div>
+                    <div class="alc-kv-pair"><span class="alc-kv-key">Voltage Level</span><span class="alc-kv-val">${eq.voltageLevel || '-'}</span></div>
                 </div>
                 <div class="alc-info-section">
                     <h3>Installation & Lifecycle</h3>
                     <div class="alc-kv-pair"><span class="alc-kv-key">Location / Bay</span><span class="alc-kv-val">${eq.bayNumber || 'Switchyard'}</span></div>
-                    <div class="alc-kv-pair"><span class="alc-kv-key">Installation Date</span><span class="alc-kv-val">2018-05-12</span></div>
-                    <div class="alc-kv-pair"><span class="alc-kv-key">Commissioning Date</span><span class="alc-kv-val">2018-06-01</span></div>
-                    <div class="alc-kv-pair"><span class="alc-kv-key">Warranty Expiry</span><span class="alc-kv-val">2028-06-01</span></div>
+                    <div class="alc-kv-pair"><span class="alc-kv-key">Installation Date</span><span class="alc-kv-val">${eq.installDate || '-'}</span></div>
+                    <div class="alc-kv-pair"><span class="alc-kv-key">Capacity / Rating</span><span class="alc-kv-val">${eq.capacity || '-'}</span></div>
+                    <div class="alc-kv-pair"><span class="alc-kv-key">Current Status</span><span class="alc-kv-val">${eq.status || 'Healthy'}</span></div>
                     <div class="alc-kv-pair"><span class="alc-kv-key">Expected Life</span><span class="alc-kv-val">25 Years</span></div>
                 </div>
                 <div class="alc-info-section">
