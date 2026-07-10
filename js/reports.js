@@ -697,11 +697,11 @@ function exportPDF() {
     `;
 
     // Hide main app views temporarily
-    let appHeader = document.getElementById('appHeader');
+    let appHeader = document.getElementById('appHeader') || document.getElementById('shHeader');
     let content = document.querySelector('.content');
     
-    appHeader.style.display = 'none';
-    content.style.display = 'none';
+    if (appHeader) appHeader.style.display = 'none';
+    if (content) content.style.display = 'none';
 
     document.body.appendChild(pdfContainer);
 
@@ -744,14 +744,14 @@ function exportPDF() {
         }).save().then(() => {
             // Restore main view
             document.body.removeChild(pdfContainer);
-            appHeader.style.display = '';
-            content.style.display = '';
+            if (appHeader) appHeader.style.display = '';
+            if (content) content.style.display = '';
             showToast('📄 PDF downloaded!');
         }).catch(err => {
             console.error(err);
             document.body.removeChild(pdfContainer);
-            appHeader.style.display = '';
-            content.style.display = '';
+            if (appHeader) appHeader.style.display = '';
+            if (content) content.style.display = '';
             showToast('❌ PDF Generation Failed');
         });
     }, 150);

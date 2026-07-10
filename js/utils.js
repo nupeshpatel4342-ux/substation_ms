@@ -370,3 +370,103 @@ let reportSSId = null;       // which SS is open in report view
 let currentDashboardSSId = null; // which SS is open in SS dashboard
 let edTimeInterval = null;
 
+// ===================================================================
+//  HEADER SLD LOGIC
+// ===================================================================
+document.addEventListener("DOMContentLoaded", () => {
+    const header = document.getElementById("shHeader");
+    const seam = document.getElementById("shSeam");
+    const sldWrap = document.getElementById("shSldWrap");
+    const lever = document.getElementById("shLever");
+    const leverLine = document.getElementById("shLeverLine");
+
+    if (!header || !lever) return;
+
+    const NAMEPLATE_HEIGHT = 128;
+    const LEVER_BLEED = 18;
+
+    let reveal = 0;
+    let dragging = false;
+    let startY = 0;
+    let startReveal = 0;
+    let moved = 0;
+    let isOpen = false;
+
+    function getMaxReveal() {
+        const inner = sldWrap.querySelector('.sh-sld');
+        // add a little extra padding at the bottom (20px) to ensure it's not flush
+        return inner ? inner.offsetHeight + 20 : 300;
+    }
+
+    function updateStyles(isDragging) {
+        header.style.transitionDuration = isDragging ? "0ms" : "480ms";
+        header.style.height = `${NAMEPLATE_HEIGHT + reveal + LEVER_BLEED}px`;
+        
+        seam.style.top = `${NAMEPLATE_HEIGHT + reveal}px`;
+        
+        sldWrap.style.top = `${NAMEPLATE_HEIGHT}px`;
+        sldWrap.style.height = `${reveal}px`;
+
+        const maxR = getMaxReveal();
+        const progress = Math.min(reveal / (maxR || 300), 1);
+        const leverAngle = progress * 78;
+
+        leverLine.style.transformOrigin = "9px 9px";
+        leverLine.style.transform = `rotate(-${leverAngle}deg)`;
+        leverLine.style.transition = isDragging ? "none" : "transform 0.48s cubic-bezier(0.65,0,0.35,1)";
+        
+        if (isDragging) {
+            lever.classList.add('is-dragging');
+        } else {
+            lever.classList.remove('is-dragging');
+        }
+    }
+
+    function clamp(v, min, max) {
+        return Math.max(min, Math.min(max, v));
+    }
+
+    lever.addEventListener("pointerdown", (e) => {
+        dragging = true;
+        startY = e.clientY;
+        startReveal = reveal;
+        moved = 0;
+        lever.setPointerCapture(e.pointerId);
+        updateStyles(true);
+    });
+
+    lever.addEventListener("pointermove", (e) => {
+        if (!dragging) return;
+        const delta = e.clientY - startY;
+        moved = Math.max(moved, Math.abs(delta));
+        reveal = clamp(startReveal + delta, 0, getMaxReveal());
+        updateStyles(true);
+    });
+
+    function endDrag() {
+        if (!dragging) return;
+        dragging = false;
+        const maxR = getMaxReveal();
+        if (moved < 6) {
+            // It was a click/tap
+            isOpen = !isOpen;
+            reveal = isOpen ? maxR : 0;
+        } else {
+            // It was a drag
+            if (reveal > maxR / 2) {
+                reveal = maxR;
+                isOpen = true;
+            } else {
+                reveal = 0;
+                isOpen = false;
+            }
+        }
+        updateStyles(false);
+    }
+
+    lever.addEventListener("pointerup", endDrag);
+    lever.addEventListener("pointercancel", endDrag);
+
+    updateStyles(false);
+});
+

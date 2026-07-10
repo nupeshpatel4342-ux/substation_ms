@@ -171,82 +171,125 @@
             vertical-align: middle;
         }
 
-        /* ===== TOP NAVIGATION BAR ===== */
-        .top-nav {
-            display: none !important;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            background: var(--surface);
-            height: var(--nav-height);
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
-            border-bottom: 1px solid var(--border);
-            box-shadow: var(--shadow-sm);
-            gap: 8px;
-            transition: box-shadow var(--transition);
-        }
-        .top-nav.scrolled {
-            box-shadow: var(--shadow-md);
+        /* ===== SH HEADER (REPLACED TOP NAV) ===== */
+        .sh-header {
+          position: relative;
+          overflow: hidden;
+          padding: 0;
+          transition-property: height;
+          transition-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+          background: linear-gradient(120deg, #0b3d91 0%, #1462b0 45%, #0e8f8a 100%);
+          font-family: 'Inter', sans-serif;
+          width: 100%;
+          z-index: 1000;
         }
 
-        /* === LEFT: Logo & Brand === */
-        .nav-brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-            flex-shrink: 0;
-            padding: 6px 8px 6px 4px;
-            border-radius: var(--radius-sm);
-            transition: background var(--transition);
-            cursor: pointer;
+        .sh-grid {
+          position: absolute; inset: 0;
+          background-image:
+            repeating-linear-gradient(90deg, rgba(255,255,255,0.045) 0 1px, transparent 1px 44px),
+            repeating-linear-gradient(0deg, rgba(255,255,255,0.045) 0 1px, transparent 1px 44px);
+          animation: shGridDrift 20s linear infinite;
         }
-        .nav-brand:hover {
-            background: var(--primary-hover);
-        }
-        .nav-brand-logo {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);
-            border-radius: var(--radius-sm);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 20px;
-            box-shadow: 0 2px 8px rgba(21,101,192,0.3);
-        }
-        .nav-brand-text {
-            font-size: 17px;
-            font-weight: 800;
-            color: var(--on-surface);
-            letter-spacing: -0.03em;
-        }
-        .nav-brand-text span {
-            color: var(--primary);
+        @keyframes shGridDrift {
+          0% { background-position: 0 0, 0 0; }
+          100% { background-position: 44px 44px, 44px 44px; }
         }
 
-        /* === Hamburger Button (Mobile) === */
-        .nav-hamburger {
-            display: none;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            border: none;
-            background: transparent;
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            color: var(--on-surface-secondary);
-            font-size: 24px;
-            transition: all var(--transition);
-            flex-shrink: 0;
+        .sh-glow {
+          position: absolute; width: 260px; height: 260px; border-radius: 50%;
+          top: -120px; right: -60px;
+          background: radial-gradient(circle, rgba(0,230,172,0.22) 0%, transparent 70%);
+          animation: shBreathe 6s ease-in-out infinite;
         }
-        .nav-hamburger:hover {
-            background: var(--surface-variant);
-            color: var(--on-surface);
+        @keyframes shBreathe { 0%,100% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.08); } }
+
+        .sh-busline {
+          position: absolute; left: 0; right: 0; height: 1px;
+          background: linear-gradient(90deg, transparent, rgba(0,230,172,0.55), transparent);
+          background-size: 70px 100%;
+          animation: shBusFlow 3.2s linear infinite;
+          opacity: 0.5;
+        }
+        .sh-busline.b1 { top: 42px; animation-duration: 3.6s; }
+        .sh-busline.b2 { top: 96px; animation-duration: 2.8s; animation-delay: 0.8s; }
+        @keyframes shBusFlow { 0% { background-position: -70px 0; } 100% { background-position: 500px 0; } }
+
+        .sh-nameplate {
+          position: relative; z-index: 3;
+          display: flex; align-items: center; gap: 12px;
+          padding: 18px 18px 20px;
+          height: 108px; /* 128 - 20 */
+          box-sizing: border-box;
+        }
+        .sh-mark {
+          position: relative; flex-shrink: 0;
+          width: 42px; height: 42px; border-radius: 10px;
+          background: linear-gradient(135deg, #ffffff 0%, #cfe8ff 100%);
+          display: flex; align-items: center; justify-content: center;
+          box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+        }
+        .sh-mark svg { width: 22px; height: 22px; }
+        .sh-mark-ring {
+          position: absolute; inset: -4px; border-radius: 14px;
+          border: 1.5px solid rgba(124,255,203,0.75);
+          opacity: 0; animation: shRing 2.4s ease-out infinite;
+        }
+        @keyframes shRing { 0% { opacity: 0.6; transform: scale(0.88); } 70%,100% { opacity: 0; transform: scale(1.3); } }
+
+        .sh-id { display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1; }
+        .sh-name {
+          font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+          font-size: 20px; color: #eef6f9; letter-spacing: 0.2px;
+        }
+        .sh-tagline {
+          font-family: 'IBM Plex Mono', monospace; font-weight: 500;
+          font-size: 9px; letter-spacing: 1px; color: rgba(238,246,249,0.55);
+          white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .sh-user {
+          flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%;
+          background: linear-gradient(135deg, #6d5bd0, #4c3fb0);
+          color: #eef6f9; font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 12px;
+          display: flex; align-items: center; justify-content: center;
+          border: 1.5px solid rgba(238,246,249,0.35);
+        }
+
+        .sh-seam {
+          position: absolute; left: 0; right: 0; z-index: 5;
+          transform: translateY(-50%);
+          transition: top 0.48s cubic-bezier(0.65,0,0.35,1);
+        }
+        .sh-hazard {
+          height: 5px;
+          background: repeating-linear-gradient(-45deg, #f2b705 0 8px, #08202f 8px 16px);
+          opacity: 0.9;
+        }
+        .sh-lever {
+          position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+          display: flex; align-items: center; justify-content: center;
+          width: 74px; height: 26px;
+          background: #eef6f9;
+          border-radius: 999px;
+          box-shadow: 0 3px 10px rgba(0,0,0,0.35);
+          cursor: grab; touch-action: none;
+        }
+        .sh-lever.is-dragging { cursor: grabbing; box-shadow: 0 5px 14px rgba(0,0,0,0.45); }
+
+        .sh-sld-wrap { position: absolute; left: 0; right: 0; overflow: hidden; z-index: 2; }
+        .sh-sld { width: 100%; padding: 6px 14px 0; box-sizing: border-box; }
+        .sh-sld svg { width: 100%; height: auto; display: block; max-width: 500px; margin: 0 auto; }
+
+        .sh-flow { stroke-dasharray: 5 6; animation: shDash 1.1s linear infinite; }
+        .sh-flow.sh-slow { animation-duration: 1.5s; }
+        @keyframes shDash { to { stroke-dashoffset: -110; } }
+
+        .sh-lbl { font-family: 'IBM Plex Mono', monospace; font-size: 7px; font-weight: 600; fill: rgba(238,246,249,0.9); letter-spacing: 0.2px; }
+        .sh-lbl-mini { font-family: 'IBM Plex Mono', monospace; font-size: 6px; font-weight: 500; fill: rgba(238,246,249,0.55); letter-spacing: 0.2px; }
+        .sh-lbl-bus { font-family: 'Space Grotesk', sans-serif; font-size: 8.5px; font-weight: 700; fill: #f2b705; }
+
+        @media (prefers-reduced-motion: reduce) {
+          .sh-grid, .sh-glow, .sh-busline, .sh-mark-ring, .sh-flow { animation: none !important; }
         }
 
         /* === CENTER: Navigation Menu === */

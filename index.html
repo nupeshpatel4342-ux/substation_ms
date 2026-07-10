@@ -11,7 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&amp;display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <link href="css/variables.css" rel="stylesheet"/>
-<link href="css/base.css?v=5" rel="stylesheet"/>
+<link href="css/base.css?v=6" rel="stylesheet"/>
 <link href="css/forms.css?v=2" rel="stylesheet"/>
 <link href="css/dashboard.css?v=10" rel="stylesheet"/>
 <link href="css/reports.css" rel="stylesheet"/>
@@ -21,174 +21,156 @@
 
 </head>
 <body>
-<!-- ===== TOP NAVIGATION BAR ===== -->
-<nav class="top-nav" id="topNav">
-<!-- Hamburger (Mobile Only) -->
-<button aria-label="Open menu" class="nav-hamburger" id="navHamburger">
-<span class="material-icons-round">menu</span>
-</button>
-<!-- Brand / Logo -->
-<a class="nav-brand" href="#" onclick="setActiveMenu('substations')">
-<div class="nav-brand-logo">
-<span class="material-icons-round">bolt</span>
-</div>
-<div class="nav-brand-text">Substation<span>MS</span></div>
-</a>
-<!-- Center Navigation Menu -->
-<div class="nav-menu" id="navMenu">
-<button class="nav-menu-item active" data-page="substations" onclick="setActiveMenu('substations')">
-<span class="material-icons-round">domain</span>
-<span>Substations</span>
-</button>
+<!-- ===== NEW HEADER ===== -->
+<header class="sh-header" id="shHeader">
+  <!-- ambient background — always running -->
+  <div class="sh-grid"></div>
+  <div class="sh-glow"></div>
+  <div class="sh-busline b1"></div>
+  <div class="sh-busline b2"></div>
 
-</div>
-<!-- Right Actions -->
-<div class="nav-actions">
-<!-- Search Bar -->
-<div class="nav-search">
-<input autocomplete="off" class="nav-search-input" id="globalSearch" placeholder="Search..." type="text"/>
-<span class="material-icons-round nav-search-icon">search</span>
-<span class="search-shortcut">⌘K</span>
-</div>
-<!-- Notification Bell -->
-<div style="position:relative;">
-<button aria-label="Notifications" class="nav-icon-btn" data-tooltip="Notifications" id="notifBtn">
-<span class="material-icons-round">notifications_none</span>
-<span class="nav-badge" id="notifBadge">3</span>
-</button>
-<!-- Notification Dropdown Panel -->
-<div class="notification-panel" id="notifPanel">
-<div class="notif-header">
-<h3>Notifications</h3>
-<button class="notif-mark-read" onclick="markAllRead()">Mark all read</button>
-</div>
-<div class="notif-list">
-<div class="notif-item unread">
-<div class="notif-icon alert">
-<span class="material-icons-round">warning</span>
-</div>
-<div class="notif-content">
-<div class="notif-title">Transformer Overload Alert</div>
-<div class="notif-desc">Halvad-3 T1 load exceeded 95% threshold at 14:32</div>
-<div class="notif-time">2 minutes ago</div>
-</div>
-<div class="notif-dot"></div>
-</div>
-<div class="notif-item unread">
-<div class="notif-icon info">
-<span class="material-icons-round">description</span>
-</div>
-<div class="notif-content">
-<div class="notif-title">Monthly Report Generated</div>
-<div class="notif-desc">June 2026 report for Dhrangadhra SS is ready for review</div>
-<div class="notif-time">1 hour ago</div>
-</div>
-<div class="notif-dot"></div>
-</div>
-<div class="notif-item unread">
-<div class="notif-icon success">
-<span class="material-icons-round">check_circle</span>
-</div>
-<div class="notif-content">
-<div class="notif-title">Maintenance Completed</div>
-<div class="notif-desc">Scheduled maintenance on Chotila SS breaker completed</div>
-<div class="notif-time">3 hours ago</div>
-</div>
-<div class="notif-dot"></div>
-</div>
-<div class="notif-item">
-<div class="notif-icon warning">
-<span class="material-icons-round">update</span>
-</div>
-<div class="notif-content">
-<div class="notif-title">System Update Available</div>
-<div class="notif-desc">Version 2.4.1 is ready. Includes new reporting features.</div>
-<div class="notif-time">Yesterday</div>
-</div>
-</div>
-</div>
-<div class="notif-footer">
-<a href="#">View all notifications</a>
-</div>
-</div>
-</div>
-<div class="nav-divider"></div>
-<!-- Profile -->
-<button aria-label="User profile" class="nav-profile" id="navProfile">
-<div class="nav-profile-avatar">NP</div>
-<div class="nav-profile-info">
-<div class="nav-profile-name">Nupesh Patel</div>
-<div class="nav-profile-role">Administrator</div>
-</div>
-<span class="material-icons-round nav-profile-arrow">expand_more</span>
-<!-- Profile Dropdown -->
-<div class="profile-dropdown" id="profileDropdown">
-<div class="dropdown-header">
-<div class="dropdown-header-avatar">NP</div>
-<div class="dropdown-header-info">
-<div class="dropdown-header-name">Nupesh Patel</div>
-<div class="dropdown-header-email">nupesh@substationms.in</div>
-</div>
-</div>
-<div class="dropdown-items">
-<a class="dropdown-item" href="#">
-<span class="material-icons-round">person</span>
-                            My Profile
-                        </a>
-<a class="dropdown-item" href="#">
-<span class="material-icons-round">lock</span>
-                            Change Password
-                        </a>
-<a class="dropdown-item" data-page="settings" onclick="setActiveMenu('settings')">
-<span class="material-icons-round">settings</span>
-                            Settings
-                        </a>
-<div class="dropdown-divider"></div>
-<a class="dropdown-item danger" href="#">
-<span class="material-icons-round">logout</span>
-                            Logout
-                        </a>
-</div>
-</div>
-</button>
-</div>
-</nav>
-<!-- ===== MOBILE OVERLAY ===== -->
-<div class="nav-overlay" id="navOverlay"></div>
-<!-- ===== MOBILE DRAWER ===== -->
-<div class="nav-drawer" id="navDrawer">
-<div class="drawer-header">
-<div class="drawer-brand">
-<div class="drawer-brand-logo">
-<span class="material-icons-round">bolt</span>
-</div>
-<div class="drawer-brand-text">Substation<span>MS</span></div>
-</div>
-<button aria-label="Close menu" class="drawer-close" id="drawerClose">
-<span class="material-icons-round">close</span>
-</button>
-</div>
-<div class="drawer-menu">
-<a class="drawer-menu-item active" data-page="substations" onclick="setActiveDrawer('substations')">
-<span class="material-icons-round">domain</span>
-                Substations
-            </a>
+  <!-- nameplate -->
+  <div class="sh-nameplate">
+    <button class="header-back" id="headerBack" onclick="navigateTo('dashboard')" style="display:none; flex-shrink:0; align-items:center; justify-content:center; width: 36px; height: 36px; border-radius: 8px; border: none; background: rgba(255,255,255,0.1); color: #fff; cursor: pointer; font-size: 20px; transition: background 0.2s;">
+        <span class="material-icons-round" style="font-size: 20px;">arrow_back</span>
+    </button>
+    <div class="sh-mark">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z" fill="#0b3d91" />
+      </svg>
+      <span class="sh-mark-ring"></span>
+    </div>
+    <div class="sh-id">
+      <span class="sh-name">Substation<span style="color: #00e6ac; font-weight: 900; text-shadow: 0 0 8px rgba(0,230,172,0.6);">MS</span></span>
+      <span class="sh-tagline">SUBSTATION &amp; POWER GRID MANAGEMENT</span>
+      <span id="headerTitle" style="display:none;"></span>
+      <span id="headerSubtitle" style="display:none;"></span>
+    </div>
+    <div class="sh-user">NP</div>
+  </div>
 
-<div class="drawer-divider"></div>
-<a class="drawer-menu-item" href="#">
-<span class="material-icons-round">help_outline</span>
-                Help &amp; Support
-            </a>
-</div>
-<div class="drawer-footer">
-<div class="drawer-footer-avatar">NP</div>
-<div class="drawer-footer-info">
-<div class="drawer-footer-name">Nupesh Patel</div>
-<div class="drawer-footer-role">Administrator</div>
-</div>
-<span class="material-icons-round" style="color: var(--on-surface-tertiary); cursor: pointer;">more_vert</span>
-</div>
-</div><main id="main-content"></main>
+  <!-- hazard seam + isolator-lever control -->
+  <div class="sh-seam" id="shSeam">
+    <div class="sh-hazard"></div>
+    <div
+      class="sh-lever"
+      id="shLever"
+      role="button"
+      aria-label="Open single line diagram"
+    >
+      <svg viewBox="0 0 48 18" width="48" height="18">
+        <circle cx="9" cy="9" r="2.4" fill="#08202f" />
+        <circle cx="39" cy="9" r="2.4" fill="#08202f" />
+        <line
+          id="shLeverLine"
+          x1="9"
+          y1="9"
+          x2="39"
+          y2="9"
+          stroke="#08202f"
+          stroke-width="2.2"
+          stroke-linecap="round"
+          style="transform-origin: 9px 9px;"
+        />
+      </svg>
+    </div>
+  </div>
+
+  <!-- revealed SLD -->
+  <div class="sh-sld-wrap" id="shSldWrap">
+    <div class="sh-sld">
+      <svg viewBox="0 0 350 300" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <g id="sh-iso">
+            <circle cx="0" cy="-7" r="1.8" fill="#eef6f9" />
+            <line x1="0" y1="-7" x2="8" y2="7" stroke="#eef6f9" stroke-width="1.4" stroke-linecap="round" />
+            <circle cx="8" cy="7" r="1.8" fill="#eef6f9" />
+          </g>
+          <g id="sh-cb">
+            <rect x="-6" y="-6" width="12" height="12" fill="rgba(238,246,249,0.12)" stroke="#eef6f9" stroke-width="1.4" />
+          </g>
+          <g id="sh-la">
+            <line x1="0" y1="0" x2="14" y2="0" stroke="#eef6f9" stroke-width="1.2" />
+            <polygon points="14,-5 24,0 14,5" fill="#f2b705" />
+            <line x1="24" y1="0" x2="24" y2="6" stroke="#eef6f9" stroke-width="1.2" />
+            <line x1="19" y1="9" x2="29" y2="9" stroke="#eef6f9" stroke-width="1.2" />
+            <line x1="21.2" y1="12" x2="26.8" y2="12" stroke="#eef6f9" stroke-width="1.2" />
+          </g>
+        </defs>
+
+        <g stroke="rgba(238,246,249,0.85)" stroke-width="1.4" fill="none" stroke-linecap="round">
+          <line x1="175" y1="26" x2="175" y2="2" />
+          <line x1="164" y1="26" x2="175" y2="2" />
+          <line x1="186" y1="26" x2="175" y2="2" />
+          <line x1="166" y1="12" x2="184" y2="12" />
+        </g>
+        <text x="175" y="-2" text-anchor="middle" class="sh-lbl">66 KV INCOMING</text>
+
+        <path d="M175,26 L175,44" stroke="rgba(238,246,249,0.9)" stroke-width="2" />
+        <path d="M175,26 L175,44" class="sh-flow" stroke="#00e6ac" stroke-width="2" />
+        <use href="#sh-la" x="175" y="44" />
+        <text x="201" y="47" class="sh-lbl">LA</text>
+
+        <path d="M175,44 L175,64" stroke="rgba(238,246,249,0.9)" stroke-width="2" />
+        <path d="M175,44 L175,64" class="sh-flow" stroke="#00e6ac" stroke-width="2" />
+        <use href="#sh-iso" x="167" y="71" />
+        <text x="190" y="74" class="sh-lbl">LINE ISOLATOR</text>
+
+        <path d="M175,78 L175,96" stroke="rgba(238,246,249,0.9)" stroke-width="2" />
+        <path d="M175,78 L175,96" class="sh-flow" stroke="#00e6ac" stroke-width="2" />
+        <use href="#sh-iso" x="167" y="103" />
+        <text x="190" y="106" class="sh-lbl">BUS ISOLATOR</text>
+
+        <path d="M175,110 L175,122" stroke="rgba(238,246,249,0.9)" stroke-width="2" />
+        <path d="M175,110 L175,122" class="sh-flow" stroke="#00e6ac" stroke-width="2" />
+
+        <line x1="45" y1="122" x2="305" y2="122" stroke="#f2b705" stroke-width="3.2" stroke-linecap="round" />
+        <circle cx="175" cy="122" r="2.4" fill="#f2b705" />
+        <text x="175" y="135" text-anchor="middle" class="sh-lbl-bus">66 KV BUS</text>
+
+        <path d="M175,122 L175,146" stroke="rgba(238,246,249,0.9)" stroke-width="2" />
+        <path d="M175,122 L175,146" class="sh-flow sh-slow" stroke="#00e6ac" stroke-width="2" />
+        <use href="#sh-iso" x="167" y="153" />
+        <text x="190" y="156" class="sh-lbl">TR ISOLATOR</text>
+
+        <path d="M175,160 L175,176" stroke="rgba(238,246,249,0.9)" stroke-width="2" />
+        <path d="M175,160 L175,176" class="sh-flow sh-slow" stroke="#00e6ac" stroke-width="2" />
+        <use href="#sh-cb" x="175" y="182" />
+        <text x="190" y="185" class="sh-lbl">TR BREAKER</text>
+
+        <path d="M175,188 L175,200" stroke="rgba(238,246,249,0.9)" stroke-width="2" />
+        <path d="M175,188 L175,200" class="sh-flow sh-slow" stroke="#00e6ac" stroke-width="2" />
+        <use href="#sh-la" x="175" y="200" />
+        <text x="201" y="203" class="sh-lbl">LA</text>
+
+        <path d="M175,200 L175,214" stroke="rgba(238,246,249,0.9)" stroke-width="2" />
+        <path d="M175,200 L175,214" class="sh-flow sh-slow" stroke="#00e6ac" stroke-width="2" />
+
+        <circle cx="175" cy="226" r="12" fill="rgba(238,246,249,0.1)" stroke="#eef6f9" stroke-width="1.6" />
+        <circle cx="175" cy="242" r="12" fill="rgba(238,246,249,0.1)" stroke="#eef6f9" stroke-width="1.6" />
+        <text x="201" y="236" class="sh-lbl">TRANSFORMER</text>
+        <text x="201" y="245" class="sh-lbl-mini">66 / 11 KV</text>
+
+        <path d="M175,254 L175,268" stroke="rgba(238,246,249,0.9)" stroke-width="2" />
+        <path d="M175,254 L175,268" class="sh-flow" stroke="#5be8ff" stroke-width="2" />
+
+        <line x1="70" y1="268" x2="280" y2="268" stroke="#f2b705" stroke-width="3" stroke-linecap="round" />
+        <circle cx="175" cy="268" r="2.2" fill="#f2b705" />
+        <text x="175" y="281" text-anchor="middle" class="sh-lbl-bus">11 KV BUS</text>
+
+        <path d="M100,268 C90,280 82,285 70,290" stroke="rgba(238,246,249,0.85)" stroke-width="1.3" />
+        <path d="M100,268 C90,280 82,285 70,290" class="sh-flow" stroke="#5be8ff" stroke-width="1.3" />
+        <path d="M175,272 L175,292" stroke="rgba(238,246,249,0.85)" stroke-width="1.3" />
+        <path d="M175,272 L175,292" class="sh-flow sh-slow" stroke="#5be8ff" stroke-width="1.3" />
+        <path d="M250,268 C260,280 268,285 280,290" stroke="rgba(238,246,249,0.85)" stroke-width="1.3" />
+        <path d="M250,268 C260,280 268,285 280,290" class="sh-flow" stroke="#5be8ff" stroke-width="1.3" />
+
+        <text x="175" y="299" text-anchor="middle" class="sh-lbl-mini">11 KV FEEDERS TO DISTRIBUTION</text>
+      </svg>
+    </div>
+  </div>
+</header>
+<main id="main-content"></main>
 <!-- ===== PAGE: Dashboard Overview ===== -->
 
 <!-- ===== PAGE: Substations (Main App) ===== -->
@@ -259,10 +241,10 @@
 
 <!-- Toast -->
 <div class="toast" id="toast"></div>
-<script src="js/pages/pageSubstations.js?v=10"></script><script src="js/pages/pageSettings.js"></script><script src="js/utils.js?v=17"></script>
+<script src="js/pages/pageSubstations.js?v=11"></script><script src="js/pages/pageSettings.js"></script><script src="js/utils.js?v=19"></script>
 <script src="js/dashboard.js"></script>
 <script src="js/setup.js"></script>
-<script src="js/reports.js"></script>
+<script src="js/reports.js?v=2"></script>
 <script src="js/config/registerFieldsConfig.js?v=7"></script>
 <script src="js/pages/registersModule.js?v=13"></script>
 <script src="js/maintenance.js"></script>
