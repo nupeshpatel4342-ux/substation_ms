@@ -235,7 +235,7 @@ function preloadSampleEquipment(ss) {
             if (f6) f6.name = '66 K.V. TR-2 H.V-2';
         }
 
-        let hasDynamicSample = ss.equipmentMaster.some(eq => eq.isDynamicSampleV16 === true);
+        let hasDynamicSample = ss.equipmentMaster.some(eq => eq.isDynamicSampleV17 === true);
         if (!hasDynamicSample) {
             // FORCE A COMPLETE WIPE to fix any corrupted old data or manual test entries on the live server
             ss.equipmentMaster = [];
@@ -271,34 +271,34 @@ function preloadSampleEquipment(ss) {
                         if (t && !processedTransformers.has(t.name)) {
                             processedTransformers.add(t.name);
                             // The Transformer Itself
-                            newSampleData.push({ id: generateId(), name: t.name, category: 'Power Transformer', voltageLevel: '66/11 KV', status: 'Healthy', isDynamicSampleV16: true, manufacturer: 'Crompton Greaves' });
+                            newSampleData.push({ id: generateId(), name: t.name, category: 'Power Transformer', voltageLevel: '66/11 KV', status: 'Healthy', isDynamicSampleV17: true, manufacturer: 'Crompton Greaves' });
                             // Associated Equipment
-                            newSampleData.push({ id: generateId(), name: t.name + ' - LA', category: 'Lightning Arrester', voltageLevel: '66 KV', status: 'Healthy', isDynamicSampleV16: true, manufacturer: 'Oblum' });
-                            newSampleData.push({ id: generateId(), name: t.name + ' - RTCC Panel', category: 'Control Panel', voltageLevel: '110V DC', status: 'Healthy', isDynamicSampleV16: true, manufacturer: 'EASUN' });
-                            newSampleData.push({ id: generateId(), name: t.name + ' - Neutral Earth Pit', category: 'Earthing', voltageLevel: '-', status: 'Healthy', isDynamicSampleV16: true, manufacturer: 'Local' });
+                            newSampleData.push({ id: generateId(), name: t.name + ' - LA', category: 'Lightning Arrester', voltageLevel: '66 KV', status: 'Healthy', isDynamicSampleV17: true, manufacturer: 'Oblum' });
+                            newSampleData.push({ id: generateId(), name: t.name + ' - RTCC Panel', category: 'Control Panel', voltageLevel: '110V DC', status: 'Healthy', isDynamicSampleV17: true, manufacturer: 'EASUN' });
+                            newSampleData.push({ id: generateId(), name: t.name + ' - Neutral Earth Pit', category: 'Earthing', voltageLevel: '-', status: 'Healthy', isDynamicSampleV17: true, manufacturer: 'Local' });
                         }
                     }
 
                     if (f.role === '66kv_incoming' || f.role === '66kv_outgoing') {
                         // The Line Itself
-                        newSampleData.push({ id: generateId(), name: baseName, category: f.role === '66kv_incoming' ? '66 KV Incoming Line' : '66 KV Outgoing Line', voltageLevel: '66 KV', status: 'Healthy', isDynamicSampleV16: true, manufacturer: '-' });
+                        newSampleData.push({ id: generateId(), name: baseName, category: f.role === '66kv_incoming' ? '66 KV Incoming Line' : '66 KV Outgoing Line', voltageLevel: '66 KV', status: 'Healthy', isDynamicSampleV17: true, manufacturer: '-' });
                         // Associated Equipment
-                        newSampleData.push({ id: generateId(), name: baseName + ' - LA', category: 'Lightning Arrester', voltageLevel: '66 KV', status: 'Healthy', isDynamicSampleV16: true, manufacturer: 'Oblum' });
-                        newSampleData.push({ id: generateId(), name: baseName + ' - Circuit Breaker', category: 'Breaker', voltageLevel: '66 KV', status: 'Healthy', isDynamicSampleV16: true, manufacturer: 'Alstom' });
-                        newSampleData.push({ id: generateId(), name: baseName + ' - CT', category: 'CT/PT', voltageLevel: '66 KV', status: 'Healthy', isDynamicSampleV16: true, manufacturer: 'ABB' });
-                        newSampleData.push({ id: generateId(), name: baseName + ' - Line Isolator', category: 'Isolator', voltageLevel: '66 KV', status: 'Healthy', isDynamicSampleV16: true, manufacturer: 'S&S Power' });
-                        newSampleData.push({ id: generateId(), name: baseName + ' - Bus Isolator', category: 'Isolator', voltageLevel: '66 KV', status: 'Healthy', isDynamicSampleV16: true, manufacturer: 'S&S Power' });
-                        newSampleData.push({ id: generateId(), name: baseName + ' - CRP Panel', category: 'Control Panel', voltageLevel: '110V DC', status: 'Healthy', isDynamicSampleV16: true, manufacturer: 'Siemens' });
+                        newSampleData.push({ id: generateId(), name: baseName + ' - LA', category: 'Lightning Arrester', voltageLevel: '66 KV', status: 'Healthy', isDynamicSampleV17: true, manufacturer: 'Oblum' });
+                        newSampleData.push({ id: generateId(), name: baseName + ' - Circuit Breaker', category: 'Breaker', voltageLevel: '66 KV', status: 'Healthy', isDynamicSampleV17: true, manufacturer: 'Alstom' });
+                        newSampleData.push({ id: generateId(), name: baseName + ' - CT', category: 'CT/PT', voltageLevel: '66 KV', status: 'Healthy', isDynamicSampleV17: true, manufacturer: 'ABB' });
+                        newSampleData.push({ id: generateId(), name: baseName + ' - Line Isolator', category: 'Isolator', voltageLevel: '66 KV', status: 'Healthy', isDynamicSampleV17: true, manufacturer: 'S&S Power' });
+                        newSampleData.push({ id: generateId(), name: baseName + ' - Bus Isolator', category: 'Isolator', voltageLevel: '66 KV', status: 'Healthy', isDynamicSampleV17: true, manufacturer: 'S&S Power' });
+                        newSampleData.push({ id: generateId(), name: baseName + ' - CRP Panel', category: 'Control Panel', voltageLevel: '110V DC', status: 'Healthy', isDynamicSampleV17: true, manufacturer: 'Siemens' });
                     } else if (f.role === '11kv_feeder' || f.role === 'solar_export' || f.role === 'solar_import') {
                         // Associated Equipment (Only Breaker and Relay for 11KV)
-                        newSampleData.push({ id: generateId(), name: baseName + ' - VCB Panel', category: 'Breaker', voltageLevel: '11 KV', status: 'Healthy', isDynamicSampleV16: true, manufacturer: 'Schneider' });
-                        newSampleData.push({ id: generateId(), name: baseName + ' - Relay Panel', category: 'Relay', voltageLevel: '110V DC', status: 'Healthy', isDynamicSampleV16: true, manufacturer: 'ABB' });
+                        newSampleData.push({ id: generateId(), name: baseName + ' - VCB Panel', category: 'Breaker', voltageLevel: '11 KV', status: 'Healthy', isDynamicSampleV17: true, manufacturer: 'Schneider' });
+                        newSampleData.push({ id: generateId(), name: baseName + ' - Relay Panel', category: 'Relay', voltageLevel: '110V DC', status: 'Healthy', isDynamicSampleV17: true, manufacturer: 'ABB' });
                     } else if (f.role === 'tr_hv') {
-                        newSampleData.push({ id: generateId(), name: f.name + ' - HV Breaker', category: 'Breaker', voltageLevel: '66 KV', status: 'Healthy', isDynamicSampleV16: true, manufacturer: 'CGL' });
-                        newSampleData.push({ id: generateId(), name: f.name + ' - HV CT', category: 'CT/PT', voltageLevel: '66 KV', status: 'Healthy', isDynamicSampleV16: true, manufacturer: 'BHEL' });
+                        newSampleData.push({ id: generateId(), name: f.name + ' - HV Breaker', category: 'Breaker', voltageLevel: '66 KV', status: 'Healthy', isDynamicSampleV17: true, manufacturer: 'CGL' });
+                        newSampleData.push({ id: generateId(), name: f.name + ' - HV CT', category: 'CT/PT', voltageLevel: '66 KV', status: 'Healthy', isDynamicSampleV17: true, manufacturer: 'BHEL' });
                     } else if (f.role === 'tr_lv') {
-                        newSampleData.push({ id: generateId(), name: f.name + ' - LV VCB Panel', category: 'Breaker', voltageLevel: '11 KV', status: 'Healthy', isDynamicSampleV16: true, manufacturer: 'Siemens' });
-                        newSampleData.push({ id: generateId(), name: f.name + ' - LV CT', category: 'CT/PT', voltageLevel: '11 KV', status: 'Healthy', isDynamicSampleV16: true, manufacturer: 'BHEL' });
+                        newSampleData.push({ id: generateId(), name: f.name + ' - LV VCB Panel', category: 'Breaker', voltageLevel: '11 KV', status: 'Healthy', isDynamicSampleV17: true, manufacturer: 'Siemens' });
+                        newSampleData.push({ id: generateId(), name: f.name + ' - LV CT', category: 'CT/PT', voltageLevel: '11 KV', status: 'Healthy', isDynamicSampleV17: true, manufacturer: 'BHEL' });
                     }
                 });
             }
@@ -309,11 +309,11 @@ function preloadSampleEquipment(ss) {
                     if (!processedTransformers.has(t.name)) {
                         processedTransformers.add(t.name);
                         // The Transformer Itself
-                        newSampleData.push({ id: generateId(), name: t.name, category: 'Power Transformer', voltageLevel: '66/11 KV', status: 'Healthy', isDynamicSampleV16: true, manufacturer: 'Crompton Greaves' });
+                        newSampleData.push({ id: generateId(), name: t.name, category: 'Power Transformer', voltageLevel: '66/11 KV', status: 'Healthy', isDynamicSampleV17: true, manufacturer: 'Crompton Greaves' });
                         // Associated Equipment
-                        newSampleData.push({ id: generateId(), name: t.name + ' - LA', category: 'Lightning Arrester', voltageLevel: '66 KV', status: 'Healthy', isDynamicSampleV16: true, manufacturer: 'Oblum' });
-                        newSampleData.push({ id: generateId(), name: t.name + ' - RTCC Panel', category: 'Control Panel', voltageLevel: '110V DC', status: 'Healthy', isDynamicSampleV16: true, manufacturer: 'EASUN' });
-                        newSampleData.push({ id: generateId(), name: t.name + ' - Neutral Earth Pit', category: 'Earthing', voltageLevel: '-', status: 'Healthy', isDynamicSampleV16: true, manufacturer: 'Local' });
+                        newSampleData.push({ id: generateId(), name: t.name + ' - LA', category: 'Lightning Arrester', voltageLevel: '66 KV', status: 'Healthy', isDynamicSampleV17: true, manufacturer: 'Oblum' });
+                        newSampleData.push({ id: generateId(), name: t.name + ' - RTCC Panel', category: 'Control Panel', voltageLevel: '110V DC', status: 'Healthy', isDynamicSampleV17: true, manufacturer: 'EASUN' });
+                        newSampleData.push({ id: generateId(), name: t.name + ' - Neutral Earth Pit', category: 'Earthing', voltageLevel: '-', status: 'Healthy', isDynamicSampleV17: true, manufacturer: 'Local' });
                     }
                 });
             }
@@ -325,6 +325,23 @@ function preloadSampleEquipment(ss) {
             newSampleData.push({ id: generateId(), name: 'Fire Fighting System', category: 'Safety', voltageLevel: '-', status: 'Healthy', isDynamicSampleV4: true, manufacturer: 'Minimax' });
 
             newSampleData.forEach(item => ss.equipmentMaster.push(item));
+
+            // Auto-populate Equipment Details Register
+            try {
+                let rDB = JSON.parse(localStorage.getItem('substation_registers_db') || '{}');
+                rDB['Equipment Details Register'] = newSampleData.map(eq => ({
+                    date: new Date().toISOString().split('T')[0],
+                    time: "10:00",
+                    shift: "General Shift (08:00 to 16:00)",
+                    details: `<b>EquipmentName:</b> ${eq.name}<br><b>MakeAndModel:</b> ${eq.manufacturer || '-'}<br><b>SerialNumber:</b> -<br><b>InstallationDate:</b> -`,
+                    remarks: "Auto-synced from Equipment Master"
+                }));
+                localStorage.setItem('substation_registers_db', JSON.stringify(rDB));
+                if (typeof registerEntriesDB !== 'undefined') {
+                    registerEntriesDB = rDB;
+                }
+            } catch(e) { console.log(e); }
+
             return true;
         }
     }

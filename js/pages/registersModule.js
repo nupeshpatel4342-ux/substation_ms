@@ -242,13 +242,71 @@ function renderRegisterTableEntries(title) {
                 <td>Nupesh Patel</td>
                 <td>
                     <button class="icon-btn" title="View" onclick="alert('Viewing Entry:\\nDate: ${entry.date}\\nTime: ${entry.time}\\nShift: ${entry.shift}')"><span class="material-icons-round" style="color: #1976d2; font-size:18px;">visibility</span></button>
-                    <button class="icon-btn edit-btn" title="Edit" onclick="showToast('Edit mode activated.')"><span class="material-icons-round" style="color: #f57c00; font-size:18px;">edit</span></button>
+                    <button class="icon-btn edit-btn" title="Edit" onclick="editRegisterEntry('${title}', ${index})"><span class="material-icons-round" style="color: #f57c00; font-size:18px;">edit</span></button>
                     <button class="icon-btn delete-btn" title="Delete" onclick="deleteRegisterEntry('${title}', ${index})"><span class="material-icons-round" style="color: #d32f2f; font-size:18px;">delete</span></button>
                 </td>
             `;
             tableBody.appendChild(newRow);
         });
     }
+}
+
+function editRegisterEntry(title, index) {
+    const entry = registerEntriesDB[title][index];
+    window.currentEditingRegisterIndex = index;
+    openRegisterEntryModal();
+    
+    setTimeout(() => {
+        const dateInput = document.getElementById('regEntryDate');
+        const timeInput = document.getElementById('regEntryTime');
+        const shiftInput = document.getElementById('regEntryShift');
+        const remarksInput = document.getElementById('regEntryRemarks');
+        
+        if(dateInput) dateInput.value = entry.date || '';
+        if(timeInput) timeInput.value = entry.time || '';
+        if(remarksInput) remarksInput.value = entry.remarks === '-' ? '' : entry.remarks;
+        
+        if(shiftInput) {
+            for(let i=0; i<shiftInput.options.length; i++) {
+                if(shiftInput.options[i].text === entry.shift) {
+                    shiftInput.selectedIndex = i;
+                    break;
+                }
+            }
+        }
+        
+        // Parse the dynamic details HTML back into form fields
+        const container = document.getElementById('dynamicFormFieldsContainer');
+        if(container && entry.details) {
+            const dynamicInputs = container.querySelectorAll('input, select, textarea');
+            const detailsLines = entry.details.split('<br>');
+            
+            detailsLines.forEach(line => {
+                let match = line.match(/<b>(.*?)<\/b>:\s*(.*)/);
+                if(match) {
+                    let nameLabel = match[1].trim(); // e.g. "EquipmentName"
+                    let val = match[2].trim();
+                    if(val === '-') val = '';
+                    
+                    dynamicInputs.forEach(input => {
+                        let fieldNameFormatted = input.name.charAt(0).toUpperCase() + input.name.slice(1);
+                        if(fieldNameFormatted === nameLabel || input.name === nameLabel.toLowerCase()) {
+                            if(input.tagName === 'SELECT') {
+                                for(let i=0; i<input.options.length; i++) {
+                                    if(input.options[i].text === val || input.options[i].value === val) {
+                                        input.selectedIndex = i;
+                                        break;
+                                    }
+                                }
+                            } else {
+                                input.value = val;
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    }, 100);
 }
 
 function deleteRegisterEntry(title, index) {
@@ -310,6 +368,7 @@ function openRegisterEntryModal() {
 }
 
 function closeRegisterEntryModal() {
+    window.currentEditingRegisterIndex = null;
     const modal = document.getElementById('genericRegisterModal');
     if (modal) {
         modal.style.display = 'none';
@@ -363,14 +422,21 @@ function saveRegisterEntry() {
         registerEntriesDB[title] = [];
     }
     
-    // Add to front of array so newest is top
-    registerEntriesDB[title].unshift(newEntry);
+    if (typeof window.currentEditingRegisterIndex !== 'undefined' && window.currentEditingRegisterIndex !== null) {
+        // Update existing entry
+        registerEntriesDB[title][window.currentEditingRegisterIndex] = newEntry;
+        window.currentEditingRegisterIndex = null;
+        showToast("Entry updated successfully!");
+    } else {
+        // Add to front of array so newest is top
+        registerEntriesDB[title].unshift(newEntry);
+        showToast("Entry saved successfully!");
+    }
     
     saveToLocalStorage();
     
     renderRegisterTableEntries(title);
     
-    showToast("Entry saved successfully!");
     closeRegisterEntryModal();
     
     // Reset form
