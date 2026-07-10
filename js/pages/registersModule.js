@@ -114,6 +114,31 @@ function renderRegistersCards() {
     filterRegisters();
 }
 
+function updateEquipmentDropdown(bayName, targetId) {
+    const targetSelect = document.getElementById(targetId);
+    if (!targetSelect) return;
+    
+    // First time caching the original options
+    if (!targetSelect.hasAttribute('data-original-options')) {
+        targetSelect.setAttribute('data-original-options', targetSelect.innerHTML);
+    }
+    
+    const originalHtml = targetSelect.getAttribute('data-original-options');
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = `<select>${originalHtml}</select>`;
+    const allOptions = Array.from(tempDiv.firstChild.options);
+    
+    targetSelect.innerHTML = ''; // Clear current
+    
+    allOptions.forEach(opt => {
+        if (!opt.value || !bayName || opt.getAttribute('data-bay') === bayName) {
+            targetSelect.add(opt.cloneNode(true));
+        }
+    });
+    
+    targetSelect.value = "";
+}
+
 function filterRegisters() {
     const searchInput = document.getElementById('regSearchInput');
     if (!searchInput) return;
@@ -311,7 +336,22 @@ function openRegisterEntryModal() {
                 const gridColumn = field.width === 'full' ? '1 / -1' : 'span 1';
                 
                 let inputHtml = '';
-                if (field.type === 'select') {
+                if (field.type === 'select-bay') {
+                    let ss = getSubstation(currentDashboardSSId || 1);
+                    let bays = ss && ss.equipmentMaster ? [...new Set(ss.equipmentMaster.map(eq => eq.bayNumber).filter(Boolean))] : [];
+                    inputHtml = `<select class="form-control" id="regField_${field.name}" name="${field.name}" ${requiredAttr} onchange="updateEquipmentDropdown(this.value, 'regField_equipmentMasterName')">
+                        <option value="">Select ${field.label}</option>
+                        ${bays.map(b => `<option value="${b}">${b}</option>`).join('')}
+                    </select>`;
+                } else if (field.type === 'select-equipment') {
+                    // It will be populated dynamically based on bay selection, but we render all as default initially
+                    let ss = getSubstation(currentDashboardSSId || 1);
+                    let eqs = ss && ss.equipmentMaster ? ss.equipmentMaster : [];
+                    inputHtml = `<select class="form-control" id="regField_${field.name}" name="${field.name}" ${requiredAttr}>
+                        <option value="">Select ${field.label}</option>
+                        ${eqs.map(eq => `<option value="${eq.name}" data-bay="${eq.bayNumber || ''}">${eq.name}</option>`).join('')}
+                    </select>`;
+                } else if (field.type === 'select') {
                     inputHtml = `<select class="form-control" name="${field.name}" ${requiredAttr}>
                         <option value="">Select ${field.label}</option>
                         ${field.options.map(opt => `<option value="${opt}">${opt}</option>`).join('')}

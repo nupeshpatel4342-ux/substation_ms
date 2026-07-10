@@ -1,6 +1,8 @@
 const registerFieldSchemas = {
     // 1. Operational Registers
     "Battery Maintenance Register": [
+        { name: "equipmentLocation", label: "Equipment Location (Bay)", type: "select-bay", required: true, width: "half" },
+        { name: "equipmentMasterName", label: "Equipment Name", type: "select-equipment", required: true, width: "half" },
         { name: "batteryVoltage", label: "Battery Voltage (V)", type: "number", required: true, width: "half" },
         { name: "specificGravity", label: "Specific Gravity", type: "number", required: true, width: "half" },
         { name: "electrolyteLevel", label: "Electrolyte Level", type: "select", options: ["Normal", "Low", "Top-up Required"], required: true, width: "half" },
@@ -19,7 +21,8 @@ const registerFieldSchemas = {
         { name: "keysHandedOver", label: "Substation Keys Handed Over?", type: "select", options: ["Yes", "No"], required: true, width: "half" }
     ],
     "Daily Maintenance Register": [
-        { name: "equipmentName", label: "Equipment Name", type: "text", required: true, width: "half" },
+        { name: "equipmentLocation", label: "Equipment Location (Bay)", type: "select-bay", required: true, width: "half" },
+        { name: "equipmentMasterName", label: "Equipment Name", type: "select-equipment", required: true, width: "half" },
         { name: "maintenanceType", label: "Maintenance Type", type: "select", options: ["Preventive", "Corrective", "Cleaning", "Tightening", "Lubrication"], required: true, width: "half" },
         { name: "workDetails", label: "Work Details", type: "textarea", required: true, width: "full" }
     ],
@@ -30,13 +33,15 @@ const registerFieldSchemas = {
         { name: "weatherCondition", label: "Weather Condition", type: "select", options: ["Clear", "Cloudy", "Rainy", "Foggy"], required: true, width: "half" }
     ],
     "LA Counter Register": [
-        { name: "feederName", label: "Feeder / Equipment Name", type: "text", required: true, width: "half" },
+        { name: "equipmentLocation", label: "Equipment Location (Bay)", type: "select-bay", required: true, width: "half" },
+        { name: "equipmentMasterName", label: "Equipment Name", type: "select-equipment", required: true, width: "half" },
         { name: "phase", label: "Phase", type: "select", options: ["R Phase", "Y Phase", "B Phase"], required: true, width: "half" },
         { name: "counterReading", label: "Counter Reading", type: "number", required: true, width: "half" },
         { name: "leakageCurrent", label: "Leakage Current (mA)", type: "number", required: true, width: "half" }
     ],
     "Equipment Failure Register": [
-        { name: "equipmentName", label: "Equipment Name", type: "text", required: true, width: "half" },
+        { name: "equipmentLocation", label: "Equipment Location (Bay)", type: "select-bay", required: true, width: "half" },
+        { name: "equipmentMasterName", label: "Equipment Name", type: "select-equipment", required: true, width: "half" },
         { name: "defectType", label: "Defect Type", type: "select", options: ["Mechanical", "Electrical", "Oil Leakage", "Other"], required: true, width: "half" },
         { name: "severity", label: "Severity Level", type: "select", options: ["Low", "Medium", "High", "Critical"], required: true, width: "half" },
         { name: "actionTaken", label: "Immediate Action Taken", type: "text", required: false, width: "full" }
@@ -64,18 +69,21 @@ const registerFieldSchemas = {
         { name: "logDetails", label: "Log Details", type: "textarea", required: true, width: "full" }
     ],
     "Switching Operation Register": [
-        { name: "feederEquipment", label: "Feeder / Equipment", type: "text", required: true, width: "half" },
+        { name: "equipmentLocation", label: "Equipment Location (Bay)", type: "select-bay", required: true, width: "half" },
+        { name: "equipmentMasterName", label: "Equipment Name", type: "select-equipment", required: true, width: "half" },
         { name: "operationType", label: "Operation Type", type: "select", options: ["Opening (Tripping)", "Closing", "Isolator Opening", "Isolator Closing"], required: true, width: "half" },
         { name: "reason", label: "Reason for Operation", type: "text", required: true, width: "full" }
     ],
     "Tripping Register": [
-        { name: "feederName", label: "Feeder / Transformer", type: "text", required: true, width: "half" },
+        { name: "equipmentLocation", label: "Equipment Location (Bay)", type: "select-bay", required: true, width: "half" },
+        { name: "equipmentMasterName", label: "Equipment Name", type: "select-equipment", required: true, width: "half" },
         { name: "relayOperated", label: "Relay Operated", type: "text", required: true, width: "half" },
         { name: "faultCurrent", label: "Fault Current (kA)", type: "number", required: false, width: "half" },
         { name: "restorationTime", label: "Restoration Time", type: "time", required: false, width: "half" }
     ],
     "Shutdown Register": [
-        { name: "equipment", label: "Equipment", type: "text", required: true, width: "half" },
+        { name: "equipmentLocation", label: "Equipment Location (Bay)", type: "select-bay", required: true, width: "half" },
+        { name: "equipmentMasterName", label: "Equipment Name", type: "select-equipment", required: true, width: "half" },
         { name: "shutdownType", label: "Shutdown Type", type: "select", options: ["Planned", "Emergency", "Forced"], required: true, width: "half" },
         { name: "availingAgency", label: "Availing Agency/Person", type: "text", required: true, width: "half" },
         { name: "expectedRestoration", label: "Expected Restoration Time", type: "time", required: true, width: "half" }
@@ -83,38 +91,45 @@ const registerFieldSchemas = {
 
     // 2. Testing Registers
     "Relay Testing Register": [
+        { name: "equipmentLocation", label: "Equipment Location (Bay)", type: "select-bay", required: true, width: "half" },
+        { name: "equipmentMasterName", label: "Equipment Name", type: "select-equipment", required: true, width: "half" },
         { name: "relayMake", label: "Relay Make & Model", type: "text", required: true, width: "half" },
-        { name: "panelName", label: "Panel Name", type: "text", required: true, width: "half" },
         { name: "testType", label: "Test Type", type: "select", options: ["Routine", "Commissioning", "Post-Fault"], required: true, width: "half" },
         { name: "testResult", label: "Overall Test Result", type: "select", options: ["Pass", "Fail", "Requires Calibration"], required: true, width: "half" }
     ],
     "Current Transformer (CT) Maintenance Register": [
-        { name: "ctLocation", label: "CT Location / Feeder", type: "text", required: true, width: "half" },
+        { name: "equipmentLocation", label: "Equipment Location (Bay)", type: "select-bay", required: true, width: "half" },
+        { name: "equipmentMasterName", label: "Equipment Name", type: "select-equipment", required: true, width: "half" },
         { name: "testConducted", label: "Test Conducted", type: "select", options: ["IR Value (Megger)", "Ratio Test", "Polarity Test", "Knee Point Voltage"], required: true, width: "half" },
         { name: "resultValue", label: "Measured Value", type: "text", required: true, width: "half" }
     ],
     "Potential Transformer (PT) Maintenance Register": [
-        { name: "ptLocation", label: "PT/CVT Location", type: "text", required: true, width: "half" },
+        { name: "equipmentLocation", label: "Equipment Location (Bay)", type: "select-bay", required: true, width: "half" },
+        { name: "equipmentMasterName", label: "Equipment Name", type: "select-equipment", required: true, width: "half" },
         { name: "testConducted", label: "Test Conducted", type: "select", options: ["IR Value", "Ratio Test", "Capacitance Measurement"], required: true, width: "half" },
         { name: "resultValue", label: "Measured Value", type: "text", required: true, width: "half" }
     ],
     "Circuit Breaker & Control Relay Panel Maintenance Register": [
-        { name: "cbLocation", label: "CB Location", type: "text", required: true, width: "half" },
+        { name: "equipmentLocation", label: "Equipment Location (Bay)", type: "select-bay", required: true, width: "half" },
+        { name: "equipmentMasterName", label: "Equipment Name", type: "select-equipment", required: true, width: "half" },
         { name: "testType", label: "Test Type", type: "select", options: ["CRM (Contact Resistance)", "DCRM", "Timing Test", "IR Test"], required: true, width: "half" },
         { name: "pole", label: "Pole Tested", type: "select", options: ["R Pole", "Y Pole", "B Pole", "All 3 Poles"], required: true, width: "half" }
     ],
     "Power Transformer Testing Register": [
-        { name: "transformerName", label: "Transformer Name", type: "text", required: true, width: "half" },
+        { name: "equipmentLocation", label: "Equipment Location (Bay)", type: "select-bay", required: true, width: "half" },
+        { name: "equipmentMasterName", label: "Equipment Name", type: "select-equipment", required: true, width: "half" },
         { name: "testType", label: "Test Type", type: "select", options: ["Oil BDV", "DGA", "IR Value", "Tan Delta", "Winding Resistance"], required: true, width: "half" },
         { name: "testResult", label: "Result/Value", type: "text", required: true, width: "half" }
     ],
     "Battery Load Test Register": [
-        { name: "bankName", label: "Battery Bank Set", type: "text", required: true, width: "half" },
+        { name: "equipmentLocation", label: "Equipment Location (Bay)", type: "select-bay", required: true, width: "half" },
+        { name: "equipmentMasterName", label: "Equipment Name", type: "select-equipment", required: true, width: "half" },
         { name: "dischargeCurrent", label: "Discharge Current (A)", type: "number", required: true, width: "half" },
         { name: "endVoltage", label: "End Voltage (V)", type: "number", required: true, width: "half" }
     ],
     "Battery Capacity Test Register": [
-        { name: "bankName", label: "Battery Bank Set", type: "text", required: true, width: "half" },
+        { name: "equipmentLocation", label: "Equipment Location (Bay)", type: "select-bay", required: true, width: "half" },
+        { name: "equipmentMasterName", label: "Equipment Name", type: "select-equipment", required: true, width: "half" },
         { name: "measuredCapacity", label: "Measured Capacity (AH)", type: "number", required: true, width: "half" },
         { name: "cellCondition", label: "Overall Cell Condition", type: "select", options: ["Good", "Weak", "Needs Replacement"], required: true, width: "half" }
     ],
@@ -124,23 +139,27 @@ const registerFieldSchemas = {
         { name: "resistanceValue", label: "Resistance Value (Ohms)", type: "number", required: true, width: "half" }
     ],
     "Insulation Resistance Test Register": [
-        { name: "equipment", label: "Equipment Name", type: "text", required: true, width: "half" },
+        { name: "equipmentLocation", label: "Equipment Location (Bay)", type: "select-bay", required: true, width: "half" },
+        { name: "equipmentMasterName", label: "Equipment Name", type: "select-equipment", required: true, width: "half" },
         { name: "meggerVoltage", label: "Megger Voltage (kV)", type: "select", options: ["0.5 kV", "1 kV", "2.5 kV", "5 kV"], required: true, width: "half" },
         { name: "irValue", label: "IR Value (M Ohms)", type: "text", required: true, width: "half" }
     ],
     "Lightning Arrester Maintenance & Testing Register": [
-        { name: "laLocation", label: "LA Location", type: "text", required: true, width: "half" },
+        { name: "equipmentLocation", label: "Equipment Location (Bay)", type: "select-bay", required: true, width: "half" },
+        { name: "equipmentMasterName", label: "Equipment Name", type: "select-equipment", required: true, width: "half" },
         { name: "testType", label: "Test Type", type: "select", options: ["Leakage Current", "Third Harmonic Resistive Current"], required: true, width: "half" },
         { name: "result", label: "Test Result", type: "text", required: true, width: "half" }
     ],
     "SF6 Gas Testing Register": [
-        { name: "breakerName", label: "Breaker / GIS Compartment", type: "text", required: true, width: "half" },
+        { name: "equipmentLocation", label: "Equipment Location (Bay)", type: "select-bay", required: true, width: "half" },
+        { name: "equipmentMasterName", label: "Equipment Name", type: "select-equipment", required: true, width: "half" },
         { name: "gasPressure", label: "Gas Pressure (Bar)", type: "number", required: true, width: "half" },
         { name: "dewPoint", label: "Dew Point (°C)", type: "number", required: true, width: "half" },
         { name: "purity", label: "Purity (%)", type: "number", required: true, width: "half" }
     ],
     "Control Cable Testing Register": [
-        { name: "cableRoute", label: "Cable Route (From - To)", type: "text", required: true, width: "half" },
+        { name: "equipmentLocation", label: "Equipment Location (Bay)", type: "select-bay", required: true, width: "half" },
+        { name: "equipmentMasterName", label: "Equipment Name", type: "select-equipment", required: true, width: "half" },
         { name: "coresTested", label: "No. of Cores Tested", type: "number", required: true, width: "half" },
         { name: "continuityStatus", label: "Continuity Status", type: "select", options: ["OK", "Broken/Faulty"], required: true, width: "half" }
     ],
@@ -158,8 +177,9 @@ const registerFieldSchemas = {
         { name: "nextTestDate", label: "Next Due Date for Testing", type: "date", required: true, width: "half" }
     ],
     "Work Permit Register": [
+        { name: "equipmentLocation", label: "Equipment Location (Bay)", type: "select-bay", required: true, width: "half" },
+        { name: "equipmentMasterName", label: "Equipment Name", type: "select-equipment", required: true, width: "half" },
         { name: "ptwNumber", label: "PTW Number", type: "text", required: true, width: "half" },
-        { name: "equipment", label: "Equipment / Line Name", type: "text", required: true, width: "half" },
         { name: "issuedTo", label: "PTW Issued To (Name)", type: "text", required: true, width: "half" },
         { name: "ptwStatus", label: "PTW Status", type: "select", options: ["Issued", "Returned/Cancelled"], required: true, width: "half" }
     ],
@@ -206,13 +226,15 @@ const registerFieldSchemas = {
         { name: "materialDetails", label: "Material Details", type: "textarea", required: false, width: "full" }
     ],
     "Hot Line Maintenance Register": [
-        { name: "equipmentName", label: "Equipment Name", type: "text", required: true, width: "half" },
+        { name: "equipmentLocation", label: "Equipment Location (Bay)", type: "select-bay", required: true, width: "half" },
+        { name: "equipmentMasterName", label: "Equipment Name", type: "select-equipment", required: true, width: "half" },
         { name: "maintenanceType", label: "Maintenance Type", type: "select", options: ["Insulator Washing", "Hot Spot Tightening", "Thermography", "Other"], required: true, width: "half" },
         { name: "clearanceObtained", label: "Clearance Obtained", type: "select", options: ["Yes", "No"], required: true, width: "half" },
         { name: "workDetails", label: "Work Details", type: "textarea", required: true, width: "full" }
     ],
     "Equipment Details Register": [
-        { name: "equipmentName", label: "Equipment Name / Tag", type: "text", required: true, width: "half" },
+        { name: "equipmentLocation", label: "Equipment Location (Bay)", type: "select-bay", required: true, width: "half" },
+        { name: "equipmentMasterName", label: "Equipment Name", type: "select-equipment", required: true, width: "half" },
         { name: "makeAndModel", label: "Make & Model", type: "text", required: true, width: "half" },
         { name: "serialNumber", label: "Serial Number", type: "text", required: true, width: "half" },
         { name: "installationDate", label: "Installation Date", type: "date", required: true, width: "half" }
@@ -224,19 +246,22 @@ const registerFieldSchemas = {
         { name: "reason", label: "Reason / Details", type: "textarea", required: true, width: "full" }
     ],
     "Feeder-wise Interruption Register": [
-        { name: "feederName", label: "Feeder Name", type: "text", required: true, width: "half" },
+        { name: "equipmentLocation", label: "Equipment Location (Bay)", type: "select-bay", required: true, width: "half" },
+        { name: "equipmentMasterName", label: "Equipment Name", type: "select-equipment", required: true, width: "half" },
         { name: "trippingTime", label: "Tripping Time", type: "time", required: true, width: "half" },
         { name: "restorationTime", label: "Restoration Time", type: "time", required: true, width: "half" },
         { name: "relayIndications", label: "Relay Indications", type: "text", required: false, width: "half" }
     ],
     "Statistical Load Data Register": [
-        { name: "feederName", label: "Feeder Name", type: "text", required: true, width: "half" },
+        { name: "equipmentLocation", label: "Equipment Location (Bay)", type: "select-bay", required: true, width: "half" },
+        { name: "equipmentMasterName", label: "Equipment Name", type: "select-equipment", required: true, width: "half" },
         { name: "maxLoad", label: "Max Load (Amps/MW)", type: "number", required: true, width: "half" },
         { name: "minLoad", label: "Min Load (Amps/MW)", type: "number", required: true, width: "half" },
         { name: "averageVoltage", label: "Average Voltage (kV)", type: "number", required: false, width: "half" }
     ],
     "Stage-wise Energy Audit Register": [
-        { name: "meterLocation", label: "Meter Location / Feeder", type: "text", required: true, width: "half" },
+        { name: "equipmentLocation", label: "Equipment Location (Bay)", type: "select-bay", required: true, width: "half" },
+        { name: "equipmentMasterName", label: "Equipment Name", type: "select-equipment", required: true, width: "half" },
         { name: "initialReading", label: "Initial Reading (kWh)", type: "number", required: true, width: "half" },
         { name: "finalReading", label: "Final Reading (kWh)", type: "number", required: true, width: "half" },
         { name: "unitsConsumed", label: "Units Consumed", type: "number", required: true, width: "half" }
@@ -248,24 +273,29 @@ const registerFieldSchemas = {
         { name: "actionTaken", label: "Action Taken", type: "textarea", required: false, width: "full" }
     ],
     "Power Transformer Maintenance & Testing Register": [
-        { name: "transformerId", label: "Transformer ID", type: "text", required: true, width: "half" },
+        { name: "equipmentLocation", label: "Equipment Location (Bay)", type: "select-bay", required: true, width: "half" },
+        { name: "equipmentMasterName", label: "Equipment Name", type: "select-equipment", required: true, width: "half" },
         { name: "maintenanceType", label: "Maintenance Type", type: "select", options: ["Preventive", "Breakdown", "Overhauling"], required: true, width: "half" },
         { name: "oilLevelStatus", label: "Oil Level Status", type: "select", options: ["Normal", "Low", "Top-up Done"], required: true, width: "half" },
         { name: "remarks", label: "Maintenance Remarks", type: "textarea", required: true, width: "full" }
     ],
     "Test Permit Register": [
+        { name: "equipmentLocation", label: "Equipment Location (Bay)", type: "select-bay", required: true, width: "half" },
+        { name: "equipmentMasterName", label: "Equipment Name", type: "select-equipment", required: true, width: "half" },
         { name: "permitNo", label: "Permit No.", type: "text", required: true, width: "half" },
-        { name: "equipmentName", label: "Equipment Name", type: "text", required: true, width: "half" },
         { name: "issuedTo", label: "Issued To (Agency)", type: "text", required: true, width: "half" },
         { name: "status", label: "Permit Status", type: "select", options: ["Issued", "Cancelled", "Returned"], required: true, width: "half" }
     ],
     "Line Clear Permit (LC) Book": [
+        { name: "equipmentLocation", label: "Equipment Location (Bay)", type: "select-bay", required: true, width: "half" },
+        { name: "equipmentMasterName", label: "Equipment Name", type: "select-equipment", required: true, width: "half" },
         { name: "lcNumber", label: "LC Number", type: "text", required: true, width: "half" },
-        { name: "feederName", label: "Line / Feeder Name", type: "text", required: true, width: "half" },
         { name: "issuedBy", label: "Issued By", type: "text", required: true, width: "half" },
         { name: "status", label: "LC Status", type: "select", options: ["Issued", "Returned"], required: true, width: "half" }
     ],
     "Line Clear Permit (LCP) Issued / Taken Register": [
+        { name: "equipmentLocation", label: "Equipment Location (Bay)", type: "select-bay", required: true, width: "half" },
+        { name: "equipmentMasterName", label: "Equipment Name", type: "select-equipment", required: true, width: "half" },
         { name: "lcpType", label: "LCP Type", type: "select", options: ["Issued", "Taken"], required: true, width: "half" },
         { name: "permitNumber", label: "Permit Number", type: "text", required: true, width: "half" },
         { name: "authorityName", label: "Authority Name", type: "text", required: true, width: "half" },
@@ -274,6 +304,8 @@ const registerFieldSchemas = {
 
     // Fallback default
     "default": [
+        { name: "equipmentLocation", label: "Equipment Location (Bay)", type: "select-bay", required: true, width: "half" },
+        { name: "equipmentMasterName", label: "Equipment Name", type: "select-equipment", required: true, width: "half" },
         { name: "status", label: "Current Status", type: "select", options: ["Normal", "Abnormal", "Needs Attention"], required: true, width: "half" },
         { name: "observedValue", label: "Observed Value / Reading", type: "text", required: false, width: "half" }
     ]

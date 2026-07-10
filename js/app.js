@@ -38,6 +38,24 @@ function navigateTo(view, ssId) {
         document.getElementById('headerTitle').textContent = '⚡ 66 KV SUBSTATION REPORT';
         document.getElementById('headerSubtitle').textContent = 'Monthly Report App';
         renderDashboard();
+    } else if (view === 'assetLifecycle') {
+        document.getElementById('assetLifecycleDashboardView').classList.add('active');
+        headerBack.style.display = 'flex';
+        headerBack.onclick = () => goBackTo('ssDashboard', currentDashboardSSId);
+        currentDashboardSSId = ssId;
+        let ss = getSubstation(ssId);
+        document.getElementById('headerTitle').textContent = '📈 Asset Lifecycle';
+        document.getElementById('headerSubtitle').textContent = ss.name;
+        renderAssetLifecycleDashboard();
+    } else if (view === 'assetLifecycleProfile') {
+        document.getElementById('assetLifecycleProfileView').classList.add('active');
+        headerBack.style.display = 'flex';
+        headerBack.onclick = () => goBackTo('assetLifecycle', currentDashboardSSId);
+        let eqId = arguments[2];
+        let ss = getSubstation(ssId);
+        document.getElementById('headerTitle').textContent = '📄 Asset Profile';
+        document.getElementById('headerSubtitle').textContent = ss.name;
+        renderAssetLifecycleProfile(eqId);
     } else if (view === 'executiveDashboard') {
         document.getElementById('executiveDashboardView').classList.add('active');
         headerBack.style.display = 'flex';
@@ -480,7 +498,37 @@ document.addEventListener('click', (e) => {
 
 // Sticky nav shadow on scroll
 const topNav = document.getElementById('topNav');
-window.addEventListener('scroll', () => {
-    topNav.classList.toggle('scrolled', window.scrollY > 4);
-});
+if (topNav) {
+    document.querySelector('.main-content').addEventListener('scroll', () => {
+        if (document.querySelector('.main-content').scrollTop > 10) {
+            topNav.style.boxShadow = '0 4px 15px rgba(0,0,0,0.1)';
+        } else {
+            topNav.style.boxShadow = 'none';
+        }
+    });
+}
 
+// Data Migration Script for Equipment Master Bay Numbers
+(function migrateEquipmentBays() {
+    let subs = loadSubstations();
+    let isModified = false;
+    subs.forEach(ss => {
+        if (ss.equipmentMaster && Array.isArray(ss.equipmentMaster)) {
+            ss.equipmentMaster.forEach(eq => {
+                if (!eq.bayNumber) {
+                    if (eq.voltageLevel === '66 KV' || eq.voltageLevel === '66/11 KV') {
+                        eq.bayNumber = '66KV Yard';
+                    } else if (eq.voltageLevel === '11 KV') {
+                        eq.bayNumber = '11KV Yard';
+                    } else if (eq.voltageLevel && eq.voltageLevel.includes('DC')) {
+                        eq.bayNumber = 'Control Room';
+                    } else {
+                        eq.bayNumber = 'Other';
+                    }
+                    isModified = true;
+                }
+            });
+        }
+    });
+    if (isModified) saveSubstations(subs);
+})();

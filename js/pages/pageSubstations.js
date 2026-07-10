@@ -51,9 +51,9 @@ const pageSubstationsTemplate = `
 <span class="material-icons-round" style="color: #455a64; background: #eceff1;">precision_manufacturing</span>
 <div class="card-title">Equipment Master</div>
 </div>
-<div class="ss-dashboard-card">
-<span class="material-icons-round" style="color: #00838f; background: #e0f7fa;">analytics</span>
-<div class="card-title">Analytics</div>
+<div class="ss-dashboard-card" onclick="navigateTo('assetLifecycle', currentDashboardSSId)">
+<span class="material-icons-round" style="color: #ff5722; background: #fbe9e7;">auto_graph</span>
+<div class="card-title">Asset Lifecycle</div>
 </div>
 <div class="ss-dashboard-card" onclick="navigateTo('dms', currentDashboardSSId)">
 <span class="material-icons-round" style="color: #795548; background: #efebe9;">folder</span>
@@ -1107,8 +1107,27 @@ const pageSubstationsTemplate = `
 </select>
 </div>
 <div class="form-group">
-<label class="form-label">Bay Number</label>
-<input class="form-input" id="eqBayNumber" type="text"/>
+<label class="form-label">Bay Number / Location</label>
+<select id="eqBayNumber" class="form-control">
+<option value="">Select Location</option>
+<option value="66KV Bay 1">66KV Bay 1</option>
+<option value="66KV Bay 2">66KV Bay 2</option>
+<option value="66KV Bay 3">66KV Bay 3</option>
+<option value="66KV Bay 4">66KV Bay 4</option>
+<option value="11KV Bay 1">11KV Bay 1</option>
+<option value="11KV Bay 2">11KV Bay 2</option>
+<option value="11KV Bay 3">11KV Bay 3</option>
+<option value="11KV Bay 4">11KV Bay 4</option>
+<option value="11KV Bay 5">11KV Bay 5</option>
+<option value="11KV Bay 6">11KV Bay 6</option>
+<option value="11KV Bay 7">11KV Bay 7</option>
+<option value="11KV Bay 8">11KV Bay 8</option>
+<option value="66KV Yard">66KV Yard</option>
+<option value="11KV Yard">11KV Yard</option>
+<option value="Control Room">Control Room</option>
+<option value="Battery Room">Battery Room</option>
+<option value="Other">Other</option>
+</select>
 </div>
 <div class="form-group">
 <label class="form-label">Manufacturer</label>
@@ -1180,71 +1199,45 @@ const pageSubstationsTemplate = `
 <button class="btn btn-outline" id="profEditBtn">Edit Profile</button>
 </div>
 </div>
-<div class="eq-lifecycle-grid">
-<!-- Lifecycle Summary -->
-<div class="eq-lifecycle-card">
-<div class="eq-lifecycle-card-title"><span class="material-icons-round">analytics</span> Lifecycle Health</div>
-<div class="eq-lifecycle-stat">
-<span class="eq-stat-label">Health Score</span>
-<span class="eq-stat-val" id="profHealthScore" style="color:var(--success)">98%</span>
-</div>
-<div class="eq-lifecycle-stat">
-<span class="eq-stat-label">Total Faults</span>
-<span class="eq-stat-val" id="profTotalFaults">0</span>
-</div>
-<div class="eq-lifecycle-stat">
-<span class="eq-stat-label">Total Breakdowns</span>
-<span class="eq-stat-val" id="profTotalBreakdowns">0</span>
-</div>
-<div class="eq-lifecycle-stat">
-<span class="eq-stat-label">Last Maintenance</span>
-<span class="eq-stat-val" id="profLastMaintenance">-</span>
-</div>
-</div>
-<!-- Asset Details -->
-<div class="eq-lifecycle-card">
-<div class="eq-lifecycle-card-title"><span class="material-icons-round">info</span> Asset Details</div>
-<div class="eq-lifecycle-stat">
-<span class="eq-stat-label">Manufacturer</span>
-<span class="eq-stat-val" id="profDetailManufacturer">-</span>
-</div>
-<div class="eq-lifecycle-stat">
-<span class="eq-stat-label">Model</span>
-<span class="eq-stat-val" id="profDetailModel">-</span>
-</div>
-<div class="eq-lifecycle-stat">
-<span class="eq-stat-label">Serial No</span>
-<span class="eq-stat-val" id="profDetailSerial">-</span>
-</div>
-<div class="eq-lifecycle-stat">
-<span class="eq-stat-label">Install Date</span>
-<span class="eq-stat-val" id="profDetailInstall">-</span>
-</div>
-</div>
-</div>
-<!-- Linked Records -->
-<div class="eq-records-section">
-<div class="eq-records-tabs">
-<div class="eq-tab active" onclick="alert('Faults view coming soon')">Faults</div>
-<div class="eq-tab" onclick="alert('Maintenance view coming soon')">Maintenance</div>
-<div class="eq-tab" onclick="alert('Trippings view coming soon')">Trippings</div>
-<div class="eq-tab" onclick="alert('Breakdowns view coming soon')">Breakdowns</div>
-</div>
-<div class="fault-table-container" style="box-shadow:none; margin-bottom:0;">
-<table class="modern-table">
-<thead>
-<tr>
-<th>Date</th>
-<th>Record Type</th>
-<th>Description</th>
-<th>Status</th>
-</tr>
-</thead>
-<tbody id="profRecordsContainer">
-<!-- Populated by JS -->
-</tbody>
-</table>
-</div>
+<div class="eq-lifecycle-grid" style="grid-template-columns: 1fr;">
+    <!-- Asset Details (Master Data) -->
+    <div class="eq-lifecycle-card">
+        <div class="eq-lifecycle-card-title"><span class="material-icons-round">info</span> Master Data Details</div>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+            <div class="eq-lifecycle-stat">
+                <span class="eq-stat-label">Manufacturer</span>
+                <span class="eq-stat-val" id="profDetailManufacturer" style="font-weight: 600;">-</span>
+            </div>
+            <div class="eq-lifecycle-stat">
+                <span class="eq-stat-label">Model Number</span>
+                <span class="eq-stat-val" id="profDetailModel" style="font-weight: 600;">-</span>
+            </div>
+            <div class="eq-lifecycle-stat">
+                <span class="eq-stat-label">Serial Number</span>
+                <span class="eq-stat-val" id="profDetailSerial" style="font-weight: 600;">-</span>
+            </div>
+            <div class="eq-lifecycle-stat">
+                <span class="eq-stat-label">Installation Date</span>
+                <span class="eq-stat-val" id="profDetailInstall" style="font-weight: 600;">-</span>
+            </div>
+            <div class="eq-lifecycle-stat">
+                <span class="eq-stat-label">Equipment Category</span>
+                <span class="eq-stat-val" id="profDetailCategory" style="font-weight: 600;">-</span>
+            </div>
+            <div class="eq-lifecycle-stat">
+                <span class="eq-stat-label">Voltage Rating</span>
+                <span class="eq-stat-val" id="profDetailVoltage" style="font-weight: 600;">-</span>
+            </div>
+        </div>
+        
+        <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border-light);">
+            <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 8px;">
+                <span class="material-icons-round" style="font-size: 16px; vertical-align: middle;">auto_graph</span>
+                To view history, faults, and health scores, navigate to <strong>Asset Lifecycle Management</strong> on the Dashboard.
+            </div>
+        </div>
+    </div>
 </div>
 </div>
 </div>
@@ -1413,6 +1406,18 @@ const pageSubstationsTemplate = `
             <button class="reg-btn reg-btn-outline" style="padding: 4px 8px;" disabled>Next</button>
         </div>
     </div>
+</div>
+
+<!-- ===== ASSET LIFECYCLE MANAGEMENT ===== -->
+<div class="view" id="assetLifecycleDashboardView">
+    <div class="content" id="assetLifecycleDashboardContent"></div>
+</div>
+
+<div class="view" id="assetLifecycleProfileView">
+    <div class="content" id="assetLifecycleProfileContent"></div>
+</div>
+
+</div>
 </div>
 `;
 

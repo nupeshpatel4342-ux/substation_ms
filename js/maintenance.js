@@ -1931,58 +1931,10 @@ function renderEquipmentProfile(eqId) {
     document.getElementById('profDetailModel').textContent = eq.model || '-';
     document.getElementById('profDetailSerial').textContent = eq.serialNo || '-';
     document.getElementById('profDetailInstall').textContent = eq.installDate || '-';
+    document.getElementById('profDetailCategory').textContent = eq.type || '-';
+    document.getElementById('profDetailVoltage').textContent = eq.voltage || '-';
     
-    // Calculations
-    let faults = (ss.faults || []).filter(f => f.equipmentId === eq.id || f.equipmentName === eq.name);
-    let breakDowns = (ss.breakdowns || []).filter(b => b.equipmentId === eq.id || b.equipmentName === eq.name);
-    let mnts = (ss.maintenance || []).filter(m => m.equipmentId === eq.id || m.equipmentName === eq.name);
-    
-    let totalFaults = faults.length;
-    let totalBreakdowns = breakDowns.length;
-    let totalMnt = mnts.length;
-    
-    let healthScore = 100 - (totalFaults * 5) - (totalBreakdowns * 10) + (totalMnt * 2);
-    if(healthScore > 100) healthScore = 100;
-    if(healthScore < 0) healthScore = 0;
-    
-    if(eq.status === 'Faulty') healthScore = 0;
-    if(eq.status === 'Under Maintenance' || eq.status === 'Decommissioned') healthScore = Math.min(healthScore, 50);
-    
-    let healthColor = healthScore > 80 ? 'var(--success)' : (healthScore > 50 ? 'var(--warning)' : 'var(--danger)');
-    
-    document.getElementById('profHealthScore').textContent = healthScore + '%';
-    document.getElementById('profHealthScore').style.color = healthColor;
-    document.getElementById('profTotalFaults').textContent = totalFaults;
-    document.getElementById('profTotalBreakdowns').textContent = totalBreakdowns;
-    document.getElementById('profLastMaintenance').textContent = mnts.length > 0 ? mnts[mnts.length-1].date : '-';
     document.getElementById('profEditBtn').onclick = () => openEquipmentModal(eqId);
-    
-    // Linked Records HTML
-    let recordsHtml = '';
-    
-    let allRecords = [];
-    faults.forEach(f => allRecords.push({ date: f.date, type: 'Fault', desc: f.description, status: f.status }));
-    breakDowns.forEach(b => allRecords.push({ date: b.date, type: 'Breakdown', desc: b.description, status: b.status || 'Logged' }));
-    mnts.forEach(m => allRecords.push({ date: m.date, type: 'Maintenance', desc: m.description, status: m.status || 'Logged' }));
-    
-    allRecords.sort((a,b) => new Date(b.date) - new Date(a.date));
-    
-    allRecords.forEach(rec => {
-        let typeColor = rec.type === 'Fault' ? 'var(--danger)' : (rec.type === 'Maintenance' ? 'var(--success)' : 'var(--warning)');
-        recordsHtml += `
-            <tr>
-                <td>${escapeHtml(rec.date)}</td>
-                <td><span style="font-weight:600; color:${typeColor}">${escapeHtml(rec.type)}</span></td>
-                <td>${escapeHtml(rec.desc)}</td>
-                <td>${escapeHtml(rec.status)}</td>
-            </tr>
-        `;
-    });
-    
-    if(!recordsHtml) {
-        recordsHtml = '<tr><td colspan="4" style="text-align:center; padding:20px;">No linked records found.</td></tr>';
-    }
-    document.getElementById('profRecordsContainer').innerHTML = recordsHtml;
 }
 
 // Set Substations as default active on load

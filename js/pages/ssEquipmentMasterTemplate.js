@@ -105,8 +105,27 @@ const ssEquipmentMasterTemplate = `
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Bay Number</label>
-                                <input type="text" id="eqBayNumber" class="form-input">
+                                <label class="form-label">Bay Number / Location</label>
+                                <select id="eqBayNumber" class="form-control">
+                                    <option value="">Select or Type Below</option>
+                                    <option value="66KV Bay 1">66KV Bay 1</option>
+                                    <option value="66KV Bay 2">66KV Bay 2</option>
+                                    <option value="66KV Bay 3">66KV Bay 3</option>
+                                    <option value="66KV Bay 4">66KV Bay 4</option>
+                                    <option value="11KV Bay 1">11KV Bay 1</option>
+                                    <option value="11KV Bay 2">11KV Bay 2</option>
+                                    <option value="11KV Bay 3">11KV Bay 3</option>
+                                    <option value="11KV Bay 4">11KV Bay 4</option>
+                                    <option value="11KV Bay 5">11KV Bay 5</option>
+                                    <option value="11KV Bay 6">11KV Bay 6</option>
+                                    <option value="11KV Bay 7">11KV Bay 7</option>
+                                    <option value="11KV Bay 8">11KV Bay 8</option>
+                                    <option value="66KV Yard">66KV Yard</option>
+                                    <option value="11KV Yard">11KV Yard</option>
+                                    <option value="Control Room">Control Room</option>
+                                    <option value="Battery Room">Battery Room</option>
+                                    <option value="Other">Other</option>
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Manufacturer</label>
