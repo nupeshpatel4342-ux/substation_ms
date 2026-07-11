@@ -258,7 +258,7 @@ const pageSubstationsTemplate = `
 <div id="oppositeInputs" style="padding: 12px;"></div>
 </div>
 <!-- Calculate Button -->
-<div class="btn-group no-print" style="margin-bottom: 16px;">
+<div class="btn-group no-print" id="reportCalcBtnGroup" style="margin-bottom: 16px;">
 <button class="btn btn-success" onclick="calculateReport()" style="flex:2"> Calculate &amp; Generate Report</button>
 <button class="btn btn-outline" onclick="resetReport()">↺ Reset</button>
 </div>

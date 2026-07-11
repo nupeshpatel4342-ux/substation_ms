@@ -95,8 +95,34 @@
             display: flex;
             align-items: center;
             gap: 14px;
-            border: 1px solid var(--border-light);
+            border: 2.5px solid transparent;
             box-shadow: var(--shadow-sm);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+            position: relative;
+        }
+        .mrm-stat-box:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary-light);
+        }
+        .mrm-stat-box.active {
+            border-color: var(--primary);
+            background: #f4f8ff;
+            box-shadow: 0 8px 24px rgba(21, 101, 192, 0.15);
+        }
+        .mrm-stat-box.active::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 8px 8px 0;
+            border-style: solid;
+            border-color: var(--primary) transparent;
+            display: block;
+            width: 0;
         }
         .mrm-stat-icon {
             width: 42px; height: 42px;
@@ -166,10 +192,9 @@
             box-shadow: 0 0 0 3px rgba(21,101,192,0.1);
         }
 
-        /* Report Cards Grid */
         .mrm-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 18px;
         }
 
@@ -321,8 +346,62 @@
             .mrm-hero-title { font-size: 17px; }
             .mrm-hero-sub { font-size: 12px; }
             .mrm-stats-bar { grid-template-columns: 1fr; gap: 8px; }
-            .mrm-grid { grid-template-columns: 1fr; }
+            .mrm-grid { 
+                grid-template-columns: repeat(2, 1fr); 
+                gap: 10px; 
+            }
             .mrm-create-btn span:last-child { display: none; }
+            
+            /* Compact Cards for 2-column mobile view */
+            .mrm-card-top {
+                padding: 10px 12px;
+            }
+            .mrm-card-month {
+                font-size: 16px;
+            }
+            .mrm-card-year {
+                font-size: 11px;
+            }
+            .mrm-lock-badge {
+                padding: 3px 6px;
+                font-size: 9px;
+                gap: 3px;
+            }
+            .mrm-lock-badge span.mrm-lock-text {
+                display: none; /* Hide the word 'Locked' on very small screens, show only the lock icon */
+            }
+            .mrm-metric {
+                padding: 8px 10px;
+            }
+            .mrm-metric-label {
+                font-size: 8px;
+                letter-spacing: 0.1px;
+                margin-bottom: 2px;
+            }
+            .mrm-metric-value {
+                font-size: 12px;
+            }
+            .mrm-metric-unit {
+                font-size: 8px;
+            }
+            .mrm-card-date {
+                padding: 6px 10px;
+                font-size: 9px;
+            }
+            .mrm-card-actions {
+                flex-direction: column;
+                gap: 6px;
+                padding: 10px 12px;
+            }
+            .mrm-btn {
+                width: 100%;
+                padding: 7px 6px;
+                font-size: 11px;
+                justify-content: center;
+            }
+            .mrm-stat-box.active::after {
+                display: none;
+            }
         }
 
         /* ===== REPORT STATUS BAR ===== */

@@ -435,6 +435,18 @@ function renderReportStatus(status) {
     </button>`;
 
     actionsEl.innerHTML = btns;
+
+    // Disable all report inputs and Opp SS inputs if report is Locked
+    let isLocked = (s === 'Locked');
+    document.querySelectorAll('#feederCategoryContainer input[type="number"], #oppositeInputs input[type="number"]').forEach(inp => {
+        inp.disabled = isLocked;
+    });
+
+    // Hide/Show calculation buttons group
+    let calcGrp = document.getElementById('reportCalcBtnGroup');
+    if (calcGrp) {
+        calcGrp.style.display = isLocked ? 'none' : 'flex';
+    }
 }
 
 function exportData() {
@@ -834,14 +846,15 @@ function exportPDF() {
 
 let _mrmAllReports = [];
 let _mrmSsId = null;
+let _mrmActiveTab = 'all'; // 'all', 'locked', 'inprogress'
 
 // Status config
 const STATUS_CONFIG = {
-    'Draft':     { label: 'Draft',     badgeClass: 'stat-pending',  icon: 'edit_note',     color: '#757575' },
-    'Submitted': { label: 'Submitted', badgeClass: 'stat-progress', icon: 'send',          color: '#1565c0' },
-    'Approved':  { label: 'Approved',  badgeClass: 'stat-resolved', icon: 'check_circle',  color: '#2e7d32' },
-    'Rejected':  { label: 'Rejected',  badgeClass: 'sev-critical',  icon: 'cancel',        color: '#c62828' },
-    'Locked':    { label: 'Locked',    badgeClass: 'stat-closed',   icon: 'lock',          color: '#6a1b9a' }
+    'Draft':     { label: 'Draft',     badgeClass: 'stat-pending',  icon: 'edit_note',     color: '#757575', grad: 'linear-gradient(135deg, #757575, #616161)' },
+    'Submitted': { label: 'Submitted', badgeClass: 'stat-progress', icon: 'send',          color: '#1565c0', grad: 'linear-gradient(135deg, #1565c0, #0d47a1)' },
+    'Approved':  { label: 'Approved',  badgeClass: 'stat-resolved', icon: 'check_circle',  color: '#2e7d32', grad: 'linear-gradient(135deg, #2e7d32, #1b5e20)' },
+    'Rejected':  { label: 'Rejected',  badgeClass: 'sev-critical',  icon: 'cancel',        color: '#c62828', grad: 'linear-gradient(135deg, #c62828, #b71c1c)' },
+    'Locked':    { label: 'Locked',    badgeClass: 'stat-closed',   icon: 'lock',          color: '#6a1b9a', grad: 'linear-gradient(135deg, #6a1b9a, #4a148c)' }
 };
 
 function renderMonthlyReportsMenu(ssId) {
@@ -849,16 +862,17 @@ function renderMonthlyReportsMenu(ssId) {
     let ss = getSubstation(ssId);
     if (!ss) return;
 
-    // ── Stats Bar ──
+    // ── Stats Bar / Clickable Tabs ──
     let allReports = Object.values(ss.reports || {});
     let lockedCount    = allReports.filter(r => r.status === 'Locked').length;
     let inProgressCount = allReports.filter(r => r.status && r.status !== 'Locked').length;
     let draftCount     = allReports.filter(r => !r.status || r.status === 'Draft').length;
+    let totalInProg    = inProgressCount + draftCount;
 
     let statsBar = document.getElementById('mrmStatsBar');
     if (statsBar) {
         statsBar.innerHTML = `
-            <div class="mrm-stat-box">
+            <div class="mrm-stat-box ${_mrmActiveTab === 'all' ? 'active' : ''}" onclick="setMrmTab('all')">
                 <div class="mrm-stat-icon" style="background:#e3f2fd;">
                     <span class="material-icons-round" style="color:#1565c0;">folder_open</span>
                 </div>
@@ -867,7 +881,7 @@ function renderMonthlyReportsMenu(ssId) {
                     <div class="mrm-stat-value">${allReports.length}</div>
                 </div>
             </div>
-            <div class="mrm-stat-box">
+            <div class="mrm-stat-box ${_mrmActiveTab === 'locked' ? 'active' : ''}" onclick="setMrmTab('locked')">
                 <div class="mrm-stat-icon" style="background:#e8f5e9;">
                     <span class="material-icons-round" style="color:#2e7d32;">lock</span>
                 </div>
@@ -876,13 +890,13 @@ function renderMonthlyReportsMenu(ssId) {
                     <div class="mrm-stat-value">${lockedCount}</div>
                 </div>
             </div>
-            <div class="mrm-stat-box">
+            <div class="mrm-stat-box ${_mrmActiveTab === 'inprogress' ? 'active' : ''}" onclick="setMrmTab('inprogress')">
                 <div class="mrm-stat-icon" style="background:#fff8e1;">
                     <span class="material-icons-round" style="color:#f57f17;">pending_actions</span>
                 </div>
                 <div>
                     <div class="mrm-stat-label">In Progress</div>
-                    <div class="mrm-stat-value">${inProgressCount + draftCount}</div>
+                    <div class="mrm-stat-value">${totalInProg}</div>
                 </div>
             </div>
         `;
@@ -917,18 +931,39 @@ function renderMonthlyReportsMenu(ssId) {
     filterMonthlyReportsMenu();
 }
 
-function filterMonthlyReportsMenu() {
+function setMrmTab(tab) {
+    _mrmActiveTab = tab;
+    document.querySelectorAll('.mrm-stat-box').forEach((box, idx) => {
+        let tabs = ['all', 'locked', 'inprogress'];
+        if (tabs[idx] === tab) {
+            box.classList.add('active');
+        } else {
+            box.classList.remove('active');
+        }
+    });
+    filterMonthlyReportsMenu();
+}
+
+    function filterMonthlyReportsMenu() {
     let container = document.getElementById('monthlyReportsMenuGrid');
     if (!container) return;
 
     let search = (document.getElementById('mrmSearchInput') || {}).value || '';
     let yearSel = (document.getElementById('mrmYearFilter') || {}).value || '';
 
+    // Apply Year and Search Filters
     let filtered = _mrmAllReports.filter(item => {
         let matchSearch = !search || item.month.toLowerCase().includes(search.toLowerCase());
         let matchYear   = !yearSel || item.month.split('-')[1] === yearSel;
         return matchSearch && matchYear;
     });
+
+    // Apply Active Tab Filter
+    if (_mrmActiveTab === 'locked') {
+        filtered = filtered.filter(item => item.data.status === 'Locked');
+    } else if (_mrmActiveTab === 'inprogress') {
+        filtered = filtered.filter(item => item.data.status !== 'Locked');
+    }
 
     if (filtered.length === 0 && _mrmAllReports.length === 0) {
         container.innerHTML = `
@@ -948,143 +983,128 @@ function filterMonthlyReportsMenu() {
             <div class="mrm-empty">
                 <div class="mrm-empty-icon"><span class="material-icons-round">search_off</span></div>
                 <h3>No Reports Found</h3>
-                <p>Try a different month or year.</p>
+                <p>Try changing the tab filter or search query.</p>
             </div>`;
         return;
     }
 
-    // Split into in-progress and locked
-    let inProgress = filtered.filter(item => item.data.status !== 'Locked');
-    let locked     = filtered.filter(item => item.data.status === 'Locked');
-
     let html = '';
+    filtered.forEach(item => {
+        let r = item.data;
+        let [mon, yr] = item.month.split('-');
+        let st = r.status || 'Draft';
+        let cfg = STATUS_CONFIG[st] || STATUS_CONFIG['Draft'];
 
-    // ── SECTION 1: IN PROGRESS ──
-    if (inProgress.length > 0) {
+        // S/S Loss styling
+        let lossVal = r.ssLoss ? parseFloat(r.ssLoss) : null;
+        let lossClass = 'loss-ok';
+        if (lossVal !== null) {
+            if (lossVal > 5) lossClass = 'loss-bad';
+            else if (lossVal > 3) lossClass = 'loss-warn';
+        }
+
+        let savedDate = r.generatedAt ? new Date(r.generatedAt).toLocaleDateString('en-IN', {day:'2-digit',month:'short',year:'numeric'}) : 'N/A';
+
+        // Contextual buttons inside unified card based on status
+        let cardActionButtons = '';
+        if (st === 'Draft') {
+            cardActionButtons = `
+                <button class="mrm-btn mrm-btn-view" onclick="openReportForStatus('${_mrmSsId}', '${item.month}')">
+                    <span class="material-icons-round">edit</span> Edit Draft
+                </button>
+                <button class="mrm-btn mrm-btn-pdf" style="background:#e3f2fd;color:#1565c0;" onclick="quickUpdateStatus('${_mrmSsId}', '${item.month}', 'Submitted')">
+                    <span class="material-icons-round">send</span> Submit
+                </button>`;
+        } else if (st === 'Submitted') {
+            cardActionButtons = `
+                <button class="mrm-btn mrm-btn-view" onclick="openReportForStatus('${_mrmSsId}', '${item.month}')">
+                    <span class="material-icons-round">visibility</span> Review
+                </button>
+                <button class="mrm-btn mrm-btn-pdf" style="background:#e8f5e9;color:#2e7d32;" onclick="quickUpdateStatus('${_mrmSsId}', '${item.month}', 'Approved')">
+                    <span class="material-icons-round">check_circle</span> Approve
+                </button>`;
+        } else if (st === 'Approved') {
+            cardActionButtons = `
+                <button class="mrm-btn mrm-btn-view" onclick="openReportForStatus('${_mrmSsId}', '${item.month}')">
+                    <span class="material-icons-round">visibility</span> View
+                </button>
+                <button class="mrm-btn mrm-btn-pdf" style="background:#ede7f6;color:#6a1b9a;" onclick="quickUpdateStatus('${_mrmSsId}', '${item.month}', 'Locked')">
+                    <span class="material-icons-round">lock</span> Lock
+                </button>`;
+        } else if (st === 'Rejected') {
+            cardActionButtons = `
+                <button class="mrm-btn mrm-btn-view" onclick="openReportForStatus('${_mrmSsId}', '${item.month}')">
+                    <span class="material-icons-round">edit</span> Edit
+                </button>
+                <button class="mrm-btn mrm-btn-pdf" style="background:#fce4ec;color:#c62828;" onclick="quickUpdateStatus('${_mrmSsId}', '${item.month}', 'Submitted')">
+                    <span class="material-icons-round">refresh</span> Re-submit
+                </button>`;
+        } else if (st === 'Locked') {
+            cardActionButtons = `
+                <button class="mrm-btn mrm-btn-view" onclick="viewLockedReport('${_mrmSsId}', '${item.month}')">
+                    <span class="material-icons-round">visibility</span> View Report
+                </button>
+                <button class="mrm-btn mrm-btn-pdf" onclick="downloadLockedReportPdf('${_mrmSsId}', '${item.month}')">
+                    <span class="material-icons-round">picture_as_pdf</span> Download PDF
+                </button>`;
+        }
+
         html += `
-        <div class="mrm-inprogress-section">
-            <div class="mrm-section-header">
-                <span class="material-icons-round">pending_actions</span>
-                In Progress
-                <span class="mrm-section-count">${inProgress.length}</span>
+        <div class="mrm-card">
+            <div class="mrm-card-top" style="background: ${cfg.grad};">
+                <div>
+                    <div class="mrm-card-month">${mon}</div>
+                    <div class="mrm-card-year">${yr||''}</div>
+                </div>
+                <div class="mrm-lock-badge" style="background: rgba(255,255,255,0.22);">
+                    <span class="material-icons-round">${cfg.icon}</span> 
+                    <span class="mrm-lock-text">${cfg.label}</span>
+                </div>
             </div>
-            <div class="mrm-ip-list">`;
-
-        inProgress.forEach(item => {
-            let st = item.data.status || 'Draft';
-            let cfg = STATUS_CONFIG[st] || STATUS_CONFIG['Draft'];
-            let [mon, yr] = item.month.split('-');
-
-            // Next action button label based on status
-            let nextBtnHtml = '';
-            if (st === 'Draft') {
-                nextBtnHtml = `<button class="mrm-ip-btn" style="background:#e3f2fd;color:#1565c0;" onclick="openReportForStatus('${_mrmSsId}','${item.month}')">
-                    <span class="material-icons-round">send</span> Open & Submit
-                </button>`;
-            } else if (st === 'Submitted') {
-                nextBtnHtml = `<button class="mrm-ip-btn" style="background:#e8f5e9;color:#2e7d32;" onclick="openReportForStatus('${_mrmSsId}','${item.month}')">
-                    <span class="material-icons-round">check_circle</span> Open & Approve
-                </button>`;
-            } else if (st === 'Approved') {
-                nextBtnHtml = `<button class="mrm-ip-btn" style="background:#ede7f6;color:#6a1b9a;" onclick="openReportForStatus('${_mrmSsId}','${item.month}')">
-                    <span class="material-icons-round">lock</span> Open & Lock
-                </button>`;
-            } else if (st === 'Rejected') {
-                nextBtnHtml = `<button class="mrm-ip-btn" style="background:#fce4ec;color:#c62828;" onclick="openReportForStatus('${_mrmSsId}','${item.month}')">
-                    <span class="material-icons-round">refresh</span> Open & Re-submit
-                </button>`;
-            }
-
-            html += `
-            <div class="mrm-ip-row">
-                <div class="mrm-ip-left">
-                    <div class="mrm-ip-month">${mon} <span style="font-size:12px;font-weight:500;color:var(--text-secondary);">${yr||''}</span></div>
-                    <span class="status-badge ${cfg.badgeClass}" style="display:flex;align-items:center;gap:4px;">
-                        <span class="material-icons-round" style="font-size:13px;">${cfg.icon}</span>${cfg.label}
-                    </span>
+            <div class="mrm-card-metrics">
+                <div class="mrm-metric">
+                    <div class="mrm-metric-label">Total Received</div>
+                    <div class="mrm-metric-value">${r.totalReceived ? parseFloat(r.totalReceived).toFixed(2) : '—'} <span class="mrm-metric-unit">MWH</span></div>
                 </div>
-                <div class="mrm-ip-actions">
-                    ${nextBtnHtml}
-                    <button class="mrm-ip-btn mrm-ip-open" onclick="openReportForStatus('${_mrmSsId}','${item.month}')">
-                        <span class="material-icons-round">open_in_new</span> Open
-                    </button>
+                <div class="mrm-metric">
+                    <div class="mrm-metric-label">Total Sent</div>
+                    <div class="mrm-metric-value">${r.totalSent ? parseFloat(r.totalSent).toFixed(2) : '—'} <span class="mrm-metric-unit">MWH</span></div>
                 </div>
-            </div>`;
-        });
-
-        html += `</div></div>`;
-    }
-
-    // ── SECTION 2: LOCKED ARCHIVE ──
-    if (locked.length > 0) {
-        html += `
-        <div class="mrm-locked-section">
-            <div class="mrm-section-header">
-                <span class="material-icons-round">lock</span>
-                Locked Archive
-                <span class="mrm-section-count" style="background:#e8f5e9;color:#2e7d32;">${locked.length}</span>
+                <div class="mrm-metric">
+                    <div class="mrm-metric-label">S/S Loss</div>
+                    <div class="mrm-metric-value ${lossClass}">${lossVal !== null ? lossVal.toFixed(2)+'%' : '—'}</div>
+                </div>
+                <div class="mrm-metric">
+                    <div class="mrm-metric-label">Status</div>
+                    <div class="mrm-metric-value" style="font-size:12px; font-weight:700; color:${cfg.color};">${cfg.label}</div>
+                </div>
             </div>
-            <div class="mrm-grid">`;
-
-        locked.forEach(item => {
-            let r = item.data;
-            let [mon, yr] = item.month.split('-');
-            let lossVal = r.ssLoss ? parseFloat(r.ssLoss) : null;
-            let lossClass = 'loss-ok';
-            if (lossVal !== null) {
-                if (lossVal > 5) lossClass = 'loss-bad';
-                else if (lossVal > 3) lossClass = 'loss-warn';
-            }
-            let savedDate = r.generatedAt ? new Date(r.generatedAt).toLocaleDateString('en-IN', {day:'2-digit',month:'short',year:'numeric'}) : 'N/A';
-
-            html += `
-            <div class="mrm-card">
-                <div class="mrm-card-top">
-                    <div>
-                        <div class="mrm-card-month">${mon}</div>
-                        <div class="mrm-card-year">${yr||''}</div>
-                    </div>
-                    <div class="mrm-lock-badge">
-                        <span class="material-icons-round">lock</span> Locked
-                    </div>
-                </div>
-                <div class="mrm-card-metrics">
-                    <div class="mrm-metric">
-                        <div class="mrm-metric-label">Total Received</div>
-                        <div class="mrm-metric-value">${r.totalReceived ? parseFloat(r.totalReceived).toFixed(2) : '—'} <span class="mrm-metric-unit">MWH</span></div>
-                    </div>
-                    <div class="mrm-metric">
-                        <div class="mrm-metric-label">Total Sent</div>
-                        <div class="mrm-metric-value">${r.totalSent ? parseFloat(r.totalSent).toFixed(2) : '—'} <span class="mrm-metric-unit">MWH</span></div>
-                    </div>
-                    <div class="mrm-metric">
-                        <div class="mrm-metric-label">S/S Loss</div>
-                        <div class="mrm-metric-value ${lossClass}">${lossVal !== null ? lossVal.toFixed(2)+'%' : '—'}</div>
-                    </div>
-                    <div class="mrm-metric">
-                        <div class="mrm-metric-label">Status</div>
-                        <div class="mrm-metric-value" style="font-size:13px;color:var(--success);">✓ Finalized</div>
-                    </div>
-                </div>
-                <div class="mrm-card-date">
-                    <span class="material-icons-round">calendar_today</span>
-                    Saved on ${savedDate}
-                </div>
-                <div class="mrm-card-actions">
-                    <button class="mrm-btn mrm-btn-view" onclick="viewLockedReport('${_mrmSsId}', '${item.month}')">
-                        <span class="material-icons-round">visibility</span> View Report
-                    </button>
-                    <button class="mrm-btn mrm-btn-pdf" onclick="downloadLockedReportPdf('${_mrmSsId}', '${item.month}')">
-                        <span class="material-icons-round">picture_as_pdf</span> Download PDF
-                    </button>
-                </div>
-            </div>`;
-        });
-
-        html += `</div></div>`;
-    }
+            <div class="mrm-card-date">
+                <span class="material-icons-round">calendar_today</span>
+                Saved on ${savedDate}
+            </div>
+            <div class="mrm-card-actions">
+                ${cardActionButtons}
+            </div>
+        </div>`;
+    });
 
     container.innerHTML = html;
+}
+
+// Quick action to advance status directly from grid cards
+function quickUpdateStatus(ssId, month, newStatus) {
+    let ss = getSubstation(ssId);
+    if (!ss || !ss.reports || !ss.reports[month]) return;
+
+    ss.reports[month].status = newStatus;
+    saveSS(ss);
+
+    let act = `Status Quick Advance`;
+    EventEngine.dispatch(ssId, 'Monthly Report', act, `Status set to ${newStatus} for ${month} from archive card`);
+
+    showToast(`Report status updated to ${newStatus}`);
+    renderMonthlyReportsMenu(ssId);
 }
 
 // Open any report (any status) for viewing/advancing
@@ -1129,4 +1149,3 @@ function downloadLockedReportPdf(ssId, month) {
         }
     }, 300);
 }
-
