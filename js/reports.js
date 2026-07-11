@@ -1,11 +1,11 @@
 // ===================================================================
 //  REPORT PAGE RENDERING
 // ===================================================================
-function renderReportPage() {
+function renderReportPage(clearForm = false) {
     let ss = getSubstation(reportSSId);
     if (!ss) { navigateTo('dashboard'); return; }
 
-    // Set default month
+    // Set default month (always current month for new report)
     const now = new Date();
     const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
     document.getElementById('reportMonth').value = months[now.getMonth()] + '-' + now.getFullYear();
@@ -77,17 +77,23 @@ function renderReportPage() {
         oppCard.style.display = 'none';
     }
 
-    // Hide results initially
+    // Always hide results initially (fresh state)
     document.getElementById('totalsCard').style.display = 'none';
     document.getElementById('lossCard').style.display = 'none';
     document.getElementById('pdfBtnGroup').style.display = 'none';
 
-    // Load saved report data if exists
+    // If clearForm=true (New Report clicked from archive), show blank form
+    if (clearForm) {
+        if (typeof renderReportStatus === 'function') renderReportStatus('Draft');
+        return; // Don't load any saved data
+    }
+
+    // Otherwise: load saved report data for current month if it exists
     let month = document.getElementById('reportMonth').value;
     if (ss.reports && ss.reports[month]) {
         loadReportData(ss.reports[month]);
     } else {
-        if(typeof renderReportStatus === 'function') renderReportStatus('Draft');
+        if (typeof renderReportStatus === 'function') renderReportStatus('Draft');
     }
 }
 
@@ -757,3 +763,228 @@ function exportPDF() {
     }, 150);
 }
 
+
+// ===================================================================
+//  MONTHLY REPORTS ARCHIVE MENU
+// ===================================================================
+
+// Store data for filtering
+let _mrmAllReports = [];
+let _mrmSsId = null;
+
+function renderMonthlyReportsMenu(ssId) {
+    _mrmSsId = ssId;
+    let ss = getSubstation(ssId);
+    if (!ss) return;
+
+    // --- Build Stats Bar ---
+    let allReports = Object.values(ss.reports || {});
+    let lockedReports = allReports.filter(r => r.status === 'Locked');
+    let draftReports = allReports.filter(r => !r.status || r.status === 'Draft');
+    let totalReports = allReports.length;
+
+    let statsBar = document.getElementById('mrmStatsBar');
+    if (statsBar) {
+        statsBar.innerHTML = `
+            <div class="mrm-stat-box">
+                <div class="mrm-stat-icon" style="background:#e3f2fd;">
+                    <span class="material-icons-round" style="color:#1565c0;">folder_open</span>
+                </div>
+                <div>
+                    <div class="mrm-stat-label">Total Reports</div>
+                    <div class="mrm-stat-value">${totalReports}</div>
+                </div>
+            </div>
+            <div class="mrm-stat-box">
+                <div class="mrm-stat-icon" style="background:#e8f5e9;">
+                    <span class="material-icons-round" style="color:#2e7d32;">lock</span>
+                </div>
+                <div>
+                    <div class="mrm-stat-label">Locked</div>
+                    <div class="mrm-stat-value">${lockedReports.length}</div>
+                </div>
+            </div>
+            <div class="mrm-stat-box">
+                <div class="mrm-stat-icon" style="background:#fff8e1;">
+                    <span class="material-icons-round" style="color:#f57f17;">edit_note</span>
+                </div>
+                <div>
+                    <div class="mrm-stat-label">Drafts</div>
+                    <div class="mrm-stat-value">${draftReports.length}</div>
+                </div>
+            </div>
+        `;
+    }
+
+    // --- Populate Year Filter ---
+    let yearFilter = document.getElementById('mrmYearFilter');
+    if (yearFilter) {
+        let years = new Set();
+        Object.keys(ss.reports || {}).forEach(key => {
+            let parts = key.split('-');
+            if (parts[1]) years.add(parts[1]);
+        });
+        let currentVal = yearFilter.value;
+        yearFilter.innerHTML = '<option value="">All Years</option>';
+        Array.from(years).sort((a,b) => parseInt(b) - parseInt(a)).forEach(y => {
+            yearFilter.innerHTML += `<option value="${y}" ${currentVal === y ? 'selected' : ''}>${y}</option>`;
+        });
+    }
+
+    // Collect all locked reports for rendering
+    const monthOrder = { 'JAN':1,'FEB':2,'MAR':3,'APR':4,'MAY':5,'JUN':6,'JUL':7,'AUG':8,'SEP':9,'OCT':10,'NOV':11,'DEC':12 };
+    _mrmAllReports = Object.keys(ss.reports || {})
+        .filter(key => ss.reports[key].status === 'Locked')
+        .map(key => ({ month: key, data: ss.reports[key] }))
+        .sort((a, b) => {
+            let [m1, y1] = a.month.split('-');
+            let [m2, y2] = b.month.split('-');
+            if (y1 !== y2) return parseInt(y2) - parseInt(y1);
+            return monthOrder[m2] - monthOrder[m1];
+        });
+
+    filterMonthlyReportsMenu();
+}
+
+function filterMonthlyReportsMenu() {
+    let container = document.getElementById('monthlyReportsMenuGrid');
+    if (!container) return;
+
+    let search = (document.getElementById('mrmSearchInput') || {}).value || '';
+    let yearSel = (document.getElementById('mrmYearFilter') || {}).value || '';
+
+    let filtered = _mrmAllReports.filter(item => {
+        let matchSearch = !search || item.month.toLowerCase().includes(search.toLowerCase());
+        let matchYear = !yearSel || item.month.split('-')[1] === yearSel;
+        return matchSearch && matchYear;
+    });
+
+    if (_mrmAllReports.length === 0) {
+        container.innerHTML = `
+            <div class="mrm-empty">
+                <div class="mrm-empty-icon">
+                    <span class="material-icons-round">assessment</span>
+                </div>
+                <h3>No Locked Reports Yet</h3>
+                <p>Create a monthly report, fill in the data and lock it to see it appear here.</p>
+                <button class="btn btn-primary" onclick="navigateTo('report', '${_mrmSsId}', 'new')">
+                    <span class="material-icons-round">add</span> Create First Report
+                </button>
+            </div>`;
+        return;
+    }
+
+    if (filtered.length === 0) {
+        container.innerHTML = `
+            <div class="mrm-empty">
+                <div class="mrm-empty-icon">
+                    <span class="material-icons-round">search_off</span>
+                </div>
+                <h3>No Reports Found</h3>
+                <p>No locked reports match your search. Try a different month or year.</p>
+            </div>`;
+        return;
+    }
+
+    let html = '';
+    filtered.forEach(item => {
+        let r = item.data;
+        let [mon, yr] = item.month.split('-');
+
+        // Determine loss color
+        let lossVal = r.ssLoss ? parseFloat(r.ssLoss) : null;
+        let lossClass = 'loss-ok';
+        if (lossVal !== null) {
+            if (lossVal > 5) lossClass = 'loss-bad';
+            else if (lossVal > 3) lossClass = 'loss-warn';
+        }
+
+        let savedDate = r.generatedAt ? new Date(r.generatedAt).toLocaleDateString('en-IN', {day:'2-digit', month:'short', year:'numeric'}) : 'N/A';
+
+        html += `
+        <div class="mrm-card">
+            <div class="mrm-card-top">
+                <div>
+                    <div class="mrm-card-month">${mon}</div>
+                    <div class="mrm-card-year">${yr || ''}</div>
+                </div>
+                <div class="mrm-lock-badge">
+                    <span class="material-icons-round">lock</span>
+                    Locked
+                </div>
+            </div>
+            <div class="mrm-card-metrics">
+                <div class="mrm-metric">
+                    <div class="mrm-metric-label">Total Received</div>
+                    <div class="mrm-metric-value">${r.totalReceived ? parseFloat(r.totalReceived).toFixed(2) : '—'} <span class="mrm-metric-unit">MWH</span></div>
+                </div>
+                <div class="mrm-metric">
+                    <div class="mrm-metric-label">Total Sent</div>
+                    <div class="mrm-metric-value">${r.totalSent ? parseFloat(r.totalSent).toFixed(2) : '—'} <span class="mrm-metric-unit">MWH</span></div>
+                </div>
+                <div class="mrm-metric">
+                    <div class="mrm-metric-label">S/S Loss</div>
+                    <div class="mrm-metric-value ${lossClass}">${lossVal !== null ? lossVal.toFixed(2) + '%' : '—'}</div>
+                </div>
+                <div class="mrm-metric">
+                    <div class="mrm-metric-label">Status</div>
+                    <div class="mrm-metric-value" style="font-size:13px; color:var(--success);">✓ Finalized</div>
+                </div>
+            </div>
+            <div class="mrm-card-date">
+                <span class="material-icons-round">calendar_today</span>
+                Saved on ${savedDate}
+            </div>
+            <div class="mrm-card-actions">
+                <button class="mrm-btn mrm-btn-view" onclick="viewLockedReport('${_mrmSsId}', '${item.month}')">
+                    <span class="material-icons-round">visibility</span>
+                    View Report
+                </button>
+                <button class="mrm-btn mrm-btn-pdf" onclick="downloadLockedReportPdf('${_mrmSsId}', '${item.month}')">
+                    <span class="material-icons-round">picture_as_pdf</span>
+                    Download PDF
+                </button>
+            </div>
+        </div>`;
+    });
+
+    container.innerHTML = html;
+}
+
+function viewLockedReport(ssId, month) {
+    navigateTo('report', ssId);
+    setTimeout(() => {
+        let mInput = document.getElementById('reportMonth');
+        if (mInput) {
+            mInput.value = month;
+            let ss = getSubstation(ssId);
+            if (ss && ss.reports && ss.reports[month]) {
+                document.querySelectorAll('.report-input').forEach(inp => inp.value = '');
+                loadReportData(ss.reports[month]);
+                if (typeof calculateReport === 'function') calculateReport();
+            }
+        }
+    }, 250);
+}
+
+function downloadLockedReportPdf(ssId, month) {
+    // Navigate to report view, load data, then trigger PDF
+    navigateTo('report', ssId);
+    setTimeout(() => {
+        let mInput = document.getElementById('reportMonth');
+        if (mInput) {
+            mInput.value = month;
+            let ss = getSubstation(ssId);
+            if (ss && ss.reports && ss.reports[month]) {
+                document.querySelectorAll('.report-input').forEach(inp => inp.value = '');
+                loadReportData(ss.reports[month]);
+                if (typeof calculateReport === 'function') {
+                    calculateReport();
+                    setTimeout(() => {
+                        if (typeof exportPDF === 'function') exportPDF();
+                    }, 400);
+                }
+            }
+        }
+    }, 300);
+}

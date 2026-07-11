@@ -15,7 +15,7 @@ const pageSubstationsTemplate = `
 <span class="material-icons-round" style="color: #673ab7; background: #ede7f6;">dashboard</span>
 <div class="card-title">Overview Dashboard</div>
 </div>
-<div class="ss-dashboard-card" onclick="navigateTo('report', currentDashboardSSId)">
+<div class="ss-dashboard-card" onclick="navigateTo('monthlyReportsMenu', currentDashboardSSId)">
 <span class="material-icons-round" style="color: #1976d2; background: #e3f2fd;">assessment</span>
 <div class="card-title">Monthly Reports</div>
 </div>
@@ -60,6 +60,43 @@ const pageSubstationsTemplate = `
 <div class="card-title">Documents</div>
 </div>
 </div>
+</div>
+<!-- ===== MONTHLY REPORTS MENU VIEW ===== -->
+<div class="view" id="monthlyReportsMenuView">
+    <!-- Header Banner -->
+    <div class="mrm-hero">
+        <div class="mrm-hero-content">
+            <div class="mrm-hero-icon">
+                <span class="material-icons-round">assessment</span>
+            </div>
+            <div>
+                <div class="mrm-hero-title">Monthly Reports Archive</div>
+                <div class="mrm-hero-sub">All locked & finalized energy reports for this substation</div>
+            </div>
+        </div>
+        <button class="btn mrm-create-btn" onclick="navigateTo('report', currentDashboardSSId, 'new')">
+            <span class="material-icons-round">add</span>
+            <span>New Report</span>
+        </button>
+    </div>
+    <!-- Stats Bar -->
+    <div class="mrm-stats-bar" id="mrmStatsBar">
+        <!-- Rendered by JS -->
+    </div>
+    <!-- Filter / Search -->
+    <div class="mrm-filter-row">
+        <div class="mrm-search-wrap">
+            <span class="material-icons-round mrm-search-icon">search</span>
+            <input type="text" id="mrmSearchInput" class="mrm-search-input" placeholder="Search by month or year..." oninput="filterMonthlyReportsMenu()"/>
+        </div>
+        <select class="mrm-filter-select" id="mrmYearFilter" onchange="filterMonthlyReportsMenu()">
+            <option value="">All Years</option>
+        </select>
+    </div>
+    <!-- Grid of Report Cards -->
+    <div class="mrm-grid" id="monthlyReportsMenuGrid">
+        <!-- Rendered by JS -->
+    </div>
 </div>
 <!-- ===== DMS VIEW ===== -->
 <div class="view" id="dmsView">
@@ -241,8 +278,13 @@ const pageSubstationsTemplate = `
 <div id="lossBody"></div>
 </div>
 <!-- PDF Button -->
-<div class="btn-group no-print" id="pdfBtnGroup" style="display:none">
-<button class="btn btn-primary" onclick="exportPDF()"> Save as PDF</button>
+<div class="btn-group no-print" id="pdfBtnGroup" style="display:none; gap:10px; flex-wrap:wrap;">
+<button class="btn btn-primary" onclick="exportPDF()" style="display:flex; align-items:center; gap:8px; padding:11px 22px; font-size:14px;">
+    <span class="material-icons-round">picture_as_pdf</span> Download PDF
+</button>
+<button class="btn btn-outline" onclick="navigateTo('monthlyReportsMenu', reportSSId)" style="display:flex; align-items:center; gap:8px; padding:11px 22px; font-size:14px;">
+    <span class="material-icons-round">library_books</span> Back to Archive
+</button>
 </div>
 </div>
 <!-- ===== PHOTO REPORT VIEW ===== -->

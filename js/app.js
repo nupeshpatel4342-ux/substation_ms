@@ -65,7 +65,15 @@ function navigateTo(view, ssId) {
         document.getElementById('headerSubtitle').textContent = ss.name;
         document.getElementById('edSSName').textContent = ss.name + ' Overview';
         // Note: For now we'll just render the global one, but we can customize it for specific SS later
-        renderMainEnterpriseDashboard();
+        renderMainEnterpriseDashboard(ssId);
+    } else if (view === 'monthlyReportsMenu') {
+        document.getElementById('monthlyReportsMenuView').classList.add('active');
+        headerBack.style.display = 'flex';
+        headerBack.onclick = () => goBackTo('ssDashboard', currentDashboardSSId);
+        let ss = getSubstation(ssId);
+        document.getElementById('headerTitle').textContent = ' Monthly Reports Archive';
+        document.getElementById('headerSubtitle').textContent = ss.name;
+        if (typeof renderMonthlyReportsMenu === 'function') renderMonthlyReportsMenu(ssId);
     } else if (view === 'registersView') {
         document.getElementById('registersView').classList.add('active');
         headerBack.style.display = 'flex';
@@ -143,9 +151,10 @@ function navigateTo(view, ssId) {
         headerBack.onclick = () => goBackTo('ssDashboard', currentDashboardSSId);
         reportSSId = ssId;
         let ss = getSubstation(ssId);
-        document.getElementById('headerTitle').textContent = ' ' + ss.name;
+        document.getElementById('headerTitle').textContent = '\u00a0' + ss.name;
         document.getElementById('headerSubtitle').textContent = 'Monthly Report';
-        renderReportPage();
+        let clearForm = arguments[2] === 'new';
+        renderReportPage(clearForm);
     } else if (view === 'photoReport') {
         document.getElementById('photoReportView').classList.add('active');
         headerBack.style.display = 'flex';
@@ -223,8 +232,12 @@ function navigateTo(view, ssId) {
     window.scrollTo(0, 0);
 }
 
-function renderMainEnterpriseDashboard() {
+function renderMainEnterpriseDashboard(targetSsId = null) {
     let subs = loadSubstations();
+    if (targetSsId) {
+        subs = subs.filter(s => s.id === targetSsId);
+    }
+    
     if(edTimeInterval) clearInterval(edTimeInterval);
     function updateTime() {
         let el = document.getElementById('edLiveTime');
@@ -240,12 +253,14 @@ function renderMainEnterpriseDashboard() {
     let pendingMaint = 0;
     let totalDocs = 0;
     let allEvents = [];
+    let allFaultsHistory = [];
 
     subs.forEach(ss => {
         totalFeeders += (ss.feeders || []).length;
         totalTrans += (ss.transformers || []).length;
         
         let f = ss.faults || [];
+        allFaultsHistory.push(...f);
         let a = f.filter(x => !['Resolved', 'Closed'].includes(x.status));
         activeFaults.push(...a);
         criticalFaults += a.filter(x => x.severity === 'Critical').length;
@@ -255,8 +270,8 @@ function renderMainEnterpriseDashboard() {
         
         totalDocs += (ss.documents || []).length;
         
-        if (ss.events) {
-            allEvents.push(...ss.events);
+        if (ss.timelineEvents) {
+            allEvents.push(...ss.timelineEvents);
         }
     });
 
@@ -296,7 +311,12 @@ function renderMainEnterpriseDashboard() {
         }
     }
 
-    allEvents.sort((a,b) => new Date(b.date) - new Date(a.date));
+    allEvents.sort((a,b) => {
+        let da = new Date(a.date + 'T' + (a.time || '00:00:00'));
+        let db = new Date(b.date + 'T' + (b.time || '00:00:00'));
+        return db - da;
+    });
+    
     let timelineHTML = '';
     if(allEvents.length === 0) {
         timelineHTML = '<div class="empty-state" style="padding: 10px;"><p>No recent events</p></div>';
@@ -304,16 +324,19 @@ function renderMainEnterpriseDashboard() {
         let recentEvents = allEvents.slice(0, 5);
         recentEvents.forEach(ev => {
             let icon = 'info';
-            if(ev.type === 'fault') icon = 'gpp_bad';
-            if(ev.type === 'maintenance') icon = 'handyman';
-            if(ev.type === 'tripping') icon = 'flash_on';
+            let evMod = (ev.module || '').toLowerCase();
+            if(evMod.includes('fault')) icon = 'gpp_bad';
+            if(evMod.includes('maintenance')) icon = 'handyman';
+            if(evMod.includes('trip')) icon = 'flash_on';
+            if(evMod.includes('breakdown')) icon = 'build_circle';
+            if(evMod.includes('report')) icon = 'assessment';
             
             timelineHTML += `
                 <div class="ed-timeline-item">
                     <div class="ed-timeline-icon"><span class="material-icons-round">${icon}</span></div>
                     <div class="ed-timeline-content">
-                        <div class="ed-timeline-title">${escapeHtml(ev.title)}</div>
-                        <div class="ed-timeline-time">${new Date(ev.date).toLocaleString()}</div>
+                        <div class="ed-timeline-title">${escapeHtml(ev.action + (ev.remarks ? ': ' + ev.remarks : ''))}</div>
+                        <div class="ed-timeline-time">${new Date(ev.date + 'T' + (ev.time || '00:00:00')).toLocaleString()}</div>
                     </div>
                 </div>
             `;
@@ -322,22 +345,39 @@ function renderMainEnterpriseDashboard() {
     let timelineEl = document.getElementById('edTimelineContent');
     if(timelineEl) timelineEl.innerHTML = timelineHTML;
 
-    // Charts - dummy trend for last 5 months based on faults
+    // Charts - REAL trend for last 5 months based on faults
     let chartHTML = '';
     let months = [];
+    let now = new Date();
+    
     for(let i=4; i>=0; i--) {
-        let d = new Date();
-        d.setMonth(d.getMonth() - i);
-        months.push(d.toLocaleString('default', { month: 'short' }));
+        let d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        let monthStr = d.toLocaleString('default', { month: 'short' });
+        let yyyy_mm = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+        months.push({ label: monthStr, key: yyyy_mm });
     }
+    
+    // Calculate max faults for scaling
+    let faultCounts = months.map(m => {
+        return allFaultsHistory.filter(f => {
+            if (!f.date) return false;
+            let fDate = new Date(f.date);
+            let fKey = `${fDate.getFullYear()}-${String(fDate.getMonth() + 1).padStart(2, '0')}`;
+            return fKey === m.key;
+        }).length;
+    });
+    
+    let maxFaults = Math.max(...faultCounts, 5); // Minimum scale of 5
+    
     months.forEach((m, idx) => {
-        let h = Math.floor(Math.random() * 80) + 10;
+        let count = faultCounts[idx];
+        let h = Math.max((count / maxFaults) * 100, 5); // At least 5% height so it's visible
         chartHTML += `
             <div class="ed-chart-col">
-                <div class="ed-chart-bar-wrap">
+                <div class="ed-chart-bar-wrap" title="${count} Faults">
                     <div class="ed-chart-bar" style="height: ${h}%;"></div>
                 </div>
-                <div class="ed-chart-label">${m}</div>
+                <div class="ed-chart-label">${m.label}</div>
             </div>
         `;
     });
