@@ -33,7 +33,7 @@
                 white-space: nowrap;
                 min-width: 80px;
             }
-            .mobile-stack td input[type="number"] { max-width: 120px; text-align: right; }
+            .mobile-stack td input[type="number"] { max-width: 100px; text-align: right; }
             .mobile-stack .td-name { font-size: 13px; }
             .mobile-stack .td-name::before { display: none; }
             .mobile-stack td.td-name {

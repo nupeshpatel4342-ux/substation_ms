@@ -41,21 +41,19 @@ function renderReportPage() {
         allHtml += `
         <div class="report-card">
             <div class="report-card-header ${cat.cssClass}">${cat.icon} ${cat.label}</div>
-            <div class="table-responsive">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Name of Feeder</th>
-                            <th>Reading 24:00</th>
-                            <th>Reading 00:00</th>
-                            <th>Difference</th>
-                            <th>M.F.</th>
-                            <th>Total Units</th>
-                        </tr>
-                    </thead>
-                    <tbody>${rowsHtml}</tbody>
-                </table>
-            </div>
+            <table class="mobile-stack">
+                <thead>
+                    <tr>
+                        <th>Name of Feeder</th>
+                        <th>Reading 24:00</th>
+                        <th>Reading 00:00</th>
+                        <th>Difference</th>
+                        <th>M.F.</th>
+                        <th>Total Units</th>
+                    </tr>
+                </thead>
+                <tbody>${rowsHtml}</tbody>
+            </table>
         </div>`;
     });
 
