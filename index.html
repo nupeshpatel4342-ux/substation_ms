@@ -35,17 +35,19 @@
     <button class="header-back" id="headerBack" onclick="navigateTo('dashboard')" style="display:none; flex-shrink:0; align-items:center; justify-content:center; width: 36px; height: 36px; border-radius: 8px; border: none; background: rgba(255,255,255,0.1); color: #fff; cursor: pointer; font-size: 20px; transition: background 0.2s;">
         <span class="material-icons-round" style="font-size: 20px;">arrow_back</span>
     </button>
-    <div class="sh-mark">
-      <svg viewBox="0 0 24 24" fill="none">
-        <path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z" fill="#0b3d91" />
-      </svg>
-      <span class="sh-mark-ring"></span>
-    </div>
-    <div class="sh-id">
-      <span class="sh-name">Substation<span style="color: #00e6ac; font-weight: 900; text-shadow: 0 0 8px rgba(0,230,172,0.6);">MS</span></span>
-      <span class="sh-tagline">SUBSTATION &amp; POWER GRID MANAGEMENT</span>
-      <span id="headerTitle" style="display:none;"></span>
-      <span id="headerSubtitle" style="display:none;"></span>
+    <div class="sh-logo-group" onclick="navigateTo('dashboard')" style="display:flex; align-items:center; gap: 12px; cursor:pointer; flex: 1; min-width: 0; user-select: none;">
+      <div class="sh-mark">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z" fill="#0b3d91" />
+        </svg>
+        <span class="sh-mark-ring"></span>
+      </div>
+      <div class="sh-id">
+        <span class="sh-name">Substation<span style="color: #00e6ac; font-weight: 900; text-shadow: 0 0 8px rgba(0,230,172,0.6);">MS</span></span>
+        <span class="sh-tagline">SUBSTATION &amp; POWER GRID MANAGEMENT</span>
+        <span id="headerTitle" style="display:none;"></span>
+        <span id="headerSubtitle" style="display:none;"></span>
+      </div>
     </div>
     <div class="sh-user">NP</div>
   </div>
