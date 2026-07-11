@@ -65,7 +65,9 @@ function renderFeederList() {
                     <label class="form-label">Role</label>
                     <select class="form-select" onchange="setupFeeders[${i}].role=this.value; renderFeederList();">${opts}</select>
                 </div>
-                <button class="btn-remove" onclick="setupFeeders.splice(${i},1); renderFeederList(); renderTransformerList(); renderOppositeList();"></button>
+                <div style="display:flex; align-items:flex-end; padding-bottom:2px;">
+                    <button class="btn btn-outline" style="color:var(--danger); border-color:var(--danger); padding:8px 12px; height:auto; border-radius:4px;" onclick="setupFeeders.splice(${i},1); renderFeederList(); renderTransformerList(); renderOppositeList();"><span class="material-icons-round" style="font-size:18px; margin-right:4px; vertical-align:middle;">delete</span><span style="vertical-align:middle;">Delete</span></button>
+                </div>
             </div>`;
         });
 
@@ -123,7 +125,9 @@ function renderTransformerList() {
                 <label class="form-label">LV Feeder</label>
                 <select class="form-select" onchange="setupTransformers[${i}].lvFeederId=this.value">${lvOpts}</select>
             </div>
-            <button class="btn-remove" onclick="setupTransformers.splice(${i},1); renderTransformerList();"></button>
+            <div style="display:flex; align-items:flex-end; padding-bottom:2px;">
+                <button class="btn btn-outline" style="color:var(--danger); border-color:var(--danger); padding:8px 12px; height:auto; border-radius:4px;" onclick="setupTransformers.splice(${i},1); renderTransformerList();"><span class="material-icons-round" style="font-size:18px; margin-right:4px; vertical-align:middle;">delete</span><span style="vertical-align:middle;">Delete</span></button>
+            </div>
         </div>`;
     });
     container.innerHTML = html;
@@ -159,7 +163,9 @@ function renderOppositeList() {
                 <label class="form-label">Linked Feeder</label>
                 <select class="form-select" onchange="setupOpposites[${i}].linkedFeederId=this.value">${fOpts}</select>
             </div>
-            <button class="btn-remove" onclick="setupOpposites.splice(${i},1); renderOppositeList();"></button>
+            <div style="display:flex; align-items:flex-end; padding-bottom:2px;">
+                <button class="btn btn-outline" style="color:var(--danger); border-color:var(--danger); padding:8px 12px; height:auto; border-radius:4px;" onclick="setupOpposites.splice(${i},1); renderOppositeList();"><span class="material-icons-round" style="font-size:18px; margin-right:4px; vertical-align:middle;">delete</span><span style="vertical-align:middle;">Delete</span></button>
+            </div>
         </div>`;
     });
     container.innerHTML = html;
