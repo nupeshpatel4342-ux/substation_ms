@@ -57,7 +57,7 @@ function renderDashboard() {
                 </div>
             </div>
             <div class="card-actions">
-                <button class="btn-report" onclick="event.stopPropagation(); navigateTo('report','${ss.id}')"> Report</button>
+                <button class="btn-report" onclick="event.stopPropagation(); navigateTo('report','${ss.id}', 'new')"> Report</button>
                 <button class="btn-edit" onclick="event.stopPropagation(); navigateTo('setup','${ss.id}')"> Edit</button>
                 <button class="btn-delete-card" onclick="event.stopPropagation(); deleteSSFromDashboard('${ss.id}')"></button>
             </div>
