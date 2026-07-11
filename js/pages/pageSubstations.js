@@ -15,7 +15,7 @@ const pageSubstationsTemplate = `
 <span class="material-icons-round" style="color: #673ab7; background: #ede7f6;">dashboard</span>
 <div class="card-title">Overview Dashboard</div>
 </div>
-<div class="ss-dashboard-card" onclick="navigateTo('monthlyReportsMenu', currentDashboardSSId)">
+<div class="ss-dashboard-card" onclick="navigateTo('report', currentDashboardSSId, 'new')">
 <span class="material-icons-round" style="color: #1976d2; background: #e3f2fd;">assessment</span>
 <div class="card-title">Monthly Reports</div>
 </div>
@@ -241,19 +241,14 @@ const pageSubstationsTemplate = `
 <input id="reportMonth" placeholder="e.g., JUN-2026" type="text"/>
 </div>
 <!-- Status Bar -->
-<div class="report-status-bar no-print" style="background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
-<div style="display:flex; align-items:center; gap: 8px;">
-<span style="font-size: 13px; font-weight: 700; color: var(--text-secondary);">STATUS:</span>
-<span class="status-badge stat-pending" id="reportStatusBadge">Draft</span>
-</div>
-<div style="display:flex; gap: 8px; flex-wrap: wrap;">
-<button class="btn btn-outline" id="btnSubmitReport" onclick="submitReport()" style="padding: 8px 16px; font-size: 12px;">Submit</button>
-<button class="btn btn-success" id="btnApproveReport" onclick="approveReport()" style="padding: 8px 16px; font-size: 12px;">Approve</button>
-<button class="btn btn-danger" id="btnRejectReport" onclick="rejectReport()" style="padding: 8px 16px; font-size: 12px;">Reject</button>
-<button class="btn btn-outline" id="btnLockReport" onclick="toggleLockReport()" style="padding: 8px 16px; font-size: 12px;">Lock/Unlock</button>
-<button class="btn btn-primary" onclick="exportData()" style="padding: 8px 16px; font-size: 12px;">Export Excel</button>
-<button class="btn btn-primary" onclick="window.print()" style="padding: 8px 16px; font-size: 12px;">Export PDF</button>
-</div>
+<div class="report-status-bar no-print" id="reportStatusBar">
+    <div class="rsb-left">
+        <span class="rsb-label">STATUS</span>
+        <span class="status-badge stat-pending" id="reportStatusBadge">Draft</span>
+    </div>
+    <div class="rsb-actions" id="reportStatusActions">
+        <!-- Rendered dynamically by renderReportStatus() -->
+    </div>
 </div>
 <!-- Feeder Readings — Category-wise (rendered by JS) -->
 <div id="feederCategoryContainer"></div>

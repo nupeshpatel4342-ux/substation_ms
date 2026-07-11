@@ -325,6 +325,171 @@
             .mrm-create-btn span:last-child { display: none; }
         }
 
+        /* ===== REPORT STATUS BAR ===== */
+        .report-status-bar {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-md);
+            padding: 14px 18px;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            border: 1px solid var(--border-light);
+        }
+        .rsb-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .rsb-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+        .rsb-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .rsb-step-btn {
+            padding: 8px 18px;
+            border-radius: 8px;
+            border: none;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            font-family: 'Inter', sans-serif;
+        }
+        .rsb-step-btn .material-icons-round { font-size: 15px; }
+        .rsb-btn-submit   { background: #e3f2fd; color: #1565c0; }
+        .rsb-btn-submit:hover   { background: #1565c0; color: #fff; }
+        .rsb-btn-approve  { background: #e8f5e9; color: #2e7d32; }
+        .rsb-btn-approve:hover  { background: #2e7d32; color: #fff; }
+        .rsb-btn-reject   { background: #fce4ec; color: #c62828; }
+        .rsb-btn-reject:hover   { background: #c62828; color: #fff; }
+        .rsb-btn-lock     { background: #ede7f6; color: #6a1b9a; }
+        .rsb-btn-lock:hover     { background: #6a1b9a; color: #fff; }
+        .rsb-btn-unlock   { background: #fff8e1; color: #e65100; }
+        .rsb-btn-unlock:hover   { background: #e65100; color: #fff; }
+        .rsb-btn-archive  { background: #f3f4f6; color: #374151; }
+        .rsb-btn-archive:hover  { background: #374151; color: #fff; }
+
+        /* Status flow strip */
+        .rsb-flow {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            flex-shrink: 0;
+        }
+        .rsb-flow-step {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+        .rsb-flow-step.active {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            font-weight: 800;
+        }
+        .rsb-flow-step.done {
+            color: var(--success);
+        }
+        .rsb-flow-arrow {
+            font-size: 13px;
+            color: var(--border);
+            margin: 0 2px;
+        }
+
+        /* ===== MRM IN-PROGRESS LIST ===== */
+        .mrm-inprogress-section {
+            margin-bottom: 28px;
+        }
+        .mrm-section-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-light);
+        }
+        .mrm-section-header .material-icons-round { font-size: 18px; color: var(--primary); }
+        .mrm-section-count {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            border-radius: 20px;
+            padding: 2px 10px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .mrm-ip-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .mrm-ip-row {
+            background: #fff;
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease;
+            flex-wrap: wrap;
+        }
+        .mrm-ip-row:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 16px rgba(21,101,192,0.1);
+        }
+        .mrm-ip-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .mrm-ip-month {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--text);
+            min-width: 80px;
+        }
+        .mrm-ip-actions { display: flex; gap: 8px; }
+        .mrm-ip-btn {
+            padding: 7px 14px;
+            border-radius: 8px;
+            border: none;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s ease;
+            font-family: 'Inter', sans-serif;
+        }
+        .mrm-ip-btn .material-icons-round { font-size: 15px; }
+        .mrm-ip-open { background: var(--primary-light); color: var(--primary-dark); }
+        .mrm-ip-open:hover { background: var(--primary); color: #fff; }
+
+        /* ===== LOCKED ARCHIVE SECTION HEADER ===== */
+        .mrm-locked-section { }
+
         /* ===== REPORT TABLE ===== */
         .report-card {
             background: linear-gradient(145deg, #ffffff, #f8fafc);

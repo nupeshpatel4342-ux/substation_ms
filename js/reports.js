@@ -362,15 +362,79 @@ function updateReportStatus(newStatus, actionName = null) {
 }
 
 function renderReportStatus(status) {
+    // --- Badge ---
     let badge = document.getElementById('reportStatusBadge');
-    if(!badge) return;
-    badge.textContent = status || 'Draft';
-    badge.className = 'status-badge';
-    if (status === 'Submitted') badge.classList.add('stat-progress');
-    else if (status === 'Approved') badge.classList.add('stat-resolved');
-    else if (status === 'Rejected') badge.classList.add('sev-critical');
-    else if (status === 'Locked') badge.classList.add('stat-closed');
-    else badge.classList.add('stat-pending'); // Draft
+    if (badge) {
+        badge.textContent = status || 'Draft';
+        badge.className = 'status-badge';
+        if (status === 'Submitted') badge.classList.add('stat-progress');
+        else if (status === 'Approved') badge.classList.add('stat-resolved');
+        else if (status === 'Rejected') badge.classList.add('sev-critical');
+        else if (status === 'Locked')   badge.classList.add('stat-closed');
+        else badge.classList.add('stat-pending'); // Draft
+    }
+
+    // --- Status Flow Indicator (Draft → Submitted → Approved → Locked) ---
+    const FLOW = ['Draft', 'Submitted', 'Approved', 'Locked'];
+    let currentStep = FLOW.indexOf(status);
+    if (status === 'Rejected') currentStep = 1; // sits between Draft and Submitted
+
+    // --- Dynamic Action Buttons ---
+    let actionsEl = document.getElementById('reportStatusActions');
+    if (!actionsEl) return;
+
+    let btns = '';
+    const s = status || 'Draft';
+
+    // Flow progress strip
+    btns += `<div class="rsb-flow">`;
+    FLOW.forEach((step, i) => {
+        let cls = '';
+        if (step === s || (s === 'Rejected' && step === 'Submitted')) cls = 'active';
+        else if (i < currentStep) cls = 'done';
+        btns += `<span class="rsb-flow-step ${cls}">${step === 'Submitted' ? 'Submit' : step}</span>`;
+        if (i < FLOW.length - 1) btns += `<span class="rsb-flow-arrow">›</span>`;
+    });
+    btns += `</div>`;
+
+    // Divider
+    btns += `<div style="width:1px; height:28px; background:var(--border-light); margin:0 4px;"></div>`;
+
+    if (s === 'Draft') {
+        btns += `<button class="rsb-step-btn rsb-btn-submit" onclick="submitReport()">
+            <span class="material-icons-round">send</span> Submit
+        </button>`;
+
+    } else if (s === 'Submitted') {
+        btns += `<button class="rsb-step-btn rsb-btn-approve" onclick="approveReport()">
+            <span class="material-icons-round">check_circle</span> Approve
+        </button>
+        <button class="rsb-step-btn rsb-btn-reject" onclick="rejectReport()">
+            <span class="material-icons-round">cancel</span> Reject
+        </button>`;
+
+    } else if (s === 'Approved') {
+        btns += `<button class="rsb-step-btn rsb-btn-lock" onclick="updateReportStatus('Locked','Report Locked')">
+            <span class="material-icons-round">lock</span> Lock Report
+        </button>`;
+
+    } else if (s === 'Rejected') {
+        btns += `<button class="rsb-step-btn rsb-btn-submit" onclick="submitReport()">
+            <span class="material-icons-round">refresh</span> Re-submit
+        </button>`;
+
+    } else if (s === 'Locked') {
+        btns += `<button class="rsb-step-btn rsb-btn-unlock" onclick="updateReportStatus('Draft','Report Unlocked')">
+            <span class="material-icons-round">lock_open</span> Unlock
+        </button>`;
+    }
+
+    // Archive link (always visible except on empty/new form)
+    btns += `<button class="rsb-step-btn rsb-btn-archive" onclick="navigateTo('monthlyReportsMenu', reportSSId)">
+        <span class="material-icons-round">library_books</span> Archive
+    </button>`;
+
+    actionsEl.innerHTML = btns;
 }
 
 function exportData() {
@@ -768,20 +832,28 @@ function exportPDF() {
 //  MONTHLY REPORTS ARCHIVE MENU
 // ===================================================================
 
-// Store data for filtering
 let _mrmAllReports = [];
 let _mrmSsId = null;
+
+// Status config
+const STATUS_CONFIG = {
+    'Draft':     { label: 'Draft',     badgeClass: 'stat-pending',  icon: 'edit_note',     color: '#757575' },
+    'Submitted': { label: 'Submitted', badgeClass: 'stat-progress', icon: 'send',          color: '#1565c0' },
+    'Approved':  { label: 'Approved',  badgeClass: 'stat-resolved', icon: 'check_circle',  color: '#2e7d32' },
+    'Rejected':  { label: 'Rejected',  badgeClass: 'sev-critical',  icon: 'cancel',        color: '#c62828' },
+    'Locked':    { label: 'Locked',    badgeClass: 'stat-closed',   icon: 'lock',          color: '#6a1b9a' }
+};
 
 function renderMonthlyReportsMenu(ssId) {
     _mrmSsId = ssId;
     let ss = getSubstation(ssId);
     if (!ss) return;
 
-    // --- Build Stats Bar ---
+    // ── Stats Bar ──
     let allReports = Object.values(ss.reports || {});
-    let lockedReports = allReports.filter(r => r.status === 'Locked');
-    let draftReports = allReports.filter(r => !r.status || r.status === 'Draft');
-    let totalReports = allReports.length;
+    let lockedCount    = allReports.filter(r => r.status === 'Locked').length;
+    let inProgressCount = allReports.filter(r => r.status && r.status !== 'Locked').length;
+    let draftCount     = allReports.filter(r => !r.status || r.status === 'Draft').length;
 
     let statsBar = document.getElementById('mrmStatsBar');
     if (statsBar) {
@@ -792,7 +864,7 @@ function renderMonthlyReportsMenu(ssId) {
                 </div>
                 <div>
                     <div class="mrm-stat-label">Total Reports</div>
-                    <div class="mrm-stat-value">${totalReports}</div>
+                    <div class="mrm-stat-value">${allReports.length}</div>
                 </div>
             </div>
             <div class="mrm-stat-box">
@@ -801,44 +873,43 @@ function renderMonthlyReportsMenu(ssId) {
                 </div>
                 <div>
                     <div class="mrm-stat-label">Locked</div>
-                    <div class="mrm-stat-value">${lockedReports.length}</div>
+                    <div class="mrm-stat-value">${lockedCount}</div>
                 </div>
             </div>
             <div class="mrm-stat-box">
                 <div class="mrm-stat-icon" style="background:#fff8e1;">
-                    <span class="material-icons-round" style="color:#f57f17;">edit_note</span>
+                    <span class="material-icons-round" style="color:#f57f17;">pending_actions</span>
                 </div>
                 <div>
-                    <div class="mrm-stat-label">Drafts</div>
-                    <div class="mrm-stat-value">${draftReports.length}</div>
+                    <div class="mrm-stat-label">In Progress</div>
+                    <div class="mrm-stat-value">${inProgressCount + draftCount}</div>
                 </div>
             </div>
         `;
     }
 
-    // --- Populate Year Filter ---
+    // ── Year Filter ──
     let yearFilter = document.getElementById('mrmYearFilter');
     if (yearFilter) {
         let years = new Set();
         Object.keys(ss.reports || {}).forEach(key => {
-            let parts = key.split('-');
-            if (parts[1]) years.add(parts[1]);
+            let p = key.split('-');
+            if (p[1]) years.add(p[1]);
         });
         let currentVal = yearFilter.value;
         yearFilter.innerHTML = '<option value="">All Years</option>';
-        Array.from(years).sort((a,b) => parseInt(b) - parseInt(a)).forEach(y => {
-            yearFilter.innerHTML += `<option value="${y}" ${currentVal === y ? 'selected' : ''}>${y}</option>`;
+        Array.from(years).sort((a,b) => parseInt(b)-parseInt(a)).forEach(y => {
+            yearFilter.innerHTML += `<option value="${y}" ${currentVal===y?'selected':''}>${y}</option>`;
         });
     }
 
-    // Collect all locked reports for rendering
-    const monthOrder = { 'JAN':1,'FEB':2,'MAR':3,'APR':4,'MAY':5,'JUN':6,'JUL':7,'AUG':8,'SEP':9,'OCT':10,'NOV':11,'DEC':12 };
+    // ── Sort all reports ──
+    const monthOrder = {'JAN':1,'FEB':2,'MAR':3,'APR':4,'MAY':5,'JUN':6,'JUL':7,'AUG':8,'SEP':9,'OCT':10,'NOV':11,'DEC':12};
     _mrmAllReports = Object.keys(ss.reports || {})
-        .filter(key => ss.reports[key].status === 'Locked')
         .map(key => ({ month: key, data: ss.reports[key] }))
         .sort((a, b) => {
-            let [m1, y1] = a.month.split('-');
-            let [m2, y2] = b.month.split('-');
+            let [m1,y1] = a.month.split('-');
+            let [m2,y2] = b.month.split('-');
             if (y1 !== y2) return parseInt(y2) - parseInt(y1);
             return monthOrder[m2] - monthOrder[m1];
         });
@@ -855,18 +926,16 @@ function filterMonthlyReportsMenu() {
 
     let filtered = _mrmAllReports.filter(item => {
         let matchSearch = !search || item.month.toLowerCase().includes(search.toLowerCase());
-        let matchYear = !yearSel || item.month.split('-')[1] === yearSel;
+        let matchYear   = !yearSel || item.month.split('-')[1] === yearSel;
         return matchSearch && matchYear;
     });
 
-    if (_mrmAllReports.length === 0) {
+    if (filtered.length === 0 && _mrmAllReports.length === 0) {
         container.innerHTML = `
             <div class="mrm-empty">
-                <div class="mrm-empty-icon">
-                    <span class="material-icons-round">assessment</span>
-                </div>
-                <h3>No Locked Reports Yet</h3>
-                <p>Create a monthly report, fill in the data and lock it to see it appear here.</p>
+                <div class="mrm-empty-icon"><span class="material-icons-round">assessment</span></div>
+                <h3>No Reports Yet</h3>
+                <p>Click "New Report" to create your first monthly report.</p>
                 <button class="btn btn-primary" onclick="navigateTo('report', '${_mrmSsId}', 'new')">
                     <span class="material-icons-round">add</span> Create First Report
                 </button>
@@ -877,81 +946,149 @@ function filterMonthlyReportsMenu() {
     if (filtered.length === 0) {
         container.innerHTML = `
             <div class="mrm-empty">
-                <div class="mrm-empty-icon">
-                    <span class="material-icons-round">search_off</span>
-                </div>
+                <div class="mrm-empty-icon"><span class="material-icons-round">search_off</span></div>
                 <h3>No Reports Found</h3>
-                <p>No locked reports match your search. Try a different month or year.</p>
+                <p>Try a different month or year.</p>
             </div>`;
         return;
     }
 
+    // Split into in-progress and locked
+    let inProgress = filtered.filter(item => item.data.status !== 'Locked');
+    let locked     = filtered.filter(item => item.data.status === 'Locked');
+
     let html = '';
-    filtered.forEach(item => {
-        let r = item.data;
-        let [mon, yr] = item.month.split('-');
 
-        // Determine loss color
-        let lossVal = r.ssLoss ? parseFloat(r.ssLoss) : null;
-        let lossClass = 'loss-ok';
-        if (lossVal !== null) {
-            if (lossVal > 5) lossClass = 'loss-bad';
-            else if (lossVal > 3) lossClass = 'loss-warn';
-        }
-
-        let savedDate = r.generatedAt ? new Date(r.generatedAt).toLocaleDateString('en-IN', {day:'2-digit', month:'short', year:'numeric'}) : 'N/A';
-
+    // ── SECTION 1: IN PROGRESS ──
+    if (inProgress.length > 0) {
         html += `
-        <div class="mrm-card">
-            <div class="mrm-card-top">
-                <div>
-                    <div class="mrm-card-month">${mon}</div>
-                    <div class="mrm-card-year">${yr || ''}</div>
-                </div>
-                <div class="mrm-lock-badge">
-                    <span class="material-icons-round">lock</span>
-                    Locked
-                </div>
+        <div class="mrm-inprogress-section">
+            <div class="mrm-section-header">
+                <span class="material-icons-round">pending_actions</span>
+                In Progress
+                <span class="mrm-section-count">${inProgress.length}</span>
             </div>
-            <div class="mrm-card-metrics">
-                <div class="mrm-metric">
-                    <div class="mrm-metric-label">Total Received</div>
-                    <div class="mrm-metric-value">${r.totalReceived ? parseFloat(r.totalReceived).toFixed(2) : '—'} <span class="mrm-metric-unit">MWH</span></div>
+            <div class="mrm-ip-list">`;
+
+        inProgress.forEach(item => {
+            let st = item.data.status || 'Draft';
+            let cfg = STATUS_CONFIG[st] || STATUS_CONFIG['Draft'];
+            let [mon, yr] = item.month.split('-');
+
+            // Next action button label based on status
+            let nextBtnHtml = '';
+            if (st === 'Draft') {
+                nextBtnHtml = `<button class="mrm-ip-btn" style="background:#e3f2fd;color:#1565c0;" onclick="openReportForStatus('${_mrmSsId}','${item.month}')">
+                    <span class="material-icons-round">send</span> Open & Submit
+                </button>`;
+            } else if (st === 'Submitted') {
+                nextBtnHtml = `<button class="mrm-ip-btn" style="background:#e8f5e9;color:#2e7d32;" onclick="openReportForStatus('${_mrmSsId}','${item.month}')">
+                    <span class="material-icons-round">check_circle</span> Open & Approve
+                </button>`;
+            } else if (st === 'Approved') {
+                nextBtnHtml = `<button class="mrm-ip-btn" style="background:#ede7f6;color:#6a1b9a;" onclick="openReportForStatus('${_mrmSsId}','${item.month}')">
+                    <span class="material-icons-round">lock</span> Open & Lock
+                </button>`;
+            } else if (st === 'Rejected') {
+                nextBtnHtml = `<button class="mrm-ip-btn" style="background:#fce4ec;color:#c62828;" onclick="openReportForStatus('${_mrmSsId}','${item.month}')">
+                    <span class="material-icons-round">refresh</span> Open & Re-submit
+                </button>`;
+            }
+
+            html += `
+            <div class="mrm-ip-row">
+                <div class="mrm-ip-left">
+                    <div class="mrm-ip-month">${mon} <span style="font-size:12px;font-weight:500;color:var(--text-secondary);">${yr||''}</span></div>
+                    <span class="status-badge ${cfg.badgeClass}" style="display:flex;align-items:center;gap:4px;">
+                        <span class="material-icons-round" style="font-size:13px;">${cfg.icon}</span>${cfg.label}
+                    </span>
                 </div>
-                <div class="mrm-metric">
-                    <div class="mrm-metric-label">Total Sent</div>
-                    <div class="mrm-metric-value">${r.totalSent ? parseFloat(r.totalSent).toFixed(2) : '—'} <span class="mrm-metric-unit">MWH</span></div>
+                <div class="mrm-ip-actions">
+                    ${nextBtnHtml}
+                    <button class="mrm-ip-btn mrm-ip-open" onclick="openReportForStatus('${_mrmSsId}','${item.month}')">
+                        <span class="material-icons-round">open_in_new</span> Open
+                    </button>
                 </div>
-                <div class="mrm-metric">
-                    <div class="mrm-metric-label">S/S Loss</div>
-                    <div class="mrm-metric-value ${lossClass}">${lossVal !== null ? lossVal.toFixed(2) + '%' : '—'}</div>
-                </div>
-                <div class="mrm-metric">
-                    <div class="mrm-metric-label">Status</div>
-                    <div class="mrm-metric-value" style="font-size:13px; color:var(--success);">✓ Finalized</div>
-                </div>
+            </div>`;
+        });
+
+        html += `</div></div>`;
+    }
+
+    // ── SECTION 2: LOCKED ARCHIVE ──
+    if (locked.length > 0) {
+        html += `
+        <div class="mrm-locked-section">
+            <div class="mrm-section-header">
+                <span class="material-icons-round">lock</span>
+                Locked Archive
+                <span class="mrm-section-count" style="background:#e8f5e9;color:#2e7d32;">${locked.length}</span>
             </div>
-            <div class="mrm-card-date">
-                <span class="material-icons-round">calendar_today</span>
-                Saved on ${savedDate}
-            </div>
-            <div class="mrm-card-actions">
-                <button class="mrm-btn mrm-btn-view" onclick="viewLockedReport('${_mrmSsId}', '${item.month}')">
-                    <span class="material-icons-round">visibility</span>
-                    View Report
-                </button>
-                <button class="mrm-btn mrm-btn-pdf" onclick="downloadLockedReportPdf('${_mrmSsId}', '${item.month}')">
-                    <span class="material-icons-round">picture_as_pdf</span>
-                    Download PDF
-                </button>
-            </div>
-        </div>`;
-    });
+            <div class="mrm-grid">`;
+
+        locked.forEach(item => {
+            let r = item.data;
+            let [mon, yr] = item.month.split('-');
+            let lossVal = r.ssLoss ? parseFloat(r.ssLoss) : null;
+            let lossClass = 'loss-ok';
+            if (lossVal !== null) {
+                if (lossVal > 5) lossClass = 'loss-bad';
+                else if (lossVal > 3) lossClass = 'loss-warn';
+            }
+            let savedDate = r.generatedAt ? new Date(r.generatedAt).toLocaleDateString('en-IN', {day:'2-digit',month:'short',year:'numeric'}) : 'N/A';
+
+            html += `
+            <div class="mrm-card">
+                <div class="mrm-card-top">
+                    <div>
+                        <div class="mrm-card-month">${mon}</div>
+                        <div class="mrm-card-year">${yr||''}</div>
+                    </div>
+                    <div class="mrm-lock-badge">
+                        <span class="material-icons-round">lock</span> Locked
+                    </div>
+                </div>
+                <div class="mrm-card-metrics">
+                    <div class="mrm-metric">
+                        <div class="mrm-metric-label">Total Received</div>
+                        <div class="mrm-metric-value">${r.totalReceived ? parseFloat(r.totalReceived).toFixed(2) : '—'} <span class="mrm-metric-unit">MWH</span></div>
+                    </div>
+                    <div class="mrm-metric">
+                        <div class="mrm-metric-label">Total Sent</div>
+                        <div class="mrm-metric-value">${r.totalSent ? parseFloat(r.totalSent).toFixed(2) : '—'} <span class="mrm-metric-unit">MWH</span></div>
+                    </div>
+                    <div class="mrm-metric">
+                        <div class="mrm-metric-label">S/S Loss</div>
+                        <div class="mrm-metric-value ${lossClass}">${lossVal !== null ? lossVal.toFixed(2)+'%' : '—'}</div>
+                    </div>
+                    <div class="mrm-metric">
+                        <div class="mrm-metric-label">Status</div>
+                        <div class="mrm-metric-value" style="font-size:13px;color:var(--success);">✓ Finalized</div>
+                    </div>
+                </div>
+                <div class="mrm-card-date">
+                    <span class="material-icons-round">calendar_today</span>
+                    Saved on ${savedDate}
+                </div>
+                <div class="mrm-card-actions">
+                    <button class="mrm-btn mrm-btn-view" onclick="viewLockedReport('${_mrmSsId}', '${item.month}')">
+                        <span class="material-icons-round">visibility</span> View Report
+                    </button>
+                    <button class="mrm-btn mrm-btn-pdf" onclick="downloadLockedReportPdf('${_mrmSsId}', '${item.month}')">
+                        <span class="material-icons-round">picture_as_pdf</span> Download PDF
+                    </button>
+                </div>
+            </div>`;
+        });
+
+        html += `</div></div>`;
+    }
 
     container.innerHTML = html;
 }
 
-function viewLockedReport(ssId, month) {
+// Open any report (any status) for viewing/advancing
+function openReportForStatus(ssId, month) {
     navigateTo('report', ssId);
     setTimeout(() => {
         let mInput = document.getElementById('reportMonth');
@@ -959,7 +1096,7 @@ function viewLockedReport(ssId, month) {
             mInput.value = month;
             let ss = getSubstation(ssId);
             if (ss && ss.reports && ss.reports[month]) {
-                document.querySelectorAll('.report-input').forEach(inp => inp.value = '');
+                document.querySelectorAll('input[type="number"]').forEach(inp => inp.value = '');
                 loadReportData(ss.reports[month]);
                 if (typeof calculateReport === 'function') calculateReport();
             }
@@ -967,8 +1104,12 @@ function viewLockedReport(ssId, month) {
     }, 250);
 }
 
+// Open a locked report for viewing
+function viewLockedReport(ssId, month) {
+    openReportForStatus(ssId, month);
+}
+
 function downloadLockedReportPdf(ssId, month) {
-    // Navigate to report view, load data, then trigger PDF
     navigateTo('report', ssId);
     setTimeout(() => {
         let mInput = document.getElementById('reportMonth');
@@ -976,7 +1117,7 @@ function downloadLockedReportPdf(ssId, month) {
             mInput.value = month;
             let ss = getSubstation(ssId);
             if (ss && ss.reports && ss.reports[month]) {
-                document.querySelectorAll('.report-input').forEach(inp => inp.value = '');
+                document.querySelectorAll('input[type="number"]').forEach(inp => inp.value = '');
                 loadReportData(ss.reports[month]);
                 if (typeof calculateReport === 'function') {
                     calculateReport();
@@ -988,3 +1129,4 @@ function downloadLockedReportPdf(ssId, month) {
         }
     }, 300);
 }
+
