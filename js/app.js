@@ -455,6 +455,7 @@ function setActiveMenu(page, initNav = true) {
         mainContent.innerHTML = pageSettingsTemplate;
         document.getElementById('pageSettings').style.display = 'block';
         document.getElementById('pageSettings').classList.add('active');
+        if (typeof initSettingsPage === 'function') initSettingsPage();
     }
 
     // Explicitly hide drawer if open
