@@ -2,7 +2,7 @@
 
 const registerCategories = [
     {
-        title: "📝 Operational Registers",
+        title: " Operational Registers",
         items: [
             { id: 'op_batt', title: 'Battery Maintenance Register', desc: 'Daily voltage and specific gravity records.', icon: 'battery_charging_full', theme: 'theme-log' },
             { id: 'op_check', title: 'Daily Checklist Register', desc: 'Routine visual and operational checks.', icon: 'checklist', theme: 'theme-maint' },
@@ -30,7 +30,7 @@ const registerCategories = [
         ]
     },
     {
-        title: "🧪 Testing Registers",
+        title: " Testing Registers",
         items: [
             { id: 't_rel', title: 'Relay Testing Register', desc: 'Periodic protection relay calibration.', icon: 'settings_input_component', theme: 'theme-meter' },
             { id: 't_ctm', title: 'Current Transformer (CT) Maintenance Register', desc: 'Current Transformer tests.', icon: 'transform', theme: 'theme-meter' },
@@ -48,7 +48,7 @@ const registerCategories = [
         ]
     },
     {
-        title: "🛡 Safety & Compliance Registers",
+        title: " Safety & Compliance Registers",
         items: [
             { id: 's_tp', title: 'Test Permit Register', desc: 'Test permits for equipment testing.', icon: 'assignment', theme: 'theme-log' },
             { id: 's_wp', title: 'Work Permit Register', desc: 'Records of all PTWs issued and cancelled.', icon: 'assignment_turned_in', theme: 'theme-log' },
@@ -81,7 +81,7 @@ function renderRegistersCards() {
     let html = `<div class="reg-tabs">`;
     registerCategories.forEach((cat, index) => {
         const isActive = index === currentRegCatIndex ? 'active' : '';
-        // Extract "Operational", "Testing", "Safety" from "📝 Operational Registers"
+        // Extract "Operational", "Testing", "Safety" from " Operational Registers"
         let shortTitle = cat.title.split(' ')[1]; 
         html += `<div class="reg-tab ${isActive}" onclick="switchRegisterCategory(${index})">${shortTitle}</div>`;
     });
@@ -230,13 +230,13 @@ function renderRegisterTableEntries(title) {
         entries.forEach((entry, index) => {
             const newRow = document.createElement('tr');
             newRow.innerHTML = `
-                <td>${entry.date}</td>
-                <td>${entry.time}</td>
-                <td>${entry.shift}</td>
-                <td style="font-size: 13px;">${entry.details}</td>
-                <td>${entry.remarks}</td>
-                <td>Nupesh Patel</td>
-                <td>
+                <td data-label="Date">${entry.date}</td>
+                <td data-label="Time">${entry.time}</td>
+                <td data-label="Shift">${entry.shift}</td>
+                <td data-label="Details" style="font-size: 13px;">${entry.details}</td>
+                <td data-label="Remarks">${entry.remarks}</td>
+                <td data-label="User">Nupesh Patel</td>
+                <td data-label="Actions">
                     <button class="icon-btn" title="View" onclick="alert('Viewing Entry:\\nDate: ${entry.date}\\nTime: ${entry.time}\\nShift: ${entry.shift}')"><span class="material-icons-round" style="color: #1976d2; font-size:18px;">visibility</span></button>
                     <button class="icon-btn edit-btn" title="Edit" onclick="editRegisterEntry('${title}', ${index})"><span class="material-icons-round" style="color: #f57c00; font-size:18px;">edit</span></button>
                     <button class="icon-btn delete-btn" title="Delete" onclick="deleteRegisterEntry('${title}', ${index})"><span class="material-icons-round" style="color: #d32f2f; font-size:18px;">delete</span></button>

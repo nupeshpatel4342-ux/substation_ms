@@ -44,22 +44,22 @@ function renderDashboard() {
             <div class="card-name">${escapeHtml(ss.name)} ${sampleBadge}</div>
             <div class="card-meta" style="flex-direction:column; gap:6px;">
                 <div style="display:flex; gap:12px; flex-wrap:wrap;">
-                    <span style="color:#0d47a1;">🔌 ${cnt66kv} 66KV Line</span>
-                    <span style="color:#7b1fa2;">⚡ ${cntTR} TR</span>
+                    <span style="color:#0d47a1;"> ${cnt66kv} 66KV Line</span>
+                    <span style="color:#7b1fa2;"> ${cntTR} TR</span>
                 </div>
                 <div style="display:flex; gap:12px; flex-wrap:wrap;">
-                    <span style="color:#e65100;">🔋 ${cntTrLV} 11KV Incoming</span>
-                    <span style="color:#2e7d32;">📡 ${cnt11kv} 11KV Feeder</span>
+                    <span style="color:#e65100;"> ${cntTrLV} 11KV Incoming</span>
+                    <span style="color:#2e7d32;"> ${cnt11kv} 11KV Feeder</span>
                 </div>
                 <div style="display:flex; gap:12px; flex-wrap:wrap; padding-top:6px; border-top:1px solid #e0e0e0; margin-top:2px;">
-                    <span style="font-weight:700; color:#1a1a2e;">⏲️ Total Meter: ${feederTotal}</span>
-                    <span>📊 ${reportCount} Reports</span>
+                    <span style="font-weight:700; color:#1a1a2e;">⏲ Total Meter: ${feederTotal}</span>
+                    <span> ${reportCount} Reports</span>
                 </div>
             </div>
             <div class="card-actions">
-                <button class="btn-report" onclick="event.stopPropagation(); navigateTo('report','${ss.id}')">📊 Report</button>
-                <button class="btn-edit" onclick="event.stopPropagation(); navigateTo('setup','${ss.id}')">✏️ Edit</button>
-                <button class="btn-delete-card" onclick="event.stopPropagation(); deleteSSFromDashboard('${ss.id}')">🗑️</button>
+                <button class="btn-report" onclick="event.stopPropagation(); navigateTo('report','${ss.id}')"> Report</button>
+                <button class="btn-edit" onclick="event.stopPropagation(); navigateTo('setup','${ss.id}')"> Edit</button>
+                <button class="btn-delete-card" onclick="event.stopPropagation(); deleteSSFromDashboard('${ss.id}')"></button>
             </div>
             <button class="btn-manage-ss" onclick="event.stopPropagation(); navigateTo('ssDashboard','${ss.id}')">
                 <span class="material-icons-round">dashboard</span>

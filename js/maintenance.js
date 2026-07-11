@@ -147,21 +147,21 @@ function renderFaultRegister() {
         else if (f.status === 'Closed') statClass = 'stat-closed';
 
         tr.innerHTML = `
-            <td>
+            <td data-label="Fault ID">
                 <div style="font-weight:700; color:var(--primary); font-size:12px;">${f.id}</div>
                 <div style="font-size:11px; color:var(--text-secondary);">${f.date} ${f.time||''}</div>
             </td>
-            <td>
+            <td data-label="Equipment">
                 <div style="font-weight:600; font-size:13px;">${f.equipment_name || 'N/A'}</div>
                 <div style="font-size:11px; color:var(--text-secondary);">${f.category} (${f.voltage})</div>
             </td>
-            <td>
+            <td data-label="Fault Type">
                 <div style="font-size:13px; font-weight:500;">${f.type}</div>
                 <div style="font-size:11px; color:var(--text-secondary); max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(f.description||'')}</div>
             </td>
-            <td><span class="status-badge ${sevBadge}">${f.severity}</span></td>
-            <td><span class="status-badge ${statClass}">${f.status}</span></td>
-            <td style="font-weight:600;">${f.downtime ? f.downtime + ' hrs' : '-'}</td>
+            <td data-label="Severity"><span class="status-badge ${sevBadge}">${f.severity}</span></td>
+            <td data-label="Status"><span class="status-badge ${statClass}">${f.status}</span></td>
+            <td data-label="Downtime" style="font-weight:600;">${f.downtime ? f.downtime + ' hrs' : '-'}</td>
         `;
         tbody.appendChild(tr);
     });
@@ -413,14 +413,14 @@ function renderTrippingRegister() {
         
         let tr = document.createElement('tr');
         tr.innerHTML = `
-            <td style="font-weight:600;">${escapeHtml(eq.name)}</td>
-            <td>${eq.type}</td>
-            <td class="center">${eq.tt_c}</td><td class="center">${eq.tt_h.toFixed(2)}</td>
-            <td class="center">${eq.sf_c}</td><td class="center">${eq.sf_h.toFixed(2)}</td>
-            <td class="center">${eq.esd_c}</td><td class="center">${eq.esd_h.toFixed(2)}</td>
-            <td class="center">${eq.psd_c}</td><td class="center">${eq.psd_h.toFixed(2)}</td>
-            <td class="center" style="border-left: 2px solid var(--border); font-weight:700;">${tot_c}</td>
-            <td class="center" style="font-weight:700;">${tot_h.toFixed(2)}</td>
+            <td data-label="Equipment" style="font-weight:600;">${escapeHtml(eq.name)}</td>
+            <td data-label="Type">${eq.type}</td>
+            <td data-label="TT Count" class="center">${eq.tt_c}</td><td data-label="TT Hours" class="center">${eq.tt_h.toFixed(2)}</td>
+            <td data-label="SF Count" class="center">${eq.sf_c}</td><td data-label="SF Hours" class="center">${eq.sf_h.toFixed(2)}</td>
+            <td data-label="ESD Count" class="center">${eq.esd_c}</td><td data-label="ESD Hours" class="center">${eq.esd_h.toFixed(2)}</td>
+            <td data-label="PSD Count" class="center">${eq.psd_c}</td><td data-label="PSD Hours" class="center">${eq.psd_h.toFixed(2)}</td>
+            <td data-label="Total" class="center" style="border-left: 2px solid var(--border); font-weight:700;">${tot_c}</td>
+            <td data-label="Total Hours" class="center" style="font-weight:700;">${tot_h.toFixed(2)}</td>
         `;
         tbodyEq.appendChild(tr);
     });
@@ -436,13 +436,13 @@ function renderTrippingRegister() {
             let tr = document.createElement('tr');
             tr.onclick = () => openTripForm(t.id);
             tr.innerHTML = `
-                <td>${t.id}</td>
-                <td style="font-weight:600;">${t.equipment}</td>
-                <td><span class="badge-sample">${t.type}</span></td>
-                <td>${t.trip_date} ${t.trip_time}</td>
-                <td>${t.restore_date || '-'} ${t.restore_time || '-'}</td>
-                <td><span style="font-weight:700; color:var(--danger);">${t.duration ? parseFloat(t.duration).toFixed(2) : '-'}</span></td>
-                <td style="white-space:normal;">${t.remarks || '-'}</td>
+                <td data-label="Trip ID">${t.id}</td>
+                <td data-label="Equipment" style="font-weight:600;">${t.equipment}</td>
+                <td data-label="Type"><span class="badge-sample">${t.type}</span></td>
+                <td data-label="Trip Time">${t.trip_date} ${t.trip_time}</td>
+                <td data-label="Restore Time">${t.restore_date || '-'} ${t.restore_time || '-'}</td>
+                <td data-label="Duration"><span style="font-weight:700; color:var(--danger);">${t.duration ? parseFloat(t.duration).toFixed(2) : '-'}</span></td>
+                <td data-label="Remarks" style="white-space:normal;">${t.remarks || '-'}</td>
             `;
             tbodyHist.appendChild(tr);
         });
@@ -640,13 +640,13 @@ function renderBreakdownRegister() {
             let tr = document.createElement('tr');
             tr.onclick = () => openBreakdownForm(bd.id);
             tr.innerHTML = `
-                <td><strong>${bd.bdNumber || bd.id}</strong></td>
-                <td>${bd.equipmentName || 'N/A'}</td>
-                <td>${bd.startTime.replace('T', ' ')}</td>
-                <td>${bd.restoreTime ? bd.restoreTime.replace('T', ' ') : '-'}</td>
-                <td><span class="status-badge ${severityClass}">${bd.severity || 'Medium'}</span></td>
-                <td><span class="status-badge ${statClass}">${bd.status || 'Pending'}</span></td>
-                <td>
+                <td data-label="BD Number"><strong>${bd.bdNumber || bd.id}</strong></td>
+                <td data-label="Equipment">${bd.equipmentName || 'N/A'}</td>
+                <td data-label="Start Time">${bd.startTime.replace('T', ' ')}</td>
+                <td data-label="Restore Time">${bd.restoreTime ? bd.restoreTime.replace('T', ' ') : '-'}</td>
+                <td data-label="Severity"><span class="status-badge ${severityClass}">${bd.severity || 'Medium'}</span></td>
+                <td data-label="Status"><span class="status-badge ${statClass}">${bd.status || 'Pending'}</span></td>
+                <td data-label="Action">
                     <button class="btn btn-outline" style="padding: 4px 8px; font-size: 11px;">Edit</button>
                 </td>
             `;
@@ -702,7 +702,7 @@ function openBreakdownForm(id = null) {
     if (id) {
         let bd = (ss.breakdowns || []).find(b => b.id === id);
         if (bd) {
-            document.getElementById('bdFormTitle').textContent = '📝 Edit Breakdown Report: ' + bd.bdNumber;
+            document.getElementById('bdFormTitle').textContent = ' Edit Breakdown Report: ' + bd.bdNumber;
             document.getElementById('bdId').value = bd.id;
             document.getElementById('bdNumber').value = bd.bdNumber;
             document.getElementById('bdStartTime').value = bd.startTime || '';
@@ -729,7 +729,7 @@ function openBreakdownForm(id = null) {
             document.getElementById('btnViewAttachedDocsBd').style.display = 'inline-flex';
         }
     } else {
-        document.getElementById('bdFormTitle').textContent = '📝 Report New Breakdown';
+        document.getElementById('bdFormTitle').textContent = ' Report New Breakdown';
         document.getElementById('bdId').value = '';
         document.getElementById('bdNumber').value = '';
         document.getElementById('bdStartTime').value = '';
@@ -956,13 +956,13 @@ function renderMaintenanceRegister() {
         
         let row = document.createElement('tr');
         row.innerHTML = `
-            <td style="font-weight:600; color:var(--primary-dark)">${m.id || '-'}</td>
-            <td style="font-weight:600">${m.equipmentName || '-'}</td>
-            <td>${m.type || '-'}</td>
-            <td>${m.scheduledDate ? new Date(m.scheduledDate).toLocaleDateString('en-GB') : '-'}${overdueBadge}</td>
-            <td><span class="status-badge ${badgeClass}">${m.status || '-'}</span></td>
-            <td>${m.duration || 0} hrs</td>
-            <td>
+            <td data-label="ID" style="font-weight:600; color:var(--primary-dark)">${m.id || '-'}</td>
+            <td data-label="Equipment" style="font-weight:600">${m.equipmentName || '-'}</td>
+            <td data-label="Type">${m.type || '-'}</td>
+            <td data-label="Scheduled Date">${m.scheduledDate ? new Date(m.scheduledDate).toLocaleDateString('en-GB') : '-'}${overdueBadge}</td>
+            <td data-label="Status"><span class="status-badge ${badgeClass}">${m.status || '-'}</span></td>
+            <td data-label="Duration">${m.duration || 0} hrs</td>
+            <td data-label="Action">
                 <button class="btn-edit" style="padding:4px 8px; border:none; border-radius:4px; font-size:11px;" onclick="openMaintenanceForm('${m.id}')">View</button>
             </td>
         `;
@@ -1312,7 +1312,7 @@ function renderPhotoReport() {
     container.innerHTML = '';
     
     if (filtered.length === 0) {
-        container.innerHTML = '<div class="empty-state" style="grid-column: 1 / -1;"><div class="empty-icon">📷</div><p>No photos found. Click "Add Photo" to upload.</p></div>';
+        container.innerHTML = '<div class="empty-state" style="grid-column: 1 / -1;"><div class="empty-icon"></div><p>No photos found. Click "Add Photo" to upload.</p></div>';
         return;
     }
     
@@ -1339,8 +1339,8 @@ function renderPhotoReport() {
                     ${escapeHtml(p.remarks || 'No remarks provided.')}
                 </div>
                 <div class="photo-actions" style="margin-top:auto; padding-top:8px;">
-                    <button class="btn-photo-edit" onclick="openPhotoForm('${p.id}')">✏️ Edit</button>
-                    <button class="btn-photo-del" onclick="deletePhotoReport('${p.id}')">🗑️ Delete</button>
+                    <button class="btn-photo-edit" onclick="openPhotoForm('${p.id}')"> Edit</button>
+                    <button class="btn-photo-del" onclick="deletePhotoReport('${p.id}')"> Delete</button>
                 </div>
             </div>
         `;
@@ -1520,7 +1520,7 @@ window.renderDms = function() {
     document.getElementById('dmsExpiringDocs').textContent = expiring;
     
     if (filtered.length === 0) {
-        container.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;"><div class="empty-icon">📄</div><p>No documents found.</p></div>`;
+        container.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;"><div class="empty-icon"></div><p>No documents found.</p></div>`;
         return;
     }
     
@@ -1532,7 +1532,7 @@ window.renderDms = function() {
         div.className = 'doc-card';
         div.innerHTML = `
             <div class="doc-version">${escapeHtml(d.version)}</div>
-            <div class="doc-icon">📄</div>
+            <div class="doc-icon"></div>
             <div class="doc-title" title="${escapeHtml(d.title)}">${escapeHtml(d.title)}</div>
             <div class="doc-meta">
                 <span><strong>Status:</strong> <span style="color:${statusColor}">${escapeHtml(d.status)}</span></span>
@@ -1542,8 +1542,8 @@ window.renderDms = function() {
                 <span>${new Date(d.timestamp).toLocaleDateString()}</span>
             </div>
             <div class="doc-actions">
-                <button class="doc-btn-view" data-url="${escapeHtml(sanitizeUrl(d.url))}" onclick="openSafeUrl(this.dataset.url)">👁️ View</button>
-                <button class="doc-btn-edit" onclick="openDmsForm('${d.id}')">✏️ Edit</button>
+                <button class="doc-btn-view" data-url="${escapeHtml(sanitizeUrl(d.url))}" onclick="openSafeUrl(this.dataset.url)"> View</button>
+                <button class="doc-btn-edit" onclick="openDmsForm('${d.id}')"> Edit</button>
             </div>
         `;
         container.appendChild(div);
@@ -1781,13 +1781,13 @@ function renderEquipmentMaster() {
         let statusColor = eq.status === 'Healthy' || eq.status === 'In Service' ? 'var(--success)' : (eq.status === 'Faulty' ? 'var(--danger)' : 'var(--warning)');
         html += `
             <tr style="cursor:pointer;" onclick="navigateTo('equipmentProfile', '${ss.id}', '${eq.id}')">
-                <td style="font-weight:600;">${escapeHtml(eq.name)}</td>
-                <td>${escapeHtml(eq.category)}</td>
-                <td>${escapeHtml(eq.voltageLevel)}</td>
-                <td>${escapeHtml(eq.manufacturer || '-')}</td>
-                <td><span style="display:inline-block; padding:4px 8px; border-radius:4px; font-size:12px; font-weight:600; color:white; background:${statusColor};">${escapeHtml(eq.status)}</span></td>
-                <td>
-                    <div style="display:flex; gap:8px;">
+                <td data-label="Name" style="font-weight:600;">${escapeHtml(eq.name)}</td>
+                <td data-label="Category">${escapeHtml(eq.category)}</td>
+                <td data-label="Voltage">${escapeHtml(eq.voltageLevel)}</td>
+                <td data-label="Manufacturer">${escapeHtml(eq.manufacturer || '-')}</td>
+                <td data-label="Status"><span style="display:inline-block; padding:4px 8px; border-radius:4px; font-size:12px; font-weight:600; color:white; background:${statusColor};">${escapeHtml(eq.status)}</span></td>
+                <td data-label="Actions">
+                    <div style="display:flex; gap:8px; justify-content:flex-end;">
                         <button class="btn btn-outline" style="padding:4px 8px; font-size:12px;" onclick="event.stopPropagation(); openEquipmentModal('${eq.id}')">Edit</button>
                         <button class="btn btn-outline" style="padding:4px 8px; font-size:12px; color:var(--danger); border-color:var(--danger);" onclick="event.stopPropagation(); deleteEquipment('${eq.id}')">Delete</button>
                     </div>

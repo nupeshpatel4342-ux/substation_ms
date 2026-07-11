@@ -3,7 +3,7 @@ const pageSubstationsTemplate = `
 <!-- ===== DASHBOARD VIEW ===== -->
 <div class="content">
 <div class="view active" id="dashboardView">
-<div class="section-title">📋 Your Substations</div>
+<div class="section-title"> Your Substations</div>
 <div class="card-grid" id="ssCardGrid">
 <!-- Cards rendered by JS -->
 </div>
@@ -66,7 +66,7 @@ const pageSubstationsTemplate = `
 <div class="dms-layout">
 <!-- Sidebar -->
 <div class="dms-sidebar">
-<h3 style="margin-bottom:15px; font-size:16px;">📂 Folders</h3>
+<h3 style="margin-bottom:15px; font-size:16px;"> Folders</h3>
 <div class="dms-folder active" onclick="setDmsFolder('Monthly Reports')">Monthly Reports</div>
 <div class="dms-folder" onclick="setDmsFolder('Shutdown Permits')">Shutdown Permits</div>
 <div class="dms-folder" onclick="setDmsFolder('Maintenance Reports')">Maintenance Reports</div>
@@ -81,8 +81,8 @@ const pageSubstationsTemplate = `
 <div class="dms-main">
 <!-- Action Bar -->
 <div class="dms-action-bar">
-<button class="btn btn-primary" onclick="openDmsForm()">➕ Add Document</button>
-<input class="form-input" id="dmsSearch" oninput="renderDms()" placeholder="🔍 Search docs..." style="width:250px;" type="text"/>
+<button class="btn btn-primary" onclick="openDmsForm()"> Add Document</button>
+<input class="form-input" id="dmsSearch" oninput="renderDms()" placeholder=" Search docs..." style="width:250px;" type="text"/>
 <input class="form-input" id="dmsFilterRecordId" oninput="renderDms()" placeholder="Ref ID (e.g. FLT-123)" style="width:150px;" type="text"/>
 <button class="btn btn-outline" onclick="exportDmsPdf()">Export PDF</button>
 </div>
@@ -108,7 +108,7 @@ const pageSubstationsTemplate = `
 <!-- DMS Form Modal -->
 <div class="form-section-overlay" id="dmsFormSection" style="display:none;">
 <div class="form-card" style="position:relative; max-width:600px; margin:40px auto;">
-<button class="btn-close" onclick="closeDmsForm()" style="position:absolute; top:15px; right:15px; background:transparent; border:none; font-size:20px; cursor:pointer;">✖</button>
+<button class="btn-close" onclick="closeDmsForm()" style="position:absolute; top:15px; right:15px; background:transparent; border:none; font-size:20px; cursor:pointer;"></button>
 <h3 id="dmsFormTitle">Upload Document</h3>
 <input id="dmsId" type="hidden"/>
 <div class="form-row">
@@ -185,22 +185,22 @@ const pageSubstationsTemplate = `
 <!-- Feeders Section — Category-wise -->
 <div id="feederCategorySetup"></div>
 <!-- Transformers Section -->
-<div class="section-title">🔌 Transformers</div>
+<div class="section-title"> Transformers</div>
 <div id="transformerList"></div>
 <button class="btn btn-add" onclick="addTransformerRow()">+ Add Transformer</button>
 <!-- Opposite SS Section -->
-<div class="section-title">📡 Opposite SS Entries (Line Loss)</div>
+<div class="section-title"> Opposite SS Entries (Line Loss)</div>
 <div id="oppositeList"></div>
 <button class="btn btn-add" onclick="addOppositeRow()">+ Add Opposite SS Entry</button>
 <div class="btn-group">
-<button class="btn btn-success" onclick="saveSubstation()">💾 Save Substation</button>
-<button class="btn btn-danger" id="btnDeleteSS" onclick="deleteSubstation()" style="display:none">🗑️ Delete</button>
+<button class="btn btn-success" onclick="saveSubstation()"> Save Substation</button>
+<button class="btn btn-danger" id="btnDeleteSS" onclick="deleteSubstation()" style="display:none"> Delete</button>
 </div>
 </div>
 <!-- ===== REPORT VIEW ===== -->
 <div class="view" id="reportView">
 <div class="month-bar no-print">
-<label for="reportMonth">📅 MONTH :</label>
+<label for="reportMonth"> MONTH :</label>
 <input id="reportMonth" placeholder="e.g., JUN-2026" type="text"/>
 </div>
 <!-- Status Bar -->
@@ -222,27 +222,27 @@ const pageSubstationsTemplate = `
 <div id="feederCategoryContainer"></div>
 <!-- Opposite SS Inputs -->
 <div class="report-card" id="oppositeCard" style="display:none">
-<div class="report-card-header">📡 Opposite SS End Units (Line Loss)</div>
+<div class="report-card-header"> Opposite SS End Units (Line Loss)</div>
 <div id="oppositeInputs" style="padding: 12px;"></div>
 </div>
 <!-- Calculate Button -->
 <div class="btn-group no-print" style="margin-bottom: 16px;">
-<button class="btn btn-success" onclick="calculateReport()" style="flex:2">📊 Calculate &amp; Generate Report</button>
+<button class="btn btn-success" onclick="calculateReport()" style="flex:2"> Calculate &amp; Generate Report</button>
 <button class="btn btn-outline" onclick="resetReport()">↺ Reset</button>
 </div>
 <!-- Totals Section -->
 <div class="report-card" id="totalsCard" style="display:none">
-<div class="report-card-header">📊 Totals</div>
+<div class="report-card-header"> Totals</div>
 <div id="totalsBody"></div>
 </div>
 <!-- Loss Calculation Section -->
 <div class="report-card" id="lossCard" style="display:none">
-<div class="report-card-header">📉 Loss Calculation</div>
+<div class="report-card-header"> Loss Calculation</div>
 <div id="lossBody"></div>
 </div>
 <!-- PDF Button -->
 <div class="btn-group no-print" id="pdfBtnGroup" style="display:none">
-<button class="btn btn-primary" onclick="exportPDF()">📄 Save as PDF</button>
+<button class="btn btn-primary" onclick="exportPDF()"> Save as PDF</button>
 </div>
 </div>
 <!-- ===== PHOTO REPORT VIEW ===== -->
@@ -266,8 +266,8 @@ const pageSubstationsTemplate = `
 <input class="form-input" id="photoFilterRecordId" onkeyup="renderPhotoReport()" placeholder="Search Record ID..." style="width:160px;" type="text"/>
 </div>
 <div class="fault-action-right">
-<button class="btn btn-outline" onclick="exportPhotoReportPDF()">📥 Export PDF</button>
-<button class="btn btn-primary" onclick="openPhotoForm()">➕ Add Photo</button>
+<button class="btn btn-outline" onclick="exportPhotoReportPDF()"> Export PDF</button>
+<button class="btn btn-primary" onclick="openPhotoForm()"> Add Photo</button>
 </div>
 </div>
 <div class="photo-grid" id="photoGridContainer">
@@ -278,7 +278,7 @@ const pageSubstationsTemplate = `
 <div id="photoFormSection" style="display:none;">
 <input id="ph_id" type="hidden"/>
 <div class="form-card">
-<div class="section-title" style="margin-top:0;">📷 Photo Details</div>
+<div class="section-title" style="margin-top:0;"> Photo Details</div>
 <div class="fault-form-grid">
 <div class="form-group" style="grid-column: 1 / -1;">
 <label class="form-label">Photo Image URL</label>
@@ -335,7 +335,7 @@ const pageSubstationsTemplate = `
 <div id="faultDashboardSection">
 <div class="fault-action-bar">
 <div class="fault-action-left">
-<input class="form-input" id="faultSearch" oninput="renderFaultRegister()" placeholder="🔍 Search faults..." style="flex:1;" type="text"/>
+<input class="form-input" id="faultSearch" oninput="renderFaultRegister()" placeholder=" Search faults..." style="flex:1;" type="text"/>
 <select class="form-select" id="faultFilterStatus" onchange="renderFaultRegister()" style="width:140px;">
 <option value="">All Statuses</option>
 <option value="Pending">Pending</option>
@@ -346,8 +346,8 @@ const pageSubstationsTemplate = `
 </select>
 </div>
 <div class="fault-action-right">
-<button class="btn btn-outline" onclick="exportFaults()">📥 Export CSV</button>
-<button class="btn btn-primary" onclick="openFaultForm()">➕ Register Fault</button>
+<button class="btn btn-outline" onclick="exportFaults()"> Export CSV</button>
+<button class="btn btn-primary" onclick="openFaultForm()"> Register Fault</button>
 </div>
 </div>
 <div class="fault-summary-grid" id="faultSummaryGrid">
@@ -356,9 +356,9 @@ const pageSubstationsTemplate = `
 <div class="analytics-grid" id="faultAnalyticsGrid">
 <!-- Analytics -->
 </div>
-<div class="section-title">🕒 Fault History</div>
-<div class="fault-table-container">
-<table class="modern-table">
+<div class="section-title"> Fault History</div>
+<div class="table-responsive">
+<table class="data-table">
 <thead>
 <tr>
 <th>ID &amp; Date</th>
@@ -379,7 +379,7 @@ const pageSubstationsTemplate = `
 <div id="faultFormSection" style="display:none;">
 <input id="f_id" type="hidden"/>
 <div class="form-card">
-<div class="section-title" style="margin-top:0;">📝 General Information</div>
+<div class="section-title" style="margin-top:0;"> General Information</div>
 <div class="fault-form-grid">
 <div class="form-group">
 <label class="form-label">Fault Date</label>
@@ -417,7 +417,7 @@ const pageSubstationsTemplate = `
 </div>
 </div>
 <div class="form-card">
-<div class="section-title" style="margin-top:0;">🔍 Fault Details</div>
+<div class="section-title" style="margin-top:0;"> Fault Details</div>
 <div class="fault-form-grid">
 <div class="form-group">
 <label class="form-label">Fault Type</label>
@@ -458,7 +458,7 @@ const pageSubstationsTemplate = `
 </div>
 </div>
 <div class="form-card">
-<div class="section-title" style="margin-top:0;">📍 Location Details</div>
+<div class="section-title" style="margin-top:0;"> Location Details</div>
 <div class="fault-form-grid">
 <div class="form-group">
 <label class="form-label">Bay No.</label>
@@ -471,7 +471,7 @@ const pageSubstationsTemplate = `
 </div>
 </div>
 <div class="form-card">
-<div class="section-title" style="margin-top:0;">📋 Status &amp; Resolution</div>
+<div class="section-title" style="margin-top:0;"> Status &amp; Resolution</div>
 <div class="fault-form-grid">
 <div class="form-group">
 <label class="form-label">Current Status</label>
@@ -506,10 +506,10 @@ const pageSubstationsTemplate = `
 </div>
 </div>
 <div class="btn-group">
-<button class="btn btn-success" onclick="saveFault()">💾 Save Fault Record</button>
-<button class="btn btn-outline" onclick="closeFaultForm()">✖ Cancel</button>
-<button class="btn btn-danger" id="btnDeleteFault" onclick="deleteFault()" style="display:none;">🗑️ Delete</button>
-<button class="btn btn-outline" id="btnViewAttachedPhotosFault" onclick="viewRelatedPhotos(document.getElementById('f_id').value)" style="display:none;" type="button">📷 View Attached Photos</button>
+<button class="btn btn-success" onclick="saveFault()"> Save Fault Record</button>
+<button class="btn btn-outline" onclick="closeFaultForm()"> Cancel</button>
+<button class="btn btn-danger" id="btnDeleteFault" onclick="deleteFault()" style="display:none;"> Delete</button>
+<button class="btn btn-outline" id="btnViewAttachedPhotosFault" onclick="viewRelatedPhotos(document.getElementById('f_id').value)" style="display:none;" type="button"> View Attached Photos</button>
 </div>
 </div>
 </div>
@@ -524,17 +524,17 @@ const pageSubstationsTemplate = `
 <input class="form-input" id="tripMonthPicker" onchange="renderTrippingRegister()" style="width: auto;" type="month"/>
 </div>
 <div class="trip-action-right">
-<button class="btn btn-outline" onclick="exportTrips()">📥 Export CSV</button>
-<button class="btn btn-primary" onclick="openTripForm()">➕ New Trip</button>
+<button class="btn btn-outline" onclick="exportTrips()"> Export CSV</button>
+<button class="btn btn-primary" onclick="openTripForm()"> New Trip</button>
 </div>
 </div>
-<div class="section-title">📊 Grand Totals</div>
+<div class="section-title"> Grand Totals</div>
 <div class="trip-summary-grid" id="tripGrandTotals">
 <!-- Cards injected by JS -->
 </div>
-<div class="section-title">🏭 Equipment Summary</div>
+<div class="section-title"> Equipment Summary</div>
 <div class="trip-table-container">
-<table class="trip-table">
+<table class="data-table">
 <thead>
 <tr>
 <th rowspan="2">Equipment Name</th>
@@ -558,9 +558,9 @@ const pageSubstationsTemplate = `
 </tbody>
 </table>
 </div>
-<div class="section-title">🕒 Trip History</div>
+<div class="section-title"> Trip History</div>
 <div class="trip-table-container">
-<table class="trip-table">
+<table class="data-table">
 <thead>
 <tr>
 <th>ID</th>
@@ -582,7 +582,7 @@ const pageSubstationsTemplate = `
 <div id="tripFormSection" style="display:none;">
 <input id="t_id" type="hidden"/>
 <div class="form-card">
-<div class="section-title" style="margin-top:0;">⚡ Trip Details</div>
+<div class="section-title" style="margin-top:0;"> Trip Details</div>
 <div class="trip-form-grid">
 <div class="form-group" style="grid-column: 1 / -1;">
 <label class="form-label">Equipment</label>
@@ -622,10 +622,10 @@ const pageSubstationsTemplate = `
 </div>
 </div>
 <div class="btn-group">
-<button class="btn btn-success" onclick="saveTrip()">💾 Save Trip Record</button>
-<button class="btn btn-outline" onclick="closeTripForm()">✖ Cancel</button>
-<button class="btn btn-danger" id="btnDeleteTrip" onclick="deleteTrip()" style="display:none;">🗑️ Delete</button>
-<button class="btn btn-outline" id="btnViewAttachedPhotosTrip" onclick="viewRelatedPhotos(document.getElementById('t_id').value)" style="display:none;" type="button">📷 View Attached Photos</button>
+<button class="btn btn-success" onclick="saveTrip()"> Save Trip Record</button>
+<button class="btn btn-outline" onclick="closeTripForm()"> Cancel</button>
+<button class="btn btn-danger" id="btnDeleteTrip" onclick="deleteTrip()" style="display:none;"> Delete</button>
+<button class="btn btn-outline" id="btnViewAttachedPhotosTrip" onclick="viewRelatedPhotos(document.getElementById('t_id').value)" style="display:none;" type="button"> View Attached Photos</button>
 </div>
 </div>
 </div>
@@ -639,11 +639,11 @@ const pageSubstationsTemplate = `
 <input class="form-input" id="bdMonthPicker" onchange="renderBreakdownRegister()" style="width: auto;" type="month"/>
 </div>
 <div class="breakdown-action-right">
-<button class="btn btn-outline" onclick="exportBreakdowns()">📥 Export CSV</button>
-<button class="btn btn-primary" onclick="openBreakdownForm()">➕ New Breakdown</button>
+<button class="btn btn-outline" onclick="exportBreakdowns()"> Export CSV</button>
+<button class="btn btn-primary" onclick="openBreakdownForm()"> New Breakdown</button>
 </div>
 </div>
-<div class="section-title">📊 Dashboard</div>
+<div class="section-title"> Dashboard</div>
 <div class="breakdown-summary-grid">
 <div class="breakdown-summary-card">
 <span class="title">Total Breakdowns</span>
@@ -670,9 +670,9 @@ const pageSubstationsTemplate = `
 <span class="value" id="bdAvgRestore">0h</span>
 </div>
 </div>
-<div class="section-title">📋 Breakdown History</div>
+<div class="section-title"> Breakdown History</div>
 <div class="breakdown-table-container">
-<table class="modern-table">
+<table class="data-table">
 <thead>
 <tr>
 <th>BD ID</th>
@@ -692,7 +692,7 @@ const pageSubstationsTemplate = `
 </div>
 <!-- Form Section -->
 <div id="bdFormSection" style="display:none;">
-<div class="section-title" id="bdFormTitle">📝 Report New Breakdown</div>
+<div class="section-title" id="bdFormTitle"> Report New Breakdown</div>
 <input id="bdId" type="hidden"/>
 <input id="bdNumber" type="hidden"/>
 <div class="breakdown-form-section">
@@ -809,10 +809,10 @@ const pageSubstationsTemplate = `
 </div>
 </div>
 <div class="btn-group">
-<button class="btn btn-success" onclick="saveBreakdown()">💾 Save Breakdown Report</button>
-<button class="btn btn-outline" onclick="closeBreakdownForm()">✖ Cancel</button>
-<button class="btn btn-danger" id="btnDeleteBreakdown" onclick="deleteBreakdown()" style="display:none;">🗑️ Delete</button>
-<button class="btn btn-outline" id="btnViewAttachedPhotosBd" onclick="viewRelatedPhotos(document.getElementById('bdNumber').value)" style="display:none;" type="button">📷 View Attached Photos</button>
+<button class="btn btn-success" onclick="saveBreakdown()"> Save Breakdown Report</button>
+<button class="btn btn-outline" onclick="closeBreakdownForm()"> Cancel</button>
+<button class="btn btn-danger" id="btnDeleteBreakdown" onclick="deleteBreakdown()" style="display:none;"> Delete</button>
+<button class="btn btn-outline" id="btnViewAttachedPhotosBd" onclick="viewRelatedPhotos(document.getElementById('bdNumber').value)" style="display:none;" type="button"> View Attached Photos</button>
 </div>
 </div>
 </div>
@@ -832,8 +832,8 @@ const pageSubstationsTemplate = `
 </select>
 </div>
 </div>
-<div class="fault-table-container">
-<table class="modern-table">
+<div class="table-responsive">
+<table class="data-table">
 <thead>
 <tr>
 <th>Date &amp; Time</th>
@@ -849,7 +849,7 @@ const pageSubstationsTemplate = `
 </table>
 </div>
 <div class="empty-state" id="timelineEmptyState" style="display:none">
-<div class="empty-icon">🕒</div>
+<div class="empty-icon"></div>
 <p>No events found for the selected filters.</p>
 </div>
 </div>
@@ -862,15 +862,15 @@ const pageSubstationsTemplate = `
 <input class="form-input" id="mntMonthPicker" onchange="renderMaintenanceRegister()" style="width:auto; font-weight:700;" type="month"/>
 </div>
 <div class="mnt-action-right">
-<button class="btn btn-outline" onclick="exportMaintenance()">📥 Export CSV</button>
-<button class="btn btn-primary" onclick="openMaintenanceForm()">➕ New Maintenance</button>
+<button class="btn btn-outline" onclick="exportMaintenance()"> Export CSV</button>
+<button class="btn btn-primary" onclick="openMaintenanceForm()"> New Maintenance</button>
 </div>
 </div>
 <div class="mnt-summary-grid" id="mntSummaryGrid">
 <!-- Populated by JS -->
 </div>
 <div class="mnt-table-container">
-<table class="modern-table">
+<table class="data-table">
 <thead>
 <tr>
 <th>ID</th>
@@ -995,10 +995,10 @@ const pageSubstationsTemplate = `
 </div>
 </div>
 <div class="btn-group">
-<button class="btn btn-success" onclick="saveMaintenance()">💾 Save Maintenance</button>
-<button class="btn btn-outline" onclick="closeMaintenanceForm()">✖ Cancel</button>
-<button class="btn btn-danger" id="btnDeleteMaintenance" onclick="deleteMaintenance()" style="display:none;">🗑️ Delete</button>
-<button class="btn btn-outline" id="btnViewAttachedPhotosMnt" onclick="viewRelatedPhotos(document.getElementById('mntId').value)" style="display:none;" type="button">📷 View Attached Photos</button>
+<button class="btn btn-success" onclick="saveMaintenance()"> Save Maintenance</button>
+<button class="btn btn-outline" onclick="closeMaintenanceForm()"> Cancel</button>
+<button class="btn btn-danger" id="btnDeleteMaintenance" onclick="deleteMaintenance()" style="display:none;"> Delete</button>
+<button class="btn btn-outline" id="btnViewAttachedPhotosMnt" onclick="viewRelatedPhotos(document.getElementById('mntId').value)" style="display:none;" type="button"> View Attached Photos</button>
 </div>
 </div>
 </div>
@@ -1009,8 +1009,8 @@ const pageSubstationsTemplate = `
 <div class="eq-list-header">
 <h2 class="eq-list-title">Equipment Dashboard</h2>
 <div class="eq-list-actions">
-<button class="btn btn-outline" onclick="alert('Export functionality coming soon.')">📥 Export</button>
-<button class="btn btn-primary" onclick="openEquipmentModal()">➕ Add Equipment</button>
+<button class="btn btn-outline" onclick="alert('Export functionality coming soon.')"> Export</button>
+<button class="btn btn-primary" onclick="openEquipmentModal()"> Add Equipment</button>
 </div>
 </div>
 <div class="eq-dashboard-grid">
@@ -1036,8 +1036,8 @@ const pageSubstationsTemplate = `
 </div>
 </div>
 <!-- Equipment List -->
-<div class="fault-table-container">
-<table class="modern-table">
+<div class="table-responsive">
+<table class="data-table">
 <thead>
 <tr>
 <th>Name</th>
@@ -1058,7 +1058,7 @@ const pageSubstationsTemplate = `
 <div class="modal-content">
 <div class="modal-header">
 <h3 class="modal-title">Add / Edit Equipment</h3>
-<button class="close-modal" onclick="closeEquipmentModal()">✖</button>
+<button class="close-modal" onclick="closeEquipmentModal()"></button>
 </div>
 <form id="equipmentForm" onsubmit="saveEquipment(event)">
 <input id="eqId" type="hidden"/>
@@ -1338,7 +1338,7 @@ const pageSubstationsTemplate = `
 <!-- ===== REGISTERS MODULE VIEW ===== -->
 <div class="view" id="registersView">
     <div class="reg-actions" style="margin-top: 0px; margin-bottom: 16px;">
-        <input type="text" class="reg-search-input" id="regSearchInput" placeholder="🔍 Search Registers..." onkeyup="filterRegisters()" style="width: 100%;">
+        <input type="text" class="reg-search-input" id="regSearchInput" placeholder=" Search Registers..." onkeyup="filterRegisters()" style="width: 100%;">
     </div>
     
     <div id="registersContainer"></div>
@@ -1347,7 +1347,7 @@ const pageSubstationsTemplate = `
 <!-- ===== COMMON REGISTER TEMPLATE VIEW ===== -->
 <div class="view" id="commonRegisterView">
     <div class="reg-actions" style="margin-bottom: 20px;">
-        <input type="text" class="reg-search-input" placeholder="🔍 Search Entries...">
+        <input type="text" class="reg-search-input" placeholder=" Search Entries...">
         <button class="reg-btn reg-btn-outline"><span class="material-icons-round">filter_alt</span> Advanced Filter</button>
         <button class="reg-btn reg-btn-outline"><span class="material-icons-round">date_range</span> Date</button>
         

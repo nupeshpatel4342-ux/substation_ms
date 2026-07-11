@@ -4,8 +4,8 @@ const ssEquipmentMasterTemplate = `
             <div class="eq-list-header">
                 <h2 class="eq-list-title">Equipment Dashboard</h2>
                 <div class="eq-list-actions">
-                    <button class="btn btn-outline" onclick="alert('Export functionality coming soon.')">📥 Export</button>
-                    <button class="btn btn-primary" onclick="openEquipmentModal()">➕ Add Equipment</button>
+                    <button class="btn btn-outline" onclick="alert('Export functionality coming soon.')"> Export</button>
+                    <button class="btn btn-primary" onclick="openEquipmentModal()"> Add Equipment</button>
                 </div>
             </div>
 
@@ -56,7 +56,7 @@ const ssEquipmentMasterTemplate = `
                 <div class="modal-content">
                     <div class="modal-header">
                         <h3 class="modal-title">Add / Edit Equipment</h3>
-                        <button class="close-modal" onclick="closeEquipmentModal()">✖</button>
+                        <button class="close-modal" onclick="closeEquipmentModal()"></button>
                     </div>
                     <form id="equipmentForm" onsubmit="saveEquipment(event)">
                         <input type="hidden" id="eqId">

@@ -27,10 +27,10 @@ function renderSetupForm() {
 
 // ---- Feeders ----
 const SETUP_CATEGORIES = [
-    { key: 'cat_66kv', label: '66 KV Incoming / Outgoing Line', icon: '🔌', cssClass: 'cat-66kv', roles: ['66kv_incoming', '66kv_outgoing'], defaultRole: '66kv_incoming' },
-    { key: 'cat_trhv', label: '66 KV Transformer HV Side',      icon: '⚡', cssClass: 'cat-trhv', roles: ['tr_hv'], defaultRole: 'tr_hv' },
-    { key: 'cat_trlv', label: '11 KV Incoming Line LV Side',    icon: '🔋', cssClass: 'cat-trlv', roles: ['tr_lv'], defaultRole: 'tr_lv' },
-    { key: 'cat_11kv', label: '11 KV Feeder',                   icon: '📡', cssClass: 'cat-11kv', roles: ['11kv_feeder', 'solar_import', 'solar_export', 'station_aux', 'info_only'], defaultRole: '11kv_feeder' }
+    { key: 'cat_66kv', label: '66 KV Incoming / Outgoing Line', icon: '', cssClass: 'cat-66kv', roles: ['66kv_incoming', '66kv_outgoing'], defaultRole: '66kv_incoming' },
+    { key: 'cat_trhv', label: '66 KV Transformer HV Side',      icon: '', cssClass: 'cat-trhv', roles: ['tr_hv'], defaultRole: 'tr_hv' },
+    { key: 'cat_trlv', label: '11 KV Incoming Line LV Side',    icon: '', cssClass: 'cat-trlv', roles: ['tr_lv'], defaultRole: 'tr_lv' },
+    { key: 'cat_11kv', label: '11 KV Feeder',                   icon: '', cssClass: 'cat-11kv', roles: ['11kv_feeder', 'solar_import', 'solar_export', 'station_aux', 'info_only'], defaultRole: '11kv_feeder' }
 ];
 
 function renderFeederList() {
@@ -65,7 +65,7 @@ function renderFeederList() {
                     <label class="form-label">Role</label>
                     <select class="form-select" onchange="setupFeeders[${i}].role=this.value; renderFeederList();">${opts}</select>
                 </div>
-                <button class="btn-remove" onclick="setupFeeders.splice(${i},1); renderFeederList(); renderTransformerList(); renderOppositeList();">✕</button>
+                <button class="btn-remove" onclick="setupFeeders.splice(${i},1); renderFeederList(); renderTransformerList(); renderOppositeList();"></button>
             </div>`;
         });
 
@@ -95,7 +95,7 @@ function addFeederRow(defaultRole) {
 function renderTransformerList() {
     const container = document.getElementById('transformerList');
     if (setupTransformers.length === 0) {
-        container.innerHTML = '<div class="empty-state"><div class="empty-icon">🔌</div><p>No transformers yet.</p></div>';
+        container.innerHTML = '<div class="empty-state"><div class="empty-icon"></div><p>No transformers yet.</p></div>';
         return;
     }
     // Build feeder options for HV/LV selects (only show tr_hv for HV, tr_lv for LV)
@@ -123,7 +123,7 @@ function renderTransformerList() {
                 <label class="form-label">LV Feeder</label>
                 <select class="form-select" onchange="setupTransformers[${i}].lvFeederId=this.value">${lvOpts}</select>
             </div>
-            <button class="btn-remove" onclick="setupTransformers.splice(${i},1); renderTransformerList();">✕</button>
+            <button class="btn-remove" onclick="setupTransformers.splice(${i},1); renderTransformerList();"></button>
         </div>`;
     });
     container.innerHTML = html;
@@ -139,7 +139,7 @@ function addTransformerRow() {
 function renderOppositeList() {
     const container = document.getElementById('oppositeList');
     if (setupOpposites.length === 0) {
-        container.innerHTML = '<div class="empty-state"><div class="empty-icon">📡</div><p>No opposite SS entries yet.</p></div>';
+        container.innerHTML = '<div class="empty-state"><div class="empty-icon"></div><p>No opposite SS entries yet.</p></div>';
         return;
     }
     let lineFeeders = setupFeeders.filter(f => f.role === '66kv_incoming' || f.role === '66kv_outgoing');
@@ -159,7 +159,7 @@ function renderOppositeList() {
                 <label class="form-label">Linked Feeder</label>
                 <select class="form-select" onchange="setupOpposites[${i}].linkedFeederId=this.value">${fOpts}</select>
             </div>
-            <button class="btn-remove" onclick="setupOpposites.splice(${i},1); renderOppositeList();">✕</button>
+            <button class="btn-remove" onclick="setupOpposites.splice(${i},1); renderOppositeList();"></button>
         </div>`;
     });
     container.innerHTML = html;
@@ -174,8 +174,8 @@ function addOppositeRow() {
 // ---- Save / Delete Substation ----
 function saveSubstation() {
     let name = document.getElementById('setupName').value.trim();
-    if (!name) { showToast('⚠️ Please enter substation name'); return; }
-    if (setupFeeders.length === 0) { showToast('⚠️ Add at least one feeder'); return; }
+    if (!name) { showToast(' Please enter substation name'); return; }
+    if (setupFeeders.length === 0) { showToast(' Add at least one feeder'); return; }
 
     let subs = loadSubstations();
 
@@ -200,7 +200,7 @@ function saveSubstation() {
     }
 
     saveSubstations(subs);
-    showToast('✅ Substation saved!');
+    showToast(' Substation saved!');
     navigateTo('dashboard');
 }
 

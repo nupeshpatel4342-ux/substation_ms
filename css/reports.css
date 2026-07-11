@@ -1,10 +1,11 @@
         /* ===== REPORT TABLE ===== */
         .report-card {
-            background: var(--card);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
+            background: linear-gradient(145deg, #ffffff, #f8fafc);
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
             overflow: hidden;
-            margin-bottom: 16px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
         }
         .report-card-header {
             background: linear-gradient(135deg, var(--primary), var(--accent));
@@ -92,12 +93,12 @@
             margin-top: 16px;
         }
         .photo-card {
-            background: var(--card);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow-sm);
+            background: linear-gradient(145deg, #ffffff, #f8fafc);
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
             overflow: hidden;
-            border: 1px solid var(--border-light);
-            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
         }
@@ -141,3 +142,67 @@
         }
         .btn-photo-edit { background: var(--primary-light); color: var(--primary-dark); }
         .btn-photo-del { background: var(--danger-light); color: var(--danger); }
+
+        /* ===== RESPONSIVE: MOBILE (700px) ===== */
+        @media (max-width: 700px) {
+            .photo-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            .photo-card {
+                max-width: 100%;
+            }
+            .photo-img {
+                height: 180px;
+            }
+            .summary-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 6px;
+                padding: 10px 12px;
+            }
+            .summary-value {
+                font-size: 14px;
+                align-self: flex-end;
+            }
+            /* Table responsiveness: allow horizontal scroll for large tables (like the reading reports) to prevent cramped inputs */
+            .report-card {
+                border-radius: 12px;
+            }
+            .report-card-header {
+                font-size: 12px;
+                padding: 10px 12px;
+            }
+            .table-responsive {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            table {
+                min-width: 600px;
+            }
+            th, td {
+                padding: 8px 10px;
+                font-size: 12px;
+            }
+            td input[type="number"] {
+                padding: 6px 8px;
+                font-size: 13px;
+                min-width: 60px;
+            }
+        }
+
+        /* ===== RESPONSIVE: SMALL PHONE (400px) ===== */
+        @media (max-width: 400px) {
+            .photo-img {
+                height: 160px;
+            }
+            .photo-info {
+                padding: 10px;
+            }
+            .summary-label {
+                font-size: 12px;
+            }
+            .summary-value {
+                font-size: 13px;
+            }
+        }

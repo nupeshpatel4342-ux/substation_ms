@@ -150,7 +150,7 @@ function navigateTo(view, ssId) {
     if (view === 'dashboard') {
         document.getElementById('dashboardView').classList.add('active');
         headerBack.style.display = 'none';
-        document.getElementById('headerTitle').textContent = '⚡ 66 KV SUBSTATION REPORT';
+        document.getElementById('headerTitle').textContent = ' 66 KV SUBSTATION REPORT';
         document.getElementById('headerSubtitle').textContent = 'Monthly Report App';
         renderDashboard();
     } else if (view === 'setup') {
@@ -160,10 +160,10 @@ function navigateTo(view, ssId) {
         editingSSId = ssId || null;
         if (editingSSId) {
             let ss = getSubstation(editingSSId);
-            document.getElementById('headerTitle').textContent = '✏️ Edit Substation';
+            document.getElementById('headerTitle').textContent = ' Edit Substation';
             document.getElementById('headerSubtitle').textContent = ss.name;
         } else {
-            document.getElementById('headerTitle').textContent = '➕ New Substation';
+            document.getElementById('headerTitle').textContent = ' New Substation';
             document.getElementById('headerSubtitle').textContent = 'Create a new substation';
         }
         renderSetupForm();
@@ -173,13 +173,13 @@ function navigateTo(view, ssId) {
         headerBack.onclick = () => navigateTo('dashboard');
         currentDashboardSSId = ssId;
         let ss = getSubstation(ssId);
-        document.getElementById('headerTitle').textContent = '🏠 ' + ss.name;
+        document.getElementById('headerTitle').textContent = ' ' + ss.name;
         document.getElementById('headerSubtitle').textContent = 'Substation Dashboard';
     } else if (view === 'eventTimeline') {
         document.getElementById('eventTimelineView').classList.add('active');
         headerBack.style.display = 'flex';
         headerBack.onclick = () => navigateTo('ssDashboard', currentDashboardSSId);
-        document.getElementById('headerTitle').textContent = '🕒 Event Timeline';
+        document.getElementById('headerTitle').textContent = ' Event Timeline';
         let now = new Date();
         document.getElementById('timelineMonthFilter').value = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
         renderEventTimeline();
@@ -189,7 +189,7 @@ function navigateTo(view, ssId) {
         headerBack.onclick = () => navigateTo('ssDashboard', currentDashboardSSId);
         reportSSId = ssId;
         let ss = getSubstation(ssId);
-        document.getElementById('headerTitle').textContent = '📊 ' + ss.name;
+        document.getElementById('headerTitle').textContent = ' ' + ss.name;
         document.getElementById('headerSubtitle').textContent = 'Monthly Report';
         renderReportPage();
     } else if (view === 'photoReport') {
@@ -198,7 +198,7 @@ function navigateTo(view, ssId) {
         headerBack.onclick = () => navigateTo('ssDashboard', currentDashboardSSId);
         currentDashboardSSId = ssId;
         let ss = getSubstation(ssId);
-        document.getElementById('headerTitle').textContent = '📷 Photo Report';
+        document.getElementById('headerTitle').textContent = ' Photo Report';
         document.getElementById('headerSubtitle').textContent = ss.name;
         renderPhotoReport();
     } else if (view === 'faultRegister') {
@@ -207,7 +207,7 @@ function navigateTo(view, ssId) {
         headerBack.onclick = () => navigateTo('ssDashboard', currentDashboardSSId);
         currentDashboardSSId = ssId;
         let ss = getSubstation(ssId);
-        document.getElementById('headerTitle').textContent = '🚨 Fault Register';
+        document.getElementById('headerTitle').textContent = ' Fault Register';
         document.getElementById('headerSubtitle').textContent = ss.name;
         renderFaultRegister();
     } else if (view === 'trippingRegister') {
@@ -216,7 +216,7 @@ function navigateTo(view, ssId) {
         headerBack.onclick = () => navigateTo('ssDashboard', currentDashboardSSId);
         currentDashboardSSId = ssId;
         let ss = getSubstation(ssId);
-        document.getElementById('headerTitle').textContent = '⚡ Tripping Calculations';
+        document.getElementById('headerTitle').textContent = ' Tripping Calculations';
         document.getElementById('headerSubtitle').textContent = ss.name;
         
         let now = new Date();
@@ -228,7 +228,7 @@ function navigateTo(view, ssId) {
         headerBack.onclick = () => navigateTo('ssDashboard', currentDashboardSSId);
         currentDashboardSSId = ssId;
         let ss = getSubstation(ssId);
-        document.getElementById('headerTitle').textContent = '🛠️ Breakdown Reports';
+        document.getElementById('headerTitle').textContent = ' Breakdown Reports';
         document.getElementById('headerSubtitle').textContent = ss.name;
         
         let now = new Date();
@@ -240,7 +240,7 @@ function navigateTo(view, ssId) {
         headerBack.onclick = () => navigateTo('ssDashboard', currentDashboardSSId);
         currentDashboardSSId = ssId;
         let ss = getSubstation(ssId);
-        document.getElementById('headerTitle').textContent = '🛠️ Maintenance Register';
+        document.getElementById('headerTitle').textContent = ' Maintenance Register';
         document.getElementById('headerSubtitle').textContent = ss.name;
         
         let now = new Date();
@@ -297,22 +297,22 @@ function renderDashboard() {
             <div class="card-name">${ss.name} ${sampleBadge}</div>
             <div class="card-meta" style="flex-direction:column; gap:6px;">
                 <div style="display:flex; gap:12px; flex-wrap:wrap;">
-                    <span style="color:#0d47a1;">🔌 ${cnt66kv} 66KV Line</span>
-                    <span style="color:#7b1fa2;">⚡ ${cntTR} TR</span>
+                    <span style="color:#0d47a1;"> ${cnt66kv} 66KV Line</span>
+                    <span style="color:#7b1fa2;"> ${cntTR} TR</span>
                 </div>
                 <div style="display:flex; gap:12px; flex-wrap:wrap;">
-                    <span style="color:#e65100;">🔋 ${cntTrLV} 11KV Incoming</span>
-                    <span style="color:#2e7d32;">📡 ${cnt11kv} 11KV Feeder</span>
+                    <span style="color:#e65100;"> ${cntTrLV} 11KV Incoming</span>
+                    <span style="color:#2e7d32;"> ${cnt11kv} 11KV Feeder</span>
                 </div>
                 <div style="display:flex; gap:12px; flex-wrap:wrap; padding-top:6px; border-top:1px solid #e0e0e0; margin-top:2px;">
-                    <span style="font-weight:700; color:#1a1a2e;">⏲️ Total Meter: ${feederTotal}</span>
-                    <span>📊 ${reportCount} Reports</span>
+                    <span style="font-weight:700; color:#1a1a2e;">⏲ Total Meter: ${feederTotal}</span>
+                    <span> ${reportCount} Reports</span>
                 </div>
             </div>
             <div class="card-actions">
-                <button class="btn-report" onclick="event.stopPropagation(); navigateTo('report','${ss.id}')">📊 Report</button>
-                <button class="btn-edit" onclick="event.stopPropagation(); navigateTo('setup','${ss.id}')">✏️ Edit</button>
-                <button class="btn-delete-card" onclick="event.stopPropagation(); deleteSSFromDashboard('${ss.id}')">🗑️</button>
+                <button class="btn-report" onclick="event.stopPropagation(); navigateTo('report','${ss.id}')"> Report</button>
+                <button class="btn-edit" onclick="event.stopPropagation(); navigateTo('setup','${ss.id}')"> Edit</button>
+                <button class="btn-delete-card" onclick="event.stopPropagation(); deleteSSFromDashboard('${ss.id}')"></button>
             </div>
             <button class="btn-manage-ss" onclick="event.stopPropagation(); navigateTo('ssDashboard','${ss.id}')">
                 <span class="material-icons-round">dashboard</span>
@@ -368,10 +368,10 @@ function renderSetupForm() {
 
 // ---- Feeders ----
 const SETUP_CATEGORIES = [
-    { key: 'cat_66kv', label: '66 KV Incoming / Outgoing Line', icon: '🔌', cssClass: 'cat-66kv', roles: ['66kv_incoming', '66kv_outgoing'], defaultRole: '66kv_incoming' },
-    { key: 'cat_trhv', label: '66 KV Transformer HV Side',      icon: '⚡', cssClass: 'cat-trhv', roles: ['tr_hv'], defaultRole: 'tr_hv' },
-    { key: 'cat_trlv', label: '11 KV Incoming Line LV Side',    icon: '🔋', cssClass: 'cat-trlv', roles: ['tr_lv'], defaultRole: 'tr_lv' },
-    { key: 'cat_11kv', label: '11 KV Feeder',                   icon: '📡', cssClass: 'cat-11kv', roles: ['11kv_feeder', 'solar_import', 'solar_export', 'station_aux', 'info_only'], defaultRole: '11kv_feeder' }
+    { key: 'cat_66kv', label: '66 KV Incoming / Outgoing Line', icon: '', cssClass: 'cat-66kv', roles: ['66kv_incoming', '66kv_outgoing'], defaultRole: '66kv_incoming' },
+    { key: 'cat_trhv', label: '66 KV Transformer HV Side',      icon: '', cssClass: 'cat-trhv', roles: ['tr_hv'], defaultRole: 'tr_hv' },
+    { key: 'cat_trlv', label: '11 KV Incoming Line LV Side',    icon: '', cssClass: 'cat-trlv', roles: ['tr_lv'], defaultRole: 'tr_lv' },
+    { key: 'cat_11kv', label: '11 KV Feeder',                   icon: '', cssClass: 'cat-11kv', roles: ['11kv_feeder', 'solar_import', 'solar_export', 'station_aux', 'info_only'], defaultRole: '11kv_feeder' }
 ];
 
 function renderFeederList() {
@@ -406,7 +406,7 @@ function renderFeederList() {
                     <label class="form-label">Role</label>
                     <select class="form-select" onchange="setupFeeders[${i}].role=this.value; renderFeederList();">${opts}</select>
                 </div>
-                <button class="btn-remove" onclick="setupFeeders.splice(${i},1); renderFeederList(); renderTransformerList(); renderOppositeList();">✕</button>
+                <button class="btn-remove" onclick="setupFeeders.splice(${i},1); renderFeederList(); renderTransformerList(); renderOppositeList();"></button>
             </div>`;
         });
 
@@ -436,7 +436,7 @@ function addFeederRow(defaultRole) {
 function renderTransformerList() {
     const container = document.getElementById('transformerList');
     if (setupTransformers.length === 0) {
-        container.innerHTML = '<div class="empty-state"><div class="empty-icon">🔌</div><p>No transformers yet.</p></div>';
+        container.innerHTML = '<div class="empty-state"><div class="empty-icon"></div><p>No transformers yet.</p></div>';
         return;
     }
     // Build feeder options for HV/LV selects (only show tr_hv for HV, tr_lv for LV)
@@ -464,7 +464,7 @@ function renderTransformerList() {
                 <label class="form-label">LV Feeder</label>
                 <select class="form-select" onchange="setupTransformers[${i}].lvFeederId=this.value">${lvOpts}</select>
             </div>
-            <button class="btn-remove" onclick="setupTransformers.splice(${i},1); renderTransformerList();">✕</button>
+            <button class="btn-remove" onclick="setupTransformers.splice(${i},1); renderTransformerList();"></button>
         </div>`;
     });
     container.innerHTML = html;
@@ -480,7 +480,7 @@ function addTransformerRow() {
 function renderOppositeList() {
     const container = document.getElementById('oppositeList');
     if (setupOpposites.length === 0) {
-        container.innerHTML = '<div class="empty-state"><div class="empty-icon">📡</div><p>No opposite SS entries yet.</p></div>';
+        container.innerHTML = '<div class="empty-state"><div class="empty-icon"></div><p>No opposite SS entries yet.</p></div>';
         return;
     }
     let lineFeeders = setupFeeders.filter(f => f.role === '66kv_incoming' || f.role === '66kv_outgoing');
@@ -500,7 +500,7 @@ function renderOppositeList() {
                 <label class="form-label">Linked Feeder</label>
                 <select class="form-select" onchange="setupOpposites[${i}].linkedFeederId=this.value">${fOpts}</select>
             </div>
-            <button class="btn-remove" onclick="setupOpposites.splice(${i},1); renderOppositeList();">✕</button>
+            <button class="btn-remove" onclick="setupOpposites.splice(${i},1); renderOppositeList();"></button>
         </div>`;
     });
     container.innerHTML = html;
@@ -515,8 +515,8 @@ function addOppositeRow() {
 // ---- Save / Delete Substation ----
 function saveSubstation() {
     let name = document.getElementById('setupName').value.trim();
-    if (!name) { showToast('⚠️ Please enter substation name'); return; }
-    if (setupFeeders.length === 0) { showToast('⚠️ Add at least one feeder'); return; }
+    if (!name) { showToast(' Please enter substation name'); return; }
+    if (setupFeeders.length === 0) { showToast(' Add at least one feeder'); return; }
 
     let subs = loadSubstations();
 
@@ -541,7 +541,7 @@ function saveSubstation() {
     }
 
     saveSubstations(subs);
-    showToast('✅ Substation saved!');
+    showToast(' Substation saved!');
     navigateTo('dashboard');
 }
 
@@ -569,10 +569,10 @@ function renderReportPage() {
 
     // ===== CATEGORY-WISE FEEDER TABLES =====
     const CATEGORIES = [
-        { key: 'cat_66kv',  label: '66 KV Incoming / Outgoing Line',  icon: '🔌', cssClass: 'cat-66kv',  roles: ['66kv_incoming', '66kv_outgoing'] },
-        { key: 'cat_trhv',  label: '66 KV Transformer HV Side',       icon: '⚡', cssClass: 'cat-trhv',  roles: ['tr_hv'] },
-        { key: 'cat_trlv',  label: '11 KV Incoming Line LV Side',     icon: '🔋', cssClass: 'cat-trlv',  roles: ['tr_lv'] },
-        { key: 'cat_11kv',  label: '11 KV Feeder',                    icon: '📡', cssClass: 'cat-11kv',  roles: ['11kv_feeder', 'solar_import', 'solar_export', 'station_aux', 'info_only'] }
+        { key: 'cat_66kv',  label: '66 KV Incoming / Outgoing Line',  icon: '', cssClass: 'cat-66kv',  roles: ['66kv_incoming', '66kv_outgoing'] },
+        { key: 'cat_trhv',  label: '66 KV Transformer HV Side',       icon: '', cssClass: 'cat-trhv',  roles: ['tr_hv'] },
+        { key: 'cat_trlv',  label: '11 KV Incoming Line LV Side',     icon: '', cssClass: 'cat-trlv',  roles: ['tr_lv'] },
+        { key: 'cat_11kv',  label: '11 KV Feeder',                    icon: '', cssClass: 'cat-11kv',  roles: ['11kv_feeder', 'solar_import', 'solar_export', 'station_aux', 'info_only'] }
     ];
 
     const container = document.getElementById('feederCategoryContainer');
@@ -830,7 +830,7 @@ function calculateReport() {
     // Save report data
     saveData(true);
 
-    showToast('✅ Report Generated!');
+    showToast(' Report Generated!');
 
     // Scroll to results
     totalsCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1303,13 +1303,13 @@ function exportPDF() {
             document.body.removeChild(pdfContainer);
             appHeader.style.display = '';
             content.style.display = '';
-            showToast('📄 PDF downloaded!');
+            showToast(' PDF downloaded!');
         }).catch(err => {
             console.error(err);
             document.body.removeChild(pdfContainer);
             appHeader.style.display = '';
             content.style.display = '';
-            showToast('❌ PDF Generation Failed');
+            showToast(' PDF Generation Failed');
         });
     }, 150);
 }
@@ -2177,7 +2177,7 @@ function openBreakdownForm(id = null) {
     if (id) {
         let bd = (ss.breakdowns || []).find(b => b.id === id);
         if (bd) {
-            document.getElementById('bdFormTitle').textContent = '📝 Edit Breakdown Report: ' + bd.bdNumber;
+            document.getElementById('bdFormTitle').textContent = ' Edit Breakdown Report: ' + bd.bdNumber;
             document.getElementById('bdId').value = bd.id;
             document.getElementById('bdNumber').value = bd.bdNumber;
             document.getElementById('bdStartTime').value = bd.startTime || '';
@@ -2204,7 +2204,7 @@ function openBreakdownForm(id = null) {
             document.getElementById('btnViewAttachedDocsBd').style.display = 'inline-flex';
         }
     } else {
-        document.getElementById('bdFormTitle').textContent = '📝 Report New Breakdown';
+        document.getElementById('bdFormTitle').textContent = ' Report New Breakdown';
         document.getElementById('bdId').value = '';
         document.getElementById('bdNumber').value = '';
         document.getElementById('bdStartTime').value = '';
@@ -2787,7 +2787,7 @@ function renderPhotoReport() {
     container.innerHTML = '';
     
     if (filtered.length === 0) {
-        container.innerHTML = '<div class="empty-state" style="grid-column: 1 / -1;"><div class="empty-icon">📷</div><p>No photos found. Click "Add Photo" to upload.</p></div>';
+        container.innerHTML = '<div class="empty-state" style="grid-column: 1 / -1;"><div class="empty-icon"></div><p>No photos found. Click "Add Photo" to upload.</p></div>';
         return;
     }
     
@@ -2814,8 +2814,8 @@ function renderPhotoReport() {
                     ${p.remarks || 'No remarks provided.'}
                 </div>
                 <div class="photo-actions" style="margin-top:auto; padding-top:8px;">
-                    <button class="btn-photo-edit" onclick="openPhotoForm('${p.id}')">✏️ Edit</button>
-                    <button class="btn-photo-del" onclick="deletePhotoReport('${p.id}')">🗑️ Delete</button>
+                    <button class="btn-photo-edit" onclick="openPhotoForm('${p.id}')"> Edit</button>
+                    <button class="btn-photo-del" onclick="deletePhotoReport('${p.id}')"> Delete</button>
                 </div>
             </div>
         `;
@@ -2999,7 +2999,7 @@ window.renderDms = function() {
     document.getElementById('dmsExpiringDocs').textContent = expiring;
     
     if (filtered.length === 0) {
-        container.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;"><div class="empty-icon">📄</div><p>No documents found.</p></div>`;
+        container.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;"><div class="empty-icon"></div><p>No documents found.</p></div>`;
         return;
     }
     
@@ -3011,7 +3011,7 @@ window.renderDms = function() {
         div.className = 'doc-card';
         div.innerHTML = `
             <div class="doc-version">${d.version}</div>
-            <div class="doc-icon">📄</div>
+            <div class="doc-icon"></div>
             <div class="doc-title" title="${d.title}">${d.title}</div>
             <div class="doc-meta">
                 <span><strong>Status:</strong> <span style="color:${statusColor}">${d.status}</span></span>
@@ -3021,8 +3021,8 @@ window.renderDms = function() {
                 <span>${new Date(d.timestamp).toLocaleDateString()}</span>
             </div>
             <div class="doc-actions">
-                <button class="doc-btn-view" onclick="window.open('${d.url}', '_blank')">👁️ View</button>
-                <button class="doc-btn-edit" onclick="openDmsForm('${d.id}')">✏️ Edit</button>
+                <button class="doc-btn-view" onclick="window.open('${d.url}', '_blank')"> View</button>
+                <button class="doc-btn-edit" onclick="openDmsForm('${d.id}')"> Edit</button>
             </div>
         `;
         container.appendChild(div);

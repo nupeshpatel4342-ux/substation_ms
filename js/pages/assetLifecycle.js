@@ -72,9 +72,9 @@ function renderAssetLifecycleDashboard() {
                 </select>
             </div>
             <div class="alc-actions">
-                <button class="btn btn-outline" onclick="alert('Export to Excel')">📥 Excel</button>
-                <button class="btn btn-outline" onclick="alert('Export to PDF')">📄 PDF</button>
-                <button class="btn btn-outline" onclick="window.print()">🖨️ Print</button>
+                <button class="btn btn-outline" onclick="alert('Export to Excel')"> Excel</button>
+                <button class="btn btn-outline" onclick="alert('Export to PDF')"> PDF</button>
+                <button class="btn btn-outline" onclick="window.print()"> Print</button>
             </div>
         </div>
         <div class="table-responsive">
@@ -261,22 +261,22 @@ function renderAssetLifecycleProfile(eqId) {
 
         <!-- MAINTENANCE TAB -->
         <div class="alc-tab-content" id="alcTabMaintenance">
-            <table class="data-table">
+            <table class="data-table alc-mobile-table">
                 <thead><tr><th>Date</th><th>Type</th><th>Description</th><th>Performed By</th></tr></thead>
                 <tbody>
-                    <tr><td>2025-06-10</td><td>Preventive</td><td>Half-yearly maintenance</td><td>RK Sharma</td></tr>
-                    <tr><td>2024-12-05</td><td>Preventive</td><td>Yearly maintenance</td><td>RK Sharma</td></tr>
+                    <tr><td data-label="Date">2025-06-10</td><td data-label="Type">Preventive</td><td data-label="Description">Half-yearly maintenance</td><td data-label="Performed By">RK Sharma</td></tr>
+                    <tr><td data-label="Date">2024-12-05</td><td data-label="Type">Preventive</td><td data-label="Description">Yearly maintenance</td><td data-label="Performed By">RK Sharma</td></tr>
                 </tbody>
             </table>
         </div>
 
         <!-- FAULTS TAB -->
         <div class="alc-tab-content" id="alcTabFaults">
-             <table class="data-table">
+             <table class="data-table alc-mobile-table">
                 <thead><tr><th>Date</th><th>Event</th><th>Details</th><th>Duration</th></tr></thead>
                 <tbody>
-                    <tr><td>2025-11-04</td><td>Tripping</td><td>Earth Fault</td><td>Auto-reclose</td></tr>
-                    <tr><td>2022-08-12</td><td>Breakdown</td><td>Mechanism Failure</td><td>4 hrs 30 mins</td></tr>
+                    <tr><td data-label="Date">2025-11-04</td><td data-label="Event">Tripping</td><td data-label="Details">Earth Fault</td><td data-label="Duration">Auto-reclose</td></tr>
+                    <tr><td data-label="Date">2022-08-12</td><td data-label="Event">Breakdown</td><td data-label="Details">Mechanism Failure</td><td data-label="Duration">4 hrs 30 mins</td></tr>
                 </tbody>
             </table>
         </div>
@@ -284,11 +284,11 @@ function renderAssetLifecycleProfile(eqId) {
         <!-- DOCS TAB -->
         <div class="alc-tab-content" id="alcTabDocs">
             <button class="btn btn-primary" style="margin-bottom:16px;">+ Upload Document</button>
-            <table class="data-table">
+            <table class="data-table alc-mobile-table">
                 <thead><tr><th>Document Name</th><th>Type</th><th>Upload Date</th><th>Action</th></tr></thead>
                 <tbody>
-                    <tr><td>Equipment_Manual.pdf</td><td>Manual</td><td>2018-06-01</td><td><button class="btn btn-outline" style="padding:4px 8px">View</button></td></tr>
-                    <tr><td>Test_Report_Feb2026.pdf</td><td>Test Report</td><td>2026-02-15</td><td><button class="btn btn-outline" style="padding:4px 8px">View</button></td></tr>
+                    <tr><td data-label="Document Name">Equipment_Manual.pdf</td><td data-label="Type">Manual</td><td data-label="Upload Date">2018-06-01</td><td data-label="Action"><button class="btn btn-outline" style="padding:4px 8px">View</button></td></tr>
+                    <tr><td data-label="Document Name">Test_Report_Feb2026.pdf</td><td data-label="Type">Test Report</td><td data-label="Upload Date">2026-02-15</td><td data-label="Action"><button class="btn btn-outline" style="padding:4px 8px">View</button></td></tr>
                 </tbody>
             </table>
         </div>

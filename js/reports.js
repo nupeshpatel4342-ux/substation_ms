@@ -12,10 +12,10 @@ function renderReportPage() {
 
     // ===== CATEGORY-WISE FEEDER TABLES =====
     const CATEGORIES = [
-        { key: 'cat_66kv',  label: '66 KV Incoming / Outgoing Line',  icon: '🔌', cssClass: 'cat-66kv',  roles: ['66kv_incoming', '66kv_outgoing'] },
-        { key: 'cat_trhv',  label: '66 KV Transformer HV Side',       icon: '⚡', cssClass: 'cat-trhv',  roles: ['tr_hv'] },
-        { key: 'cat_trlv',  label: '11 KV Incoming Line LV Side',     icon: '🔋', cssClass: 'cat-trlv',  roles: ['tr_lv'] },
-        { key: 'cat_11kv',  label: '11 KV Feeder',                    icon: '📡', cssClass: 'cat-11kv',  roles: ['11kv_feeder', 'solar_import', 'solar_export', 'station_aux', 'info_only'] }
+        { key: 'cat_66kv',  label: '66 KV Incoming / Outgoing Line',  icon: '', cssClass: 'cat-66kv',  roles: ['66kv_incoming', '66kv_outgoing'] },
+        { key: 'cat_trhv',  label: '66 KV Transformer HV Side',       icon: '', cssClass: 'cat-trhv',  roles: ['tr_hv'] },
+        { key: 'cat_trlv',  label: '11 KV Incoming Line LV Side',     icon: '', cssClass: 'cat-trlv',  roles: ['tr_lv'] },
+        { key: 'cat_11kv',  label: '11 KV Feeder',                    icon: '', cssClass: 'cat-11kv',  roles: ['11kv_feeder', 'solar_import', 'solar_export', 'station_aux', 'info_only'] }
     ];
 
     const container = document.getElementById('feederCategoryContainer');
@@ -273,7 +273,7 @@ function calculateReport() {
     // Save report data
     saveData(true);
 
-    showToast('✅ Report Generated!');
+    showToast(' Report Generated!');
 
     // Scroll to results
     totalsCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -403,23 +403,23 @@ function renderEventTimeline() {
     
     if (filtered.length === 0) {
         document.getElementById('timelineEmptyState').style.display = 'block';
-        document.querySelector('#eventTimelineView .fault-table-container').style.display = 'none';
+        document.querySelector('#eventTimelineView .table-responsive').style.display = 'none';
     } else {
         document.getElementById('timelineEmptyState').style.display = 'none';
-        document.querySelector('#eventTimelineView .fault-table-container').style.display = 'block';
+        document.querySelector('#eventTimelineView .table-responsive').style.display = 'block';
         
         filtered.forEach(e => {
             let tr = document.createElement('tr');
             tr.innerHTML = `
-                <td>
+                <td data-label="Date">
                     <div style="font-weight:600; color:var(--text);">${e.date}</div>
                     <div style="font-size:11px; color:var(--text-secondary);">${e.time}</div>
                 </td>
-                <td><span style="font-weight:600;">${e.operator}</span></td>
-                <td><span class="status-badge" style="background:#f1f5f9; color:#475569;">${e.role}</span></td>
-                <td><span class="status-badge" style="background:var(--primary-light); color:var(--primary-dark);">${e.module || 'System'}</span></td>
-                <td><span style="font-weight:600; color:var(--primary);">${e.action}</span></td>
-                <td><span style="font-size:12px;">${e.remarks || '-'}</span></td>
+                <td data-label="Operator"><span style="font-weight:600;">${e.operator}</span></td>
+                <td data-label="Role"><span class="status-badge" style="background:#f1f5f9; color:#475569;">${e.role}</span></td>
+                <td data-label="Module"><span class="status-badge" style="background:var(--primary-light); color:var(--primary-dark);">${e.module || 'System'}</span></td>
+                <td data-label="Action"><span style="font-weight:600; color:var(--primary);">${e.action}</span></td>
+                <td data-label="Remarks"><span style="font-size:12px;">${e.remarks || '-'}</span></td>
             `;
             tbody.appendChild(tr);
         });
@@ -746,13 +746,13 @@ function exportPDF() {
             document.body.removeChild(pdfContainer);
             if (appHeader) appHeader.style.display = '';
             if (content) content.style.display = '';
-            showToast('📄 PDF downloaded!');
+            showToast(' PDF downloaded!');
         }).catch(err => {
             console.error(err);
             document.body.removeChild(pdfContainer);
             if (appHeader) appHeader.style.display = '';
             if (content) content.style.display = '';
-            showToast('❌ PDF Generation Failed');
+            showToast(' PDF Generation Failed');
         });
     }, 150);
 }

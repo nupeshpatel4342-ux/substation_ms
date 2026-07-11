@@ -35,7 +35,7 @@ function navigateTo(view, ssId) {
     if (view === 'dashboard') {
         document.getElementById('dashboardView').classList.add('active');
         headerBack.style.display = 'none';
-        document.getElementById('headerTitle').textContent = '⚡ 66 KV SUBSTATION REPORT';
+        document.getElementById('headerTitle').textContent = ' 66 KV SUBSTATION REPORT';
         document.getElementById('headerSubtitle').textContent = 'Monthly Report App';
         renderDashboard();
     } else if (view === 'assetLifecycle') {
@@ -44,7 +44,7 @@ function navigateTo(view, ssId) {
         headerBack.onclick = () => goBackTo('ssDashboard', currentDashboardSSId);
         currentDashboardSSId = ssId;
         let ss = getSubstation(ssId);
-        document.getElementById('headerTitle').textContent = '📈 Asset Lifecycle';
+        document.getElementById('headerTitle').textContent = ' Asset Lifecycle';
         document.getElementById('headerSubtitle').textContent = ss.name;
         renderAssetLifecycleDashboard();
     } else if (view === 'assetLifecycleProfile') {
@@ -53,7 +53,7 @@ function navigateTo(view, ssId) {
         headerBack.onclick = () => goBackTo('assetLifecycle', currentDashboardSSId);
         let eqId = arguments[2];
         let ss = getSubstation(ssId);
-        document.getElementById('headerTitle').textContent = '📄 Asset Profile';
+        document.getElementById('headerTitle').textContent = ' Asset Profile';
         document.getElementById('headerSubtitle').textContent = ss.name;
         renderAssetLifecycleProfile(eqId);
     } else if (view === 'executiveDashboard') {
@@ -61,7 +61,7 @@ function navigateTo(view, ssId) {
         headerBack.style.display = 'flex';
         headerBack.onclick = () => goBackTo('ssDashboard', currentDashboardSSId);
         let ss = getSubstation(ssId);
-        document.getElementById('headerTitle').textContent = '📊 Overview Dashboard';
+        document.getElementById('headerTitle').textContent = ' Overview Dashboard';
         document.getElementById('headerSubtitle').textContent = ss.name;
         document.getElementById('edSSName').textContent = ss.name + ' Overview';
         // Note: For now we'll just render the global one, but we can customize it for specific SS later
@@ -105,10 +105,10 @@ function navigateTo(view, ssId) {
         editingSSId = ssId || null;
         if (editingSSId) {
             let ss = getSubstation(editingSSId);
-            document.getElementById('headerTitle').textContent = '✏️ Edit Substation';
+            document.getElementById('headerTitle').textContent = ' Edit Substation';
             document.getElementById('headerSubtitle').textContent = ss.name;
         } else {
-            document.getElementById('headerTitle').textContent = '➕ New Substation';
+            document.getElementById('headerTitle').textContent = ' New Substation';
             document.getElementById('headerSubtitle').textContent = 'Create a new substation';
         }
         renderSetupForm();
@@ -118,7 +118,7 @@ function navigateTo(view, ssId) {
         headerBack.onclick = () => goBackTo('dashboard');
         currentDashboardSSId = ssId;
         let ss = getSubstation(ssId);
-        document.getElementById('headerTitle').textContent = '🏠 ' + ss.name;
+        document.getElementById('headerTitle').textContent = ' ' + ss.name;
         document.getElementById('headerSubtitle').textContent = 'Substation Dashboard';
     } else if (view === 'dms') {
         document.getElementById('dmsView').classList.add('active');
@@ -126,14 +126,14 @@ function navigateTo(view, ssId) {
         headerBack.onclick = () => goBackTo('ssDashboard', currentDashboardSSId);
         currentDashboardSSId = ssId;
         let ss = getSubstation(ssId);
-        document.getElementById('headerTitle').textContent = '📁 Documents (DMS)';
+        document.getElementById('headerTitle').textContent = ' Documents (DMS)';
         document.getElementById('headerSubtitle').textContent = ss.name;
         renderDms();
     } else if (view === 'eventTimeline') {
         document.getElementById('eventTimelineView').classList.add('active');
         headerBack.style.display = 'flex';
         headerBack.onclick = () => goBackTo('ssDashboard', currentDashboardSSId);
-        document.getElementById('headerTitle').textContent = '🕒 Event Timeline';
+        document.getElementById('headerTitle').textContent = ' Event Timeline';
         let now = new Date();
         document.getElementById('timelineMonthFilter').value = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
         renderEventTimeline();
@@ -143,7 +143,7 @@ function navigateTo(view, ssId) {
         headerBack.onclick = () => goBackTo('ssDashboard', currentDashboardSSId);
         reportSSId = ssId;
         let ss = getSubstation(ssId);
-        document.getElementById('headerTitle').textContent = '📊 ' + ss.name;
+        document.getElementById('headerTitle').textContent = ' ' + ss.name;
         document.getElementById('headerSubtitle').textContent = 'Monthly Report';
         renderReportPage();
     } else if (view === 'photoReport') {
@@ -152,7 +152,7 @@ function navigateTo(view, ssId) {
         headerBack.onclick = () => goBackTo('ssDashboard', currentDashboardSSId);
         currentDashboardSSId = ssId;
         let ss = getSubstation(ssId);
-        document.getElementById('headerTitle').textContent = '📷 Photo Report';
+        document.getElementById('headerTitle').textContent = ' Photo Report';
         document.getElementById('headerSubtitle').textContent = ss.name;
         renderPhotoReport();
     } else if (view === 'faultRegister') {
@@ -161,7 +161,7 @@ function navigateTo(view, ssId) {
         headerBack.onclick = () => goBackTo('ssDashboard', currentDashboardSSId);
         currentDashboardSSId = ssId;
         let ss = getSubstation(ssId);
-        document.getElementById('headerTitle').textContent = '🚨 Fault Register';
+        document.getElementById('headerTitle').textContent = ' Fault Register';
         document.getElementById('headerSubtitle').textContent = ss.name;
         renderFaultRegister();
     } else if (view === 'trippingRegister') {
@@ -170,7 +170,7 @@ function navigateTo(view, ssId) {
         headerBack.onclick = () => goBackTo('ssDashboard', currentDashboardSSId);
         currentDashboardSSId = ssId;
         let ss = getSubstation(ssId);
-        document.getElementById('headerTitle').textContent = '⚡ Tripping Calculations';
+        document.getElementById('headerTitle').textContent = ' Tripping Calculations';
         document.getElementById('headerSubtitle').textContent = ss.name;
         
         let now = new Date();
@@ -182,7 +182,7 @@ function navigateTo(view, ssId) {
         headerBack.onclick = () => goBackTo('ssDashboard', currentDashboardSSId);
         currentDashboardSSId = ssId;
         let ss = getSubstation(ssId);
-        document.getElementById('headerTitle').textContent = '🛠️ Breakdown Reports';
+        document.getElementById('headerTitle').textContent = ' Breakdown Reports';
         document.getElementById('headerSubtitle').textContent = ss.name;
         
         let now = new Date();
@@ -194,7 +194,7 @@ function navigateTo(view, ssId) {
         headerBack.onclick = () => goBackTo('ssDashboard', currentDashboardSSId);
         currentDashboardSSId = ssId;
         let ss = getSubstation(ssId);
-        document.getElementById('headerTitle').textContent = '🛠️ Maintenance Register';
+        document.getElementById('headerTitle').textContent = ' Maintenance Register';
         document.getElementById('headerSubtitle').textContent = ss.name;
         
         let now = new Date();
@@ -206,7 +206,7 @@ function navigateTo(view, ssId) {
         headerBack.onclick = () => goBackTo('ssDashboard', currentDashboardSSId);
         currentDashboardSSId = ssId;
         let ss = getSubstation(ssId);
-        document.getElementById('headerTitle').textContent = '⚙️ Equipment Master';
+        document.getElementById('headerTitle').textContent = ' Equipment Master';
         document.getElementById('headerSubtitle').textContent = ss.name;
         renderEquipmentMaster();
     } else if (view === 'equipmentProfile') {
@@ -215,7 +215,7 @@ function navigateTo(view, ssId) {
         headerBack.onclick = () => goBackTo('equipmentMaster', currentDashboardSSId);
         let eqId = arguments[2];
         let ss = getSubstation(ssId);
-        document.getElementById('headerTitle').textContent = '📄 Equipment Profile';
+        document.getElementById('headerTitle').textContent = ' Equipment Profile';
         document.getElementById('headerSubtitle').textContent = ss.name;
         renderEquipmentProfile(eqId);
     }
