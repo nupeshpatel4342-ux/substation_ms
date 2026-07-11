@@ -15,7 +15,7 @@ const pageSubstationsTemplate = `
 <span class="material-icons-round" style="color: #673ab7; background: #ede7f6;">dashboard</span>
 <div class="card-title">Overview Dashboard</div>
 </div>
-<div class="ss-dashboard-card" onclick="navigateTo('report', currentDashboardSSId, 'new')">
+<div class="ss-dashboard-card" onclick="navigateTo('monthlyReportsMenu', currentDashboardSSId)">
 <span class="material-icons-round" style="color: #1976d2; background: #e3f2fd;">assessment</span>
 <div class="card-title">Monthly Reports</div>
 </div>
