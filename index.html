@@ -240,6 +240,42 @@
     </div>
 </div>
 
+<!-- Custom Substation Delete Confirmation Modal -->
+<div class="form-section-overlay" id="deleteSSModal" style="display:none; align-items:center; justify-content:center; padding: 15px; box-sizing: border-box;">
+    <div class="modal-content" style="max-width: 500px; margin: 5% auto; width: 100%; box-sizing: border-box;">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+            <div style="width:48px; height:48px; border-radius:50%; background:var(--danger-light); display:flex; align-items:center; justify-content:center; color:var(--danger); flex-shrink:0;">
+                <span class="material-icons-round" style="font-size: 28px;">warning</span>
+            </div>
+            <h3 style="margin:0; font-size:18px; font-weight:800; color:var(--text)">Delete Substation?</h3>
+        </div>
+        
+        <div style="background:#fff5f5; border:1px solid #fed7d7; border-radius:12px; padding:16px; margin-bottom:20px; font-size:13px; color:#c53030; line-height:1.5;">
+            <strong style="display:block; margin-bottom:6px; font-size:14px;">⚠️ WARNING: Permanent Data Loss</strong>
+            This action will permanently delete the substation "<span id="deleteSSNamePlaceholder" style="font-weight:800;"></span>" along with all of its associated records:
+            <ul style="margin:8px 0 0 16px; padding:0; list-style-type:disc;">
+                <li>Monthly Energy Reports & Drafts</li>
+                <li>Feeder & Transformer Configurations</li>
+                <li>Fault, Tripping & Breakdown Registers</li>
+                <li>Maintenance Logs & Event Timeline History</li>
+                <li>Uploaded Documents (DMS)</li>
+            </ul>
+        </div>
+        
+        <div style="margin-bottom:20px;">
+            <label class="form-label" style="font-size:13px; font-weight:700; color:var(--text); margin-bottom:8px; display:block;">
+                To confirm deletion, please type the substation name: <strong id="deleteSSConfirmName" style="color:var(--primary-dark)"></strong>
+            </label>
+            <input type="text" id="deleteSSInput" class="form-input" placeholder="Type substation name here..." autocomplete="off" style="width:100%; box-sizing: border-box;" oninput="validateSSDeleteInput()">
+        </div>
+        
+        <div style="display:flex; justify-content:flex-end; gap:10px;">
+            <button class="btn btn-outline" onclick="closeDeleteSSModal()" style="padding:10px 20px;">Cancel</button>
+            <button class="btn btn-danger" id="btnConfirmDeleteSS" onclick="executeSSDeletion()" style="padding:10px 20px;" disabled>Permanently Delete</button>
+        </div>
+    </div>
+</div>
+
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 <script src="js/pages/pageSubstations.js?v=11"></script><script src="js/pages/pageSettings.js"></script><script src="js/utils.js?v=19"></script>

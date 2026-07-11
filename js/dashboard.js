@@ -59,7 +59,7 @@ function renderDashboard() {
             <div class="card-actions">
                 <button class="btn-report" onclick="event.stopPropagation(); navigateTo('report','${ss.id}', 'new')"> Report</button>
                 <button class="btn-edit" onclick="event.stopPropagation(); navigateTo('setup','${ss.id}')"> Edit</button>
-                <button class="btn-delete-card" onclick="event.stopPropagation(); deleteSSFromDashboard('${ss.id}')"></button>
+                <button class="btn-delete-card" onclick="event.stopPropagation(); deleteSSFromDashboard('${ss.id}')" style="display:flex; align-items:center; justify-content:center;"><span class="material-icons-round" style="font-size:18px;">delete</span></button>
             </div>
             <button class="btn-manage-ss" onclick="event.stopPropagation(); navigateTo('ssDashboard','${ss.id}')">
                 <span class="material-icons-round">dashboard</span>
@@ -77,12 +77,45 @@ function renderDashboard() {
     grid.innerHTML = html;
 }
 
+let _ssIdToDelete = null;
+
 function deleteSSFromDashboard(id) {
     let ss = getSubstation(id);
-    if (!confirm(`Delete "${ss.name}"? This cannot be undone.`)) return;
-    let subs = loadSubstations().filter(s => s.id !== id);
+    if (!ss) return;
+    _ssIdToDelete = id;
+    
+    document.getElementById('deleteSSNamePlaceholder').textContent = ss.name;
+    document.getElementById('deleteSSConfirmName').textContent = ss.name;
+    document.getElementById('deleteSSInput').value = '';
+    document.getElementById('btnConfirmDeleteSS').disabled = true;
+    
+    document.getElementById('deleteSSModal').style.display = 'flex';
+}
+
+function closeDeleteSSModal() {
+    _ssIdToDelete = null;
+    document.getElementById('deleteSSModal').style.display = 'none';
+}
+
+function validateSSDeleteInput() {
+    if (!_ssIdToDelete) return;
+    let ss = getSubstation(_ssIdToDelete);
+    if (!ss) return;
+    
+    let inputVal = document.getElementById('deleteSSInput').value.trim();
+    document.getElementById('btnConfirmDeleteSS').disabled = (inputVal !== ss.name);
+}
+
+function executeSSDeletion() {
+    if (!_ssIdToDelete) return;
+    let ss = getSubstation(_ssIdToDelete);
+    if (!ss) return;
+    
+    let subs = loadSubstations().filter(s => s.id !== _ssIdToDelete);
     saveSubstations(subs);
+    
+    closeDeleteSSModal();
     renderDashboard();
-    showToast('Substation deleted');
+    showToast('Substation deleted successfully');
 }
 
