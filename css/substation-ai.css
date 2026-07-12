@@ -66,11 +66,11 @@
 /* Chat Assistant Panel */
 .sh-ai-panel {
     position: fixed;
-    bottom: 96px;
-    right: 24px;
-    width: 380px;
-    height: 540px;
-    max-height: calc(100vh - 120px);
+    bottom: 84px;
+    right: 20px;
+    width: 350px;
+    height: 480px;
+    max-height: calc(100vh - 100px);
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -262,35 +262,42 @@
 
 /* Suggestions Container */
 .sh-ai-suggestions-container {
-    padding: 8px 16px;
+    padding: 6px 12px;
     background: #f8fafc;
     border-top: 1px solid var(--border-light);
 }
 
 .sh-ai-suggestions-title {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
     color: var(--text-secondary);
-    margin-bottom: 6px;
+    margin-bottom: 4px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
 .sh-ai-suggestions-wrap {
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    max-height: 85px;
-    overflow-y: auto;
+    flex-wrap: nowrap;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    -webkit-overflow-scrolling: touch;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.sh-ai-suggestions-wrap::-webkit-scrollbar {
+    display: none;
 }
 
 .sh-ai-chip {
     background: #ffffff;
-    border: 1px solid rgba(21, 101, 192, 0.25);
+    border: 1px solid rgba(21, 101, 192, 0.2);
     color: var(--primary);
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 16px;
+    font-size: 11.5px;
     cursor: pointer;
     transition: all 0.2s;
     font-weight: 500;
@@ -298,6 +305,7 @@
     display: flex;
     align-items: center;
     gap: 4px;
+    flex-shrink: 0;
 }
 
 .sh-ai-chip:hover {
@@ -466,13 +474,48 @@ input:checked + .ai-toggle-slider:before {
 /* Responsive Media Queries for Chat Widget */
 @media (max-width: 480px) {
     .sh-ai-panel {
-        width: calc(100% - 32px);
-        height: calc(100% - 100px);
-        bottom: 80px;
-        right: 16px;
-        left: 16px;
+        width: calc(100% - 24px);
+        height: 420px;
+        max-height: calc(100vh - 90px);
+        bottom: 74px;
+        right: 12px;
+        left: 12px;
     }
     
+    .sh-ai-body {
+        padding: 10px;
+        gap: 8px;
+    }
+    
+    .sh-ai-msg-bubble {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+    
+    .sh-ai-suggestions-container {
+        padding: 5px 10px;
+    }
+    
+    .sh-ai-suggestions-title {
+        font-size: 9.5px;
+        margin-bottom: 3px;
+    }
+    
+    .sh-ai-footer {
+        padding: 10px 12px;
+        gap: 8px;
+    }
+    
+    .sh-ai-input {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+    
+    .sh-ai-send-btn {
+        width: 34px;
+        height: 34px;
+    }
+
     .sh-ai-panel.minimized {
         width: 150px;
         height: 50px;
