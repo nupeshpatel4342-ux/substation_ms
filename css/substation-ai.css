@@ -25,11 +25,24 @@
     object-fit: contain;
     transition: all 0.3s ease;
     filter: drop-shadow(0 8px 16px rgba(0, 230, 172, 0.35));
+    animation: sh-mascot-idle 4s ease-in-out infinite;
 }
 
 .sh-ai-widget-toggle:hover .sh-ai-avatar-img {
-    transform: scale(1.1) translateY(-6px);
+    animation: none;
+    transform: scale(1.08) translateY(-6px);
     filter: drop-shadow(0 12px 24px rgba(0, 230, 172, 0.55));
+}
+
+@keyframes sh-mascot-idle {
+    0%, 100% {
+        transform: translateY(0) scaleY(1);
+        filter: drop-shadow(0 8px 16px rgba(0, 230, 172, 0.35));
+    }
+    50% {
+        transform: translateY(-4px) scaleY(0.97);
+        filter: drop-shadow(0 12px 20px rgba(0, 230, 172, 0.45));
+    }
 }
 
 /* Floating "Ask Me" Badge Speech Bubble */

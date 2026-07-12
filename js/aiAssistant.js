@@ -44,7 +44,7 @@ function initSubstationAI() {
                         <div class="sh-ai-title">⚡ Substation AI</div>
                         <div class="sh-ai-status">
                             <span class="sh-ai-status-dot"></span>
-                            <span id="shAiStatusText">Bilingual Assistant / દ્વિભાષી મદદનીશ</span>
+                            <span id="shAiStatusText">Online • 66KV Electrical Assistant</span>
                         </div>
                     </div>
                 </div>
@@ -70,14 +70,14 @@ function initSubstationAI() {
             <div class="sh-ai-suggestions-container" id="shAiSuggestions">
                 <div class="sh-ai-suggestions-title">Try asking / પૂછી જુઓ</div>
                 <div class="sh-ai-suggestions-wrap">
-                    <div class="sh-ai-chip" onclick="handleSuggestionClick('📊 આ સિસ્ટમનો ઉપયોગ કેવી રીતે કરવો?')">
-                        <span>📊 સિસ્ટમ ગાઈડ</span>
+                    <div class="sh-ai-chip" onclick="handleSuggestionClick('📊 How do I use this system?')">
+                        <span>📊 How do I use this system? / સિસ્ટમ ગાઈડ</span>
                     </div>
-                    <div class="sh-ai-chip" onclick="handleSuggestionClick('🔌 પાવર ટ્રાન્સફોર્મર વિશે સમજાવો')">
-                        <span>🔌 પાવર ટ્રાન્સફોર્મર</span>
+                    <div class="sh-ai-chip" onclick="handleSuggestionClick('🔌 Tell me about Power Transformers')">
+                        <span>🔌 Power Transformer / પાવર ટ્રાન્સફોર્મર</span>
                     </div>
-                    <div class="sh-ai-chip" onclick="handleSuggestionClick('🛠️ મેન્ટેનન્સ ચેકલિસ્ટ બતાવો')">
-                        <span>🛠️ મેન્ટેનન્સ ચેકલિસ્ટ</span>
+                    <div class="sh-ai-chip" onclick="handleSuggestionClick('⚠️ Show recent faults')">
+                        <span>⚠️ Fault Register / ફોલ્ટ રજિસ્ટર</span>
                     </div>
                 </div>
             </div>
@@ -171,9 +171,9 @@ function resetChatHistory() {
                 Ask me anything about your <strong>Substation Management System</strong> or <strong>66KV Substations</strong>.<br>
                 મને <strong>સબસ્ટેશન મેનેજમેન્ટ સિસ્ટમ</strong> અથવા <strong>66KV સબસ્ટેશન્સ</strong> વિશે કંઈપણ પૂછો.<br><br>
                 <strong>Try asking: / પૂછી જુઓ:</strong><br>
-                • 📊 આ સિસ્ટમનો ઉપયોગ કેવી રીતે કરવો?<br>
-                • 🔌 પાવર ટ્રાન્સફોર્મર વિશે સમજાવો<br>
-                • 🛠️ મેન્ટેનન્સ ચેકલિસ્ટ બતાવો
+                • 📊 How do I use this system? (આ સિસ્ટમનો ઉપયોગ કેવી રીતે કરવો?)<br>
+                • 🔌 Tell me about Power Transformers (પાવર ટ્રાન્સફોર્મર વિશે સમજાવો)<br>
+                • ⚠️ Show recent faults (ફોલ્ટ રજિસ્ટર બતાવો)
             </div>
             <div class="sh-ai-msg-time">${getCurrentTimeStr()}</div>
         </div>
