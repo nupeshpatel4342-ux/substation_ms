@@ -3,8 +3,8 @@
 /* Floating Chat Toggle Button (Standing Character Mascot) */
 .sh-ai-widget-toggle {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
+    bottom: -2px;
+    right: 15px;
     width: 90px;
     height: 120px;
     display: flex;
@@ -546,9 +546,14 @@ input:checked + .ai-toggle-slider:before {
     }
     
     .sh-ai-widget-toggle {
-        bottom: 16px;
-        right: 16px;
-        width: 50px;
-        height: 50px;
+        bottom: -2px;
+        right: 10px;
+        width: 70px;
+        height: 95px;
+    }
+    
+    .sh-ai-avatar-img {
+        width: 70px;
+        height: 75px;
     }
 }
