@@ -120,7 +120,11 @@ function initSettingsPage() {
 
     if (testStatus) testStatus.textContent = '';
 
-    const isHosted = window.location.protocol === 'http:' || window.location.protocol === 'https:';
+    const isLocal = window.location.hostname === 'localhost' || 
+                    window.location.hostname === '127.0.0.1' || 
+                    window.location.hostname === '[::1]' ||
+                    window.location.protocol === 'file:';
+    const isHosted = !isLocal;
 
     // Show secure cloud mode notice and hide input fields if hosted on Vercel
     if (hostedNotice) {
@@ -150,7 +154,11 @@ function initSettingsPage() {
 
 function saveApplicationSettings() {
     const username = document.getElementById('settingsUsername').value.trim();
-    const isHosted = window.location.protocol === 'http:' || window.location.protocol === 'https:';
+    const isLocal = window.location.hostname === 'localhost' || 
+                    window.location.hostname === '127.0.0.1' || 
+                    window.location.hostname === '[::1]' ||
+                    window.location.protocol === 'file:';
+    const isHosted = !isLocal;
 
     if (!username) {
         showToast('Please enter a username');

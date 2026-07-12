@@ -313,11 +313,16 @@ function removeTypingLoader() {
 async function generateAssistantResponse(userMsg) {
     const isOnlineMode = localStorage.getItem('substation_ai_online_mode') === 'true';
     const apiKey = localStorage.getItem('substation_ai_api_key') || '';
-    const isHosted = window.location.protocol === 'http:' || window.location.protocol === 'https:';
+    
+    // Check if running on a local development/testing environment
+    const isLocal = window.location.hostname === 'localhost' || 
+                    window.location.hostname === '127.0.0.1' || 
+                    window.location.hostname === '[::1]' ||
+                    window.location.protocol === 'file:';
 
-    // If hosted (Vercel), route securely through Vercel serverless chat function.
+    // If live on Vercel, route securely through Vercel serverless chat function.
     // In hosted cloud mode, we do NOT require a local client-side API key.
-    if (isHosted) {
+    if (!isLocal) {
         await generateOnlineResponse(userMsg, null);
     } else if (isOnlineMode && apiKey) {
         // Local direct API mode
