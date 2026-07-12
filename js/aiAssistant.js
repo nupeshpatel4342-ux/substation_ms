@@ -28,7 +28,8 @@ function initSubstationAI() {
     widgetContainer.innerHTML = `
         <!-- Floating Toggle Button -->
         <div class="sh-ai-widget-toggle" id="shAiToggle" onclick="toggleChatPanel()" title="Ask Substation AI / સબસ્ટેશન AI ને પૂછો">
-            <span class="material-icons-round">smart_toy</span>
+            <div class="sh-ai-badge">Ask Me</div>
+            <img src="img/substation-ai-avatar.png" alt="Substation AI Avatar" class="sh-ai-avatar-img">
         </div>
 
         <!-- Chat Panel Window -->
@@ -36,8 +37,8 @@ function initSubstationAI() {
             <!-- Header -->
             <div class="sh-ai-header" onclick="handleHeaderClick(event)">
                 <div class="sh-ai-brand">
-                    <div class="sh-ai-logo">
-                        <span class="material-icons-round">bolt</span>
+                    <div class="sh-ai-logo" style="overflow: hidden; border-radius: 50%; border: 1.5px solid rgba(255, 255, 255, 0.4); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: #ffffff;">
+                        <img src="img/substation-ai-avatar.png" alt="Substation AI Logo" style="width: 100%; height: 100%; object-fit: cover;">
                     </div>
                     <div class="sh-ai-title-wrap">
                         <div class="sh-ai-title">⚡ Substation AI</div>

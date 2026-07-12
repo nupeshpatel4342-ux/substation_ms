@@ -1,61 +1,69 @@
 /* ===== SUBSTATION AI CHATBOT WIDGET STYLES ===== */
 
-/* Floating Chat Toggle Button */
+/* Floating Chat Toggle Button (Standing Character Mascot) */
 .sh-ai-widget-toggle {
     position: fixed;
-    bottom: 24px;
-    right: 24px;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #00e6ac 0%, #00a3cc 100%);
-    box-shadow: 0 8px 32px rgba(0, 230, 172, 0.4);
+    bottom: 20px;
+    right: 20px;
+    width: 90px;
+    height: 120px;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    color: #ffffff;
+    justify-content: flex-end;
     cursor: pointer;
     z-index: 10000;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    background: transparent;
+    border: none;
+    overflow: visible;
 }
 
-.sh-ai-widget-toggle:hover {
-    transform: scale(1.1) translateY(-4px);
-    box-shadow: 0 12px 40px rgba(0, 230, 172, 0.6);
+.sh-ai-avatar-img {
+    width: 90px;
+    height: 95px;
+    object-fit: contain;
+    transition: all 0.3s ease;
+    filter: drop-shadow(0 8px 16px rgba(0, 230, 172, 0.35));
 }
 
-.sh-ai-widget-toggle span {
-    font-size: 28px;
-    animation: sh-float 3s ease-in-out infinite;
+.sh-ai-widget-toggle:hover .sh-ai-avatar-img {
+    transform: scale(1.1) translateY(-6px);
+    filter: drop-shadow(0 12px 24px rgba(0, 230, 172, 0.55));
 }
 
-/* Pulsing effect around button */
-.sh-ai-widget-toggle::before {
+/* Floating "Ask Me" Badge Speech Bubble */
+.sh-ai-badge {
+    background: linear-gradient(135deg, #00e6ac 0%, #00a3cc 100%);
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 4px 8px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 163, 204, 0.3);
+    margin-bottom: 2px;
+    white-space: nowrap;
+    position: relative;
+    letter-spacing: 0.5px;
+    animation: sh-badge-bounce 2s infinite ease-in-out;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.sh-ai-badge::after {
     content: '';
     position: absolute;
-    top: -4px;
-    left: -4px;
-    right: -4px;
     bottom: -4px;
-    border-radius: 50%;
-    border: 2px solid #00e6ac;
-    opacity: 0;
-    animation: sh-pulse 2s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 4px 4px 0;
+    border-style: solid;
+    border-color: #00a3cc transparent transparent;
 }
 
-@keyframes sh-pulse {
-    0% {
-        transform: scale(0.95);
-        opacity: 0.8;
-    }
-    50% {
-        opacity: 0.3;
-    }
-    100% {
-        transform: scale(1.2);
-        opacity: 0;
-    }
+@keyframes sh-badge-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
 }
 
 @keyframes sh-float {
