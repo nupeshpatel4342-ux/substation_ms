@@ -5,8 +5,8 @@
     position: fixed;
     bottom: -2px;
     right: 15px;
-    width: 90px;
-    height: 120px;
+    width: 110px;
+    height: 140px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -20,8 +20,8 @@
 }
 
 .sh-ai-avatar-img {
-    width: 90px;
-    height: 95px;
+    width: 110px;
+    height: 115px;
     object-fit: contain;
     transition: all 0.3s ease;
     filter: drop-shadow(0 8px 16px rgba(0, 230, 172, 0.35));
@@ -548,12 +548,12 @@ input:checked + .ai-toggle-slider:before {
     .sh-ai-widget-toggle {
         bottom: -2px;
         right: 10px;
-        width: 70px;
-        height: 95px;
+        width: 80px;
+        height: 110px;
     }
     
     .sh-ai-avatar-img {
-        width: 70px;
-        height: 75px;
+        width: 80px;
+        height: 85px;
     }
 }
