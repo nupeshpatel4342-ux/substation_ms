@@ -71,13 +71,13 @@ function initSubstationAI() {
                 <div class="sh-ai-suggestions-title">Try asking / પૂછી જુઓ</div>
                 <div class="sh-ai-suggestions-wrap">
                     <div class="sh-ai-chip" onclick="handleSuggestionClick('📊 How do I use this system?')">
-                        <span>📊 How do I use this system? / સિસ્ટમ ગાઈડ</span>
+                        <span>📊 How do I use this system?</span>
                     </div>
                     <div class="sh-ai-chip" onclick="handleSuggestionClick('🔌 Tell me about Power Transformers')">
-                        <span>🔌 Power Transformer / પાવર ટ્રાન્સફોર્મર</span>
+                        <span>🔌 Power Transformer</span>
                     </div>
                     <div class="sh-ai-chip" onclick="handleSuggestionClick('⚠️ Show recent faults')">
-                        <span>⚠️ Fault Register / ફોલ્ટ રજિસ્ટર</span>
+                        <span>⚠️ Fault Register</span>
                     </div>
                 </div>
             </div>
@@ -167,13 +167,8 @@ function resetChatHistory() {
     const welcomeHtml = `
         <div class="sh-ai-msg assistant">
             <div class="sh-ai-msg-bubble">
-                <strong>⚡ Welcome to Substation AI / સબસ્ટેશન AI માં આપનું સ્વાગત છે</strong><br><br>
-                Ask me anything about your <strong>Substation Management System</strong> or <strong>66KV Substations</strong>.<br>
-                મને <strong>સબસ્ટેશન મેનેજમેન્ટ સિસ્ટમ</strong> અથવા <strong>66KV સબસ્ટેશન્સ</strong> વિશે કંઈપણ પૂછો.<br><br>
-                <strong>Try asking: / પૂછી જુઓ:</strong><br>
-                • 📊 How do I use this system? (આ સિસ્ટમનો ઉપયોગ કેવી રીતે કરવો?)<br>
-                • 🔌 Tell me about Power Transformers (પાવર ટ્રાન્સફોર્મર વિશે સમજાવો)<br>
-                • ⚠️ Show recent faults (ફોલ્ટ રજિસ્ટર બતાવો)
+                <strong>⚡ Welcome to Substation AI</strong><br><br>
+                Ask me anything about your <strong>Substation Management System</strong> or <strong>66KV Substations</strong>.
             </div>
             <div class="sh-ai-msg-time">${getCurrentTimeStr()}</div>
         </div>
@@ -182,7 +177,7 @@ function resetChatHistory() {
     body.innerHTML = welcomeHtml;
     chatHistory = [{
         role: 'assistant',
-        content: `Welcome to Substation AI / સબસ્ટેશન AI માં આપનું સ્વાગત છે. Ask me anything about your Substation Management System or 66KV Substations.`
+        content: `Welcome to Substation AI. Ask me anything about your Substation Management System or 66KV Substations.`
     }];
 }
 
