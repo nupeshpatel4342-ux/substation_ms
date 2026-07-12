@@ -29,8 +29,17 @@ const pageSettingsTemplate = `
                 Configure the behavior of your 66KV Substation AI Assistant. Toggle between local offline lookup and advanced generative AI using the Gemini API.
             </p>
 
-            <!-- Mode Selector Switch -->
-            <div class="ai-settings-group" style="margin-top:0;">
+            <!-- Hosted Cloud Mode Notice (Visible only on live deployments) -->
+            <div id="hostedAiModeNotice" style="display:none; padding: 12px; background: rgba(0, 230, 172, 0.1); border: 1px solid rgba(0, 230, 172, 0.3); border-radius: 8px; margin-bottom: 16px; color: var(--accent-dark); font-size:12.5px; line-height:1.4;">
+                <div style="display:flex; align-items:center; gap:6px; font-weight:700; margin-bottom: 4px;">
+                    <span class="material-icons-round" style="font-size:18px; color: #00e6ac;">gpp_good</span>
+                    <span>🛡️ Secure Cloud Mode Active</span>
+                </div>
+                Substation AI is running securely through Vercel's serverless backend. All API requests are processed on the server-side using your secure environment variable. No manual API Key configuration is required!
+            </div>
+
+            <!-- Mode Selector Switch (For local file:/// runs) -->
+            <div id="localAiModeGroup" class="ai-settings-group" style="margin-top:0;">
                 <div class="ai-settings-flex">
                     <div>
                         <strong style="display:block; font-size:13.5px; color: var(--text);">Online Gemini AI Mode</strong>
@@ -43,7 +52,7 @@ const pageSettingsTemplate = `
                 </div>
             </div>
 
-            <!-- API Key Input Field -->
+            <!-- API Key Input Field (For local file:/// runs) -->
             <div id="apiKeyGroup" class="form-group" style="display:none; transition: all var(--transition);">
                 <label class="form-label">Gemini API Key</label>
                 <div style="position: relative; display: flex; gap: 8px;">
@@ -105,8 +114,21 @@ function initSettingsPage() {
     const aiModeInput = document.getElementById('settingsAiOnlineMode');
     const apiKeyInput = document.getElementById('settingsApiKey');
     const testStatus = document.getElementById('testConnectionStatus');
+    const hostedNotice = document.getElementById('hostedAiModeNotice');
+    const localAiModeGroup = document.getElementById('localAiModeGroup');
+    const apiKeyGroup = document.getElementById('apiKeyGroup');
 
     if (testStatus) testStatus.textContent = '';
+
+    const isHosted = window.location.protocol === 'http:' || window.location.protocol === 'https:';
+
+    // Show secure cloud mode notice and hide input fields if hosted on Vercel
+    if (hostedNotice) {
+        hostedNotice.style.display = isHosted ? 'block' : 'none';
+    }
+    if (localAiModeGroup) {
+        localAiModeGroup.style.display = isHosted ? 'none' : 'block';
+    }
 
     // Load from LocalStorage
     const storedUsername = localStorage.getItem('default_operator_name') || 'Nupesh Patel';
@@ -114,37 +136,47 @@ function initSettingsPage() {
     const apiKey = localStorage.getItem('substation_ai_api_key') || '';
 
     if (usernameInput) usernameInput.value = storedUsername;
-    if (aiModeInput) {
-        aiModeInput.checked = isOnlineMode;
-        toggleApiKeyFieldVisibility();
+
+    if (!isHosted) {
+        if (aiModeInput) {
+            aiModeInput.checked = isOnlineMode;
+            toggleApiKeyFieldVisibility();
+        }
+        if (apiKeyInput) apiKeyInput.value = apiKey;
+    } else {
+        if (apiKeyGroup) apiKeyGroup.style.display = 'none';
     }
-    if (apiKeyInput) apiKeyInput.value = apiKey;
 }
 
 function saveApplicationSettings() {
     const username = document.getElementById('settingsUsername').value.trim();
-    const isOnlineMode = document.getElementById('settingsAiOnlineMode').checked;
-    const apiKey = document.getElementById('settingsApiKey').value.trim();
+    const isHosted = window.location.protocol === 'http:' || window.location.protocol === 'https:';
 
     if (!username) {
         showToast('Please enter a username');
         return;
     }
 
-    if (isOnlineMode && !apiKey) {
-        showToast('API Key is required for Online Gemini AI Mode');
-        return;
+    if (!isHosted) {
+        const isOnlineMode = document.getElementById('settingsAiOnlineMode').checked;
+        const apiKey = document.getElementById('settingsApiKey').value.trim();
+
+        if (isOnlineMode && !apiKey) {
+            showToast('API Key is required for Online Gemini AI Mode');
+            return;
+        }
+
+        // Save AI settings for local runs
+        localStorage.setItem('substation_ai_online_mode', isOnlineMode ? 'true' : 'false');
+        localStorage.setItem('substation_ai_api_key', apiKey);
     }
 
-    // Save to LocalStorage
+    // Save profile username
     localStorage.setItem('default_operator_name', username);
-    localStorage.setItem('substation_ai_online_mode', isOnlineMode ? 'true' : 'false');
-    localStorage.setItem('substation_ai_api_key', apiKey);
 
-    // Sync user field in header if exists
+    // Sync initials in the header
     const userHeaderEl = document.querySelector('.sh-user');
     if (userHeaderEl) {
-        // Use initials of username
         const initials = username.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
         userHeaderEl.textContent = initials;
     }

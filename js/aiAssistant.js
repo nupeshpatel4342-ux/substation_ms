@@ -115,7 +115,6 @@ function toggleChatPanel() {
 
     if (isChatOpen) {
         document.getElementById('shAiInput').focus();
-        // Scroll body to bottom
         const body = document.getElementById('shAiBody');
         body.scrollTop = body.scrollHeight;
     }
@@ -141,7 +140,6 @@ function minimizeChatPanel() {
 
 // Handle clicking header to minimize/restore
 function handleHeaderClick(e) {
-    // Avoid double toggle when close/min buttons clicked
     if (e.target.closest('.sh-ai-action-btn')) return;
     if (isChatOpen) {
         minimizeChatPanel();
@@ -153,9 +151,7 @@ function openAISettings() {
     if (isChatOpen) {
         toggleChatPanel();
     }
-    // Navigate to Settings page in application
-    if (typeof navigateTo === 'function') {
-        // Find Settings drawer or link menu item
+    if (typeof setActiveMenu === 'function') {
         setActiveMenu('settings');
     } else {
         showToast('Settings module could not be loaded.');
@@ -171,8 +167,8 @@ function resetChatHistory() {
         <div class="sh-ai-msg assistant">
             <div class="sh-ai-msg-bubble">
                 <strong>⚡ Welcome to Substation AI / સબસ્ટેશન AI માં આપનું સ્વાગત છે</strong><br><br>
-                Hello! I'm your AI assistant for the <strong>Substation Management System</strong>.<br>
-                હેલો! હું <strong>સબસ્ટેશન મેનેજમેન્ટ સિસ્ટમ</strong> માટે તમારો AI આસિસ્ટન્ટ છું.<br><br>
+                Ask me anything about your <strong>Substation Management System</strong> or <strong>66KV Substations</strong>.<br>
+                મને <strong>સબસ્ટેશન મેનેજમેન્ટ સિસ્ટમ</strong> અથવા <strong>66KV સબસ્ટેશન્સ</strong> વિશે કંઈપણ પૂછો.<br><br>
                 <strong>Try asking: / પૂછી જુઓ:</strong><br>
                 • 📊 આ સિસ્ટમનો ઉપયોગ કેવી રીતે કરવો?<br>
                 • 🔌 પાવર ટ્રાન્સફોર્મર વિશે સમજાવો<br>
@@ -185,7 +181,7 @@ function resetChatHistory() {
     body.innerHTML = welcomeHtml;
     chatHistory = [{
         role: 'assistant',
-        content: `Welcome to Substation AI / સબસ્ટેશન AI માં આપનું સ્વાગત છે. Hello! I'm your AI assistant for the Substation Management System.`
+        content: `Welcome to Substation AI / સબસ્ટેશન AI માં આપનું સ્વાગત છે. Ask me anything about your Substation Management System or 66KV Substations.`
     }];
 }
 
@@ -215,17 +211,13 @@ function submitUserMessage() {
     const message = input.value.trim();
     if (!message) return;
 
-    // Clear input
     input.value = '';
 
-    // Render User Message in Chat Box
     renderMessage('user', message);
     chatHistory.push({ role: 'user', content: message });
 
-    // Show Typing Loader
     showTypingLoader();
 
-    // Trigger Response after a short delay
     setTimeout(async () => {
         await generateAssistantResponse(message);
     }, 600);
@@ -237,7 +229,6 @@ function renderMessage(role, text) {
     const msgDiv = document.createElement('div');
     msgDiv.className = `sh-ai-msg ${role}`;
     
-    // Parse markdown elements for richer format
     const formattedText = parseMarkdown(text);
 
     msgDiv.innerHTML = `
@@ -256,7 +247,6 @@ function parseMarkdown(text) {
     if (!text) return '';
     let html = text;
 
-    // 1. Escape HTML to prevent XSS (fallback if escapeHtml not defined)
     if (typeof escapeHtml === 'function') {
         html = escapeHtml(html);
     } else {
@@ -265,7 +255,6 @@ function parseMarkdown(text) {
         }[ch]));
     }
 
-    // 2. Fenced code blocks placeholder extraction to avoid newline replacement inside pre tags
     const codeBlocks = [];
     html = html.replace(/```([\w-]*)\n([\s\S]*?)```/g, (match, lang, code) => {
         const placeholder = `__CODE_BLOCK_${codeBlocks.length}__`;
@@ -273,32 +262,24 @@ function parseMarkdown(text) {
         return placeholder;
     });
 
-    // 3. Inline code: `code`
     html = html.replace(/`([^`]+)`/g, '<code style="background: var(--bg); padding: 2px 6px; border-radius: var(--radius-xs); font-family: monospace; font-size: 11.5px; color: var(--danger);">$1</code>');
 
-    // 4. Headers: ### Header, ## Header, # Header
     html = html.replace(/^### (.*?)$/gm, '<h4 style="margin: 10px 0 4px; font-size: 13.5px; font-weight: 700; color: var(--primary);">$1</h4>');
     html = html.replace(/^## (.*?)$/gm, '<h3 style="margin: 12px 0 6px; font-size: 14.5px; font-weight: 700; color: var(--primary-dark);">$1</h3>');
     html = html.replace(/^# (.*?)$/gm, '<h2 style="margin: 14px 0 8px; font-size: 15.5px; font-weight: 800; color: var(--primary-dark);">$1</h2>');
 
-    // 5. Bold: **text**
     html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
 
-    // 6. Bullet points: ^* item, ^- item, ^• item
     html = html.replace(/^\s*[-*•]\s+(.*?)$/gm, '<div style="display: flex; gap: 6px; margin: 4px 0; padding-left: 8px;"><span style="color: var(--primary); flex-shrink: 0;">•</span><span>$1</span></div>');
 
-    // 7. Dividers: ---
     html = html.replace(/^---$/gm, '<hr style="border: 0; border-top: 1px solid var(--border); margin: 10px 0;">');
 
-    // 8. Convert newlines to breaks (for non-code text)
     html = html.replace(/\n/g, '<br>');
 
-    // 9. Restore code blocks
     codeBlocks.forEach((block, idx) => {
         html = html.replace(`__CODE_BLOCK_${idx}__`, block);
     });
 
-    // Clean up multiple consecutive line breaks
     html = html.replace(/(<br>){3,}/g, '<br><br>');
 
     return html;
@@ -332,12 +313,17 @@ function removeTypingLoader() {
 async function generateAssistantResponse(userMsg) {
     const isOnlineMode = localStorage.getItem('substation_ai_online_mode') === 'true';
     const apiKey = localStorage.getItem('substation_ai_api_key') || '';
+    const isHosted = window.location.protocol === 'http:' || window.location.protocol === 'https:';
 
-    if (isOnlineMode && apiKey) {
-        // ONLINE MODE (Gemini API)
+    // If hosted (Vercel), route securely through Vercel serverless chat function.
+    // In hosted cloud mode, we do NOT require a local client-side API key.
+    if (isHosted) {
+        await generateOnlineResponse(userMsg, null);
+    } else if (isOnlineMode && apiKey) {
+        // Local direct API mode
         await generateOnlineResponse(userMsg, apiKey);
     } else {
-        // OFFLINE MOCK MODE (Keyword Match + Local DB stats)
+        // Offline / Rule-based matching fallback
         generateOfflineResponse(userMsg);
     }
 }
@@ -363,11 +349,10 @@ function generateOfflineResponse(userMsg) {
         return;
     }
 
-    // Static Knowledge Base Keyword Matches
     const knowledgeAnswers = [
         {
             keys: ['transformer', 'ટ્રાન્સફોર્મર', 'tr'],
-            answer: `🔌 **Power Transformer / પાવર ટ્રાન્સફોર્મર:**\n\n• **Purpose / હેતુ**: Statically transfers electrical energy between circuits, stepping voltage up or down (e.g. 66KV to 111KV or 66KV to 11KV).\nવોલ્ટેજને વધારવા કે ઘટાડવા માટે ટ્રાન્સફોર્મરનો ઉપયોગ થાય છે.\n\n• **Core Components / મુખ્ય ભાગો**: Winding (HV/LV), Magnetic Core, Buchholz Relay, Conservator Tank, Silica Gel Breather, OTI/WTI temperatures.\nમુખ્ય ભાગોમાં કોર, વાઇન્ડિંગ, કન્ઝર્વેટર ટેન્ક, અને બુખોલ્ઝ રીલે આવે છે.\n\n• **Maintenance / માર્ગદર્શન**: Keep silica gel blue, check oil level monthly, test insulation resistance annually.\nઓઇલ લેવલ ચેક કરવું અને સિલિકા જેલ બ્લુ રાખવી જરૂરી છે.`
+            answer: `🔌 **Power Transformer / પાવર ટ્રાન્સફોર્મર:**\n\n• **Purpose / હેતુ**: Statically transfers electrical energy between circuits, stepping voltage up or down (e.g. 66KV to 11KV).\nવોલ્ટેજને વધારવા કે ઘટાડવા માટે ટ્રાન્સફોર્મરનો ઉપયોગ થાય છે.\n\n• **Core Components / મુખ્ય ભાગો**: Winding (HV/LV), Magnetic Core, Buchholz Relay, Conservator Tank, Silica Gel Breather, OTI/WTI temperatures.\nમુખ્ય ભાગોમાં કોર, વાઇન્ડિંગ, કન્ઝર્વેટર ટેન્ક, અને બુખોલ્ઝ રીલે આવે છે.\n\n• **Maintenance / માર્ગદર્શન**: Keep silica gel blue, check oil level monthly, test insulation resistance annually.\nઓઇલ લેવલ ચેક કરવું અને સિલિકા જેલ બ્લુ રાખવી જરૂરી છે.`
         },
         {
             keys: ['breaker', 'circuit breaker', 'vcb', 'sf6', 'બ્રેકર'],
@@ -395,7 +380,7 @@ function generateOfflineResponse(userMsg) {
         },
         {
             keys: ['safety', 'ppe', 'gloves', 'helmet', 'સેફ્ટી'],
-            answer: `🛡️ **Substation Safety Rules / સબસ્ટેશન સેફ્ટી નિયમો:**\n\n• **Permit (PTW) / પરમિટ**: Never work without obtaining a valid written Permit to Work.\nપરમિટ (PTW) વગર ક્યારેય કામ ચાલુ ના કરવું.\n\n• **Isolation / આઇસોલેશન**: Visually verify line isolators are open and local earthing switches are closed.\nઆઇસોલેટર ઓપન અને લાઇન અર્થ થયેલ છે તેની પુષ્ટિ કરો.\n\n• **PPE / પર્સનલ પ્રોટેક્શન**: Wear a Safety Helmet, safety boots, 15KV electrical gloves, and arc flash safety gear.\nસેફ્ટી હેલ્મેટ, જૂતા, ૧૫KV હેન્ડ ગ્લોવ્ઝ અને ફેસ શીલ્ડ હંમેશા પહેરો.`
+            answer: `🛡️ **Substation Safety Rules / સબસ્ટેશન સેફ્ટી નિયમો:**\n\n• **Permit (PTW) / પરમિટ**: Never work without obtaining a valid written Permit to Work.\nપરમિટ (PTW) વગર ક્યારેય કામ ચાલુ ના કરવું.\n\n• **Isolation / આઇસોલેશન**: Visually verify line isolators are open and local earthing switches are closed.\nઆઇસોલેટર ઓપન અને લાઇન અર્થ થયેલ છે તેની પુષ્ટિ કરો.\n\n• **PPE / પર્સનલ પ્રોટેક્ション**: Wear a Safety Helmet, safety boots, 15KV electrical gloves, and arc flash safety gear.\nસેફ્ટી હેલ્મેટ, જૂતા, ૧૫KV હેન્ડ ગ્લોવ્ઝ અને ફેસ શીલ્ડ હંમેશા પહેરો.`
         },
         {
             keys: ['how to use', 'system', 'guide', 'રિપોર્ટ', 'વાપરવું'],
@@ -407,7 +392,6 @@ function generateOfflineResponse(userMsg) {
         }
     ];
 
-    // Find a matching answer in the static KB
     for (const item of knowledgeAnswers) {
         if (item.keys.some(k => cleanMsg.includes(k))) {
             renderMessage('assistant', item.answer);
@@ -416,7 +400,6 @@ function generateOfflineResponse(userMsg) {
         }
     }
 
-    // Default response if no keyword matched
     const defaultAnswer = `ℹ️ **Substation AI (Offline Mode) / સબસ્ટેશન AI (ઓફલાઇન મોડ)**\n\nI specialize in 66KV substation operations, equipment, safety, and this software. \nહું 66KV સબસ્ટેશનની કામગીરી, સાધનો, સેફ્ટી અને આ સોફ્ટવેર બાબતે માહિતી આપી શકું છું.\n\n• **Note**: To unlock smart conversational replies, please configure a **Gemini API Key** in Settings (તમારી સેટિંગ્સ પેનલમાં જઈને Gemini API Key સેટ કરો).\n\n**Try asking about / તમે આના વિશે પૂછી શકો છો:**\n- Power Transformer (ટ્રાન્સફોર્મર)\n- Circuit Breaker (બ્રેકર)\n- Instrument Transformers (CT/PT)\n- Safety & PPE (સેફ્ટી અને ગ્લોવ્ઝ)\n- Show substation list (સબસ્ટેશન લિસ્ટ બતાવો)`;
     
     renderMessage('assistant', defaultAnswer);
@@ -463,7 +446,6 @@ function renderLocalRecentFaults() {
     }
 
     const list = loadSubstations();
-    // Use current active substation or default to first
     const ssId = typeof currentDashboardSSId !== 'undefined' ? currentDashboardSSId : (list[0] ? list[0].id : null);
 
     if (!ssId) {
@@ -477,7 +459,6 @@ function renderLocalRecentFaults() {
         return;
     }
 
-    // Load faults from substation object (or checks global/localStorage registers)
     const faults = ss.faults || [];
     
     if (faults.length === 0) {
@@ -487,7 +468,6 @@ function renderLocalRecentFaults() {
         return;
     }
 
-    // Sort by date/time (show last 3)
     const recentFaults = faults.slice(-3).reverse();
 
     let enMsg = `⚠️ **Recent Fault Logs - ${ss.name} (Last ${recentFaults.length}):**\n\n`;
@@ -532,7 +512,6 @@ function renderLocalEquipmentList() {
         return;
     }
 
-    // Show first 5 items
     const showList = eqList.slice(0, 5);
 
     let enMsg = `🔌 **Registered Assets - ${ss.name} (Showing ${showList.length} of ${eqList.length}):**\n\n`;
@@ -554,7 +533,6 @@ async function generateOnlineResponse(userMsg, apiKey) {
     const ssId = typeof currentDashboardSSId !== 'undefined' ? currentDashboardSSId : (list[0] ? list[0].id : null);
     const ss = list.find(s => s.id === ssId) || list[0] || {};
 
-    // Get condensed active substation details for AI context
     const dbContext = {
         substationName: ss.name || 'Unknown Substation',
         feedersCount: ss.feeders ? ss.feeders.length : 0,
@@ -566,7 +544,6 @@ async function generateOnlineResponse(userMsg, apiKey) {
         equipmentRegistered: ss.equipmentMaster ? ss.equipmentMaster.slice(0, 10).map(e => ({ name: e.name, type: e.equipmentType })) : []
     };
 
-    // System prompt containing instructions and context
     const systemInstruction = `
 You are ⚡ Substation AI, a professional electrical substation engineer and assistant built exclusively for this Substation Management System (66KV).
 Your response style MUST follow these instructions:
@@ -582,14 +559,10 @@ ${JSON.stringify(dbContext, null, 2)}
 6. Special safety warning: Do NOT give step-by-step high-voltage switching sequences that enable unsafe live operations. Recommend following the approved organization SOPs.
     `;
 
-    // Map chatHistory to Gemini API contents format
-    // Keep only last 8 messages for context to avoid overloading request
     const historyWindow = chatHistory.slice(-8);
     const apiContents = [];
 
-    // Convert history window to gemini format
     historyWindow.forEach(msg => {
-        // Map user and assistant roles (gemini expects 'user' and 'model')
         const role = msg.role === 'user' ? 'user' : 'model';
         apiContents.push({
             role: role,
@@ -598,42 +571,64 @@ ${JSON.stringify(dbContext, null, 2)}
     });
 
     try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                contents: apiContents,
-                systemInstruction: {
-                    parts: [{ text: systemInstruction }]
-                },
-                generationConfig: {
-                    maxOutputTokens: 800,
-                    temperature: 0.2
-                }
-            })
-        });
+        let url;
+        let options;
 
+        if (apiKey) {
+            url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+            options = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    contents: apiContents,
+                    systemInstruction: {
+                        parts: [{ text: systemInstruction }]
+                    },
+                    generationConfig: {
+                        maxOutputTokens: 800,
+                        temperature: 0.2
+                    }
+                })
+            };
+        } else {
+            url = '/api/chat';
+            options = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    contents: apiContents,
+                    systemInstruction: systemInstruction
+                })
+            };
+        }
+
+        const response = await fetch(url, options);
         removeTypingLoader();
 
         if (response.ok) {
             const data = await response.json();
-            const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-            if (reply) {
-                renderMessage('assistant', reply);
-                chatHistory.push({ role: 'assistant', content: reply });
+            
+            let reply = '';
+            if (data.candidates?.[0]?.content?.parts?.[0]?.text) {
+                reply = data.candidates[0].content.parts[0].text;
+            } else if (data.error?.message) {
+                throw new Error(data.error.message);
             } else {
-                const emptyErr = "Received empty response from Gemini. / મોડેલ તરફથી ખાલી જવાબ મળ્યો છે.";
-                renderMessage('assistant', emptyErr);
+                reply = "Received empty response from Gemini. / મોડેલ તરફથી ખાલી જવાબ મળ્યો છે.";
             }
+
+            renderMessage('assistant', reply);
+            chatHistory.push({ role: 'assistant', content: reply });
         } else {
             const errData = await response.json();
             const errMsg = errData.error?.message || response.statusText;
             const apiErrorMsg = `❌ **API Error / API ભૂલ:**\n\nFailed to fetch response: ${errMsg}\n\n*System Fallback*: Switching temporarily to offline responses.`;
             renderMessage('assistant', apiErrorMsg);
             
-            // Fallback to offline matching for this question
             generateOfflineResponse(userMsg);
         }
     } catch (e) {
@@ -641,7 +636,6 @@ ${JSON.stringify(dbContext, null, 2)}
         const connErrorMsg = `❌ **Connection Error / કનેક્શન ભૂલ:**\n\n${e.message}\n\n*System Fallback*: Switching temporarily to offline responses.`;
         renderMessage('assistant', connErrorMsg);
         
-        // Fallback to offline matching for this question
         generateOfflineResponse(userMsg);
     }
 }
