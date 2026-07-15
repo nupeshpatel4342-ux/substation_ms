@@ -437,6 +437,7 @@
     white-space: nowrap;
     position: relative;
     text-align: center;
+    flex-shrink: 0;
 }
 
 .alc-tab::after { display: none; }
