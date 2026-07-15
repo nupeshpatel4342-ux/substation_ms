@@ -352,7 +352,7 @@ function openRegisterEntryModal() {
                     let eqs = ss && ss.equipmentMaster ? ss.equipmentMaster : [];
                     inputHtml = `<select class="form-control" id="regField_${field.name}" name="${field.name}" ${requiredAttr}>
                         <option value="">Select ${field.label}</option>
-                        ${eqs.map(eq => `<option value="${eq.name}" data-bay="${eq.bayNumber || ''}">${eq.name}</option>`).join('')}
+                        ${eqs.map(eq => `<option value="${eq.id}" data-bay="${eq.bayNumber || ''}">${eq.name}</option>`).join('')}
                     </select>`;
                 } else if (field.type === 'select') {
                     inputHtml = `<select class="form-control" name="${field.name}" ${requiredAttr}>
@@ -424,12 +424,21 @@ function saveRegisterEntry() {
     let detailsHtml = detailsArr.length > 0 ? detailsArr.join('<br>') : '<i style="color:#888;">No details provided</i>';
     let remarksText = remarksInput.value ? remarksInput.value : '-';
 
+    let selectedEqId = '';
+    if (container) {
+        const eqInput = container.querySelector('[name="equipmentMasterName"]');
+        if (eqInput && eqInput.value) {
+            selectedEqId = eqInput.value;
+        }
+    }
+
     const newEntry = {
         date: dateInput.value,
         time: timeInput.value,
         shift: shiftText,
         details: detailsHtml,
-        remarks: remarksText
+        remarks: remarksText,
+        equipment_id: selectedEqId || null
     };
 
     if(!registerEntriesDB[title]) {

@@ -1187,6 +1187,38 @@ const pageSubstationsTemplate = `
 <input class="form-input" id="eqInstallDate" type="date"/>
 </div>
 <div class="form-group">
+<label class="form-label">Commissioning Date</label>
+<input class="form-input" id="eqCommissionDate" type="date"/>
+</div>
+<div class="form-group">
+<label class="form-label">Warranty Expiry Date</label>
+<input class="form-input" id="eqWarrantyExpiry" type="date"/>
+</div>
+<div class="form-group">
+<label class="form-label">SAP Asset Code</label>
+<input class="form-input" id="eqSapCode" type="text" placeholder="e.g. SAP-10023"/>
+</div>
+<div class="form-group">
+<label class="form-label">Last Maintenance Date</label>
+<input class="form-input" id="eqLastMaintenance" type="date"/>
+</div>
+<div class="form-group">
+<label class="form-label">Next Maintenance Due</label>
+<input class="form-input" id="eqNextMaintenance" type="date"/>
+</div>
+<div class="form-group">
+<label class="form-label">Oil Capacity (Liters)</label>
+<input class="form-input" id="eqOilCapacity" type="text" placeholder="e.g. 5000 L (Transformer only)"/>
+</div>
+<div class="form-group">
+<label class="form-label">SF6 Gas Pressure (bar)</label>
+<input class="form-input" id="eqGasPressure" type="text" placeholder="e.g. 5.5 bar (Breaker only)"/>
+</div>
+<div class="form-group">
+<label class="form-label">CT/PT Ratio</label>
+<input class="form-input" id="eqCtPtRatio" type="text" placeholder="e.g. 400/1 A (CT/PT only)"/>
+</div>
+<div class="form-group">
 <label class="form-label">Status</label>
 <select class="form-input" id="eqStatus">
 <option value="Healthy">Healthy (In Service)</option>
@@ -1257,6 +1289,38 @@ const pageSubstationsTemplate = `
             <div class="eq-lifecycle-stat">
                 <span class="eq-stat-label">Installation Date</span>
                 <span class="eq-stat-val" id="profDetailInstall" style="font-weight: 600;">-</span>
+            </div>
+            <div class="eq-lifecycle-stat">
+                <span class="eq-stat-label">Commission Date</span>
+                <span class="eq-stat-val" id="profDetailCommission" style="font-weight: 600;">-</span>
+            </div>
+            <div class="eq-lifecycle-stat">
+                <span class="eq-stat-label">Warranty Expiry</span>
+                <span class="eq-stat-val" id="profDetailWarranty" style="font-weight: 600;">-</span>
+            </div>
+            <div class="eq-lifecycle-stat">
+                <span class="eq-stat-label">SAP Code</span>
+                <span class="eq-stat-val" id="profDetailSapCode" style="font-weight: 600;">-</span>
+            </div>
+            <div class="eq-lifecycle-stat">
+                <span class="eq-stat-label">Last Maintenance</span>
+                <span class="eq-stat-val" id="profDetailLastMaint" style="font-weight: 600;">-</span>
+            </div>
+            <div class="eq-lifecycle-stat">
+                <span class="eq-stat-label">Next Maintenance</span>
+                <span class="eq-stat-val" id="profDetailNextMaint" style="font-weight: 600;">-</span>
+            </div>
+            <div class="eq-lifecycle-stat" id="profOilRow" style="display:none;">
+                <span class="eq-stat-label">Oil Capacity</span>
+                <span class="eq-stat-val" id="profDetailOil" style="font-weight: 600;">-</span>
+            </div>
+            <div class="eq-lifecycle-stat" id="profGasRow" style="display:none;">
+                <span class="eq-stat-label">SF6 Gas Pressure</span>
+                <span class="eq-stat-val" id="profDetailGas" style="font-weight: 600;">-</span>
+            </div>
+            <div class="eq-lifecycle-stat" id="profRatioRow" style="display:none;">
+                <span class="eq-stat-label">CT/PT Ratio</span>
+                <span class="eq-stat-val" id="profDetailRatio" style="font-weight: 600;">-</span>
             </div>
             <div class="eq-lifecycle-stat">
                 <span class="eq-stat-label">Equipment Category</span>

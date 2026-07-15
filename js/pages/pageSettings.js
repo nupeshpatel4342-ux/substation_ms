@@ -123,16 +123,20 @@ const pageSettingsTemplate = `
                     <span style="font-size:11.5px; color: var(--text-secondary); line-height: 1.4; display:block;">
                         The full script to create all 17 tables is saved locally in:
                     </span>
-                    <div class="db-sql-box" id="dbSqlBox">-- Run the full setup script inside your Supabase project
--- File path: C:/Users/DELL/66KVReport/.gemini/antigravity/brain/<conversation_id>/supabase_setup.sql
--- (Or the copy in the root folder of this project)
+                    <div class="db-sql-box" id="dbSqlBox">-- RUN THIS MIGRATION SCRIPT IN YOUR SUPABASE SQL EDITOR:
+ALTER TABLE public.maintenance_register 
+ADD COLUMN IF NOT EXISTS equipment_id TEXT REFERENCES public.equipment_master(id) ON DELETE SET NULL;
 
-CREATE TABLE IF NOT EXISTS public.substations (
-    id TEXT PRIMARY KEY,
-    name TEXT NOT NULL,
-    is_sample BOOLEAN DEFAULT false NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
-);</div>
+ALTER TABLE public.breakdown_register 
+ADD COLUMN IF NOT EXISTS equipment_id TEXT REFERENCES public.equipment_master(id) ON DELETE SET NULL;
+
+ALTER TABLE public.photos 
+ADD COLUMN IF NOT EXISTS equipment_id TEXT REFERENCES public.equipment_master(id) ON DELETE SET NULL;
+
+ALTER TABLE public.documents 
+ADD COLUMN IF NOT EXISTS equipment_id TEXT REFERENCES public.equipment_master(id) ON DELETE SET NULL;
+
+-- Full setup script path: C:/Users/DELL/66KVReport/.gemini/antigravity/brain/<conversation_id>/supabase_setup.sql</div>
                     <button type="button" class="db-copy-btn" onclick="copySqlScript()">
                         <span class="material-icons-round" style="font-size:16px;">content_copy</span>
                         Copy Script Path

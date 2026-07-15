@@ -136,13 +136,202 @@ function renderAssetLifecycleProfile(eqId) {
     let eq = ss.equipmentMaster.find(e => e.id === eqId);
     if (!eq) return;
 
-    // Calculate Health Score
-    let healthScore = Math.floor(Math.random() * 40) + 60; // Mock 60-100
+    // Filter real logs
+    let mntList = (ss.maintenance || []).filter(m => m.equipment_id === eqId || m.equipmentName === eq.name);
+    let faultList = (ss.faults || []).filter(f => f.equipment_id === eqId || f.equipment_name === eq.name);
+    let tripList = (ss.trips || []).filter(t => t.equipment_id === eqId || t.equipment === eq.name);
+    let bdList = (ss.breakdowns || []).filter(b => b.equipment_id === eqId || b.equipmentName === eq.name);
+    let docList = (ss.documents || []).filter(d => d.equipment_id === eqId || d.equipment === eq.name);
+
+    // Calculate Health Score dynamically based on logs
+    let healthScore = 100;
+    healthScore -= faultList.length * 8;
+    healthScore -= tripList.length * 5;
+    healthScore -= bdList.length * 15;
+    healthScore = Math.max(20, healthScore); // min 20%
+    
     let healthStatus = 'GOOD';
     let healthClass = 'health-good';
     if (healthScore > 90) { healthStatus = 'EXCELLENT'; healthClass = 'health-excellent'; }
-    else if (healthScore < 75) { healthStatus = 'AVERAGE'; healthClass = 'health-average'; }
+    else if (healthScore < 75 && healthScore >= 60) { healthStatus = 'AVERAGE'; healthClass = 'health-average'; }
     else if (healthScore < 60) { healthStatus = 'POOR'; healthClass = 'health-poor'; }
+
+    // Build timeline events
+    let timelineEvents = [];
+    if (eq.installDate) {
+        timelineEvents.push({
+            date: eq.installDate,
+            time: '10:00',
+            type: 'installation',
+            title: 'Commissioned',
+            desc: 'Equipment successfully commissioned and put into service.',
+            operator: 'GETCO Project Div.'
+        });
+    }
+    
+    faultList.forEach(f => {
+        timelineEvents.push({
+            date: f.date || '',
+            time: f.time || '00:00',
+            type: 'fault',
+            title: `Fault: ${f.severity} Severity`,
+            desc: `${f.description || ''}. Status: ${f.status}`,
+            operator: f.reported_by || 'Operator'
+        });
+    });
+
+    tripList.forEach(t => {
+        timelineEvents.push({
+            date: t.trip_date || '',
+            time: t.trip_time || '00:00',
+            type: 'tripping',
+            title: `Tripping Event (${t.type})`,
+            desc: `Duration: ${t.duration} hrs. Remarks: ${t.remarks || 'None'}`,
+            operator: 'System Auto'
+        });
+    });
+
+    bdList.forEach(b => {
+        let bDate = b.startTime ? b.startTime.split('T')[0] : '';
+        let bTime = b.startTime && b.startTime.includes('T') ? b.startTime.split('T')[1].substring(0,5) : '00:00';
+        timelineEvents.push({
+            date: bDate,
+            time: bTime,
+            type: 'breakdown',
+            title: `Breakdown ${b.bdNumber}`,
+            desc: `${b.nature || ''}. Outage: ${b.totalOutage} hrs. Root Cause: ${b.rootCause || '-'}`,
+            operator: b.reportedBy || 'Operator'
+        });
+    });
+
+    mntList.forEach(m => {
+        timelineEvents.push({
+            date: m.scheduledDate || '',
+            time: m.startTime || '00:00',
+            type: 'maintenance',
+            title: `${m.type} Maintenance`,
+            desc: `${m.description || ''}. Status: ${m.status}`,
+            operator: m.agency || 'Operator'
+        });
+    });
+
+    // Sort newest first
+    timelineEvents.sort((a, b) => {
+        let dateA = new Date((a.date || '1970-01-01') + 'T' + (a.time || '00:00'));
+        let dateB = new Date((b.date || '1970-01-01') + 'T' + (b.time || '00:00'));
+        return dateB - dateA;
+    });
+
+    let timelineHtml = '';
+    if (timelineEvents.length === 0) {
+        timelineHtml = '<div style="padding:20px; text-align:center; color:var(--text-secondary)">No lifecycle events recorded.</div>';
+    } else {
+        timelineHtml = `
+            <div class="alc-timeline">
+                ${timelineEvents.map(evt => {
+                    let icon = 'flag';
+                    let iconClass = 'type-installation';
+                    if (evt.type === 'fault') { icon = 'warning'; iconClass = 'type-fault'; }
+                    if (evt.type === 'tripping') { icon = 'bolt'; iconClass = 'type-tripping'; }
+                    if (evt.type === 'breakdown') { icon = 'error_outline'; iconClass = 'type-fault'; }
+                    if (evt.type === 'maintenance') { icon = 'build'; iconClass = 'type-maintenance'; }
+                    
+                    return `
+                        <div class="alc-timeline-item">
+                            <div class="alc-timeline-icon ${iconClass}"><span class="material-icons-round">${icon}</span></div>
+                            <div class="alc-timeline-content">
+                                <div class="alc-timeline-header">
+                                    <span class="alc-timeline-title">${evt.title}</span>
+                                    <span class="alc-timeline-date">${evt.date} ${evt.time}</span>
+                                </div>
+                                <div class="alc-timeline-desc">${evt.desc}</div>
+                                <div class="alc-timeline-meta">
+                                    <span><span class="material-icons-round" style="font-size:12px; vertical-align:middle">person</span> ${evt.operator}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+    }
+
+    let mntTableHtml = '';
+    if (mntList.length === 0) {
+        mntTableHtml = '<div style="padding:20px; text-align:center; color:var(--text-secondary)">No maintenance history recorded for this equipment.</div>';
+    } else {
+        mntTableHtml = `
+            <table class="data-table alc-mobile-table">
+                <thead><tr><th>Date</th><th>Type</th><th>Description</th><th>Status</th><th>Performed By</th></tr></thead>
+                <tbody>
+                    ${mntList.map(m => `
+                        <tr>
+                            <td data-label="Date">${m.scheduledDate || '-'}</td>
+                            <td data-label="Type">${m.type || '-'}</td>
+                            <td data-label="Description">${m.description || '-'}</td>
+                            <td data-label="Status">${m.status || '-'}</td>
+                            <td data-label="Performed By">${m.agency || '-'}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
+    }
+
+    let combinedFaults = [];
+    faultList.forEach(f => {
+        combinedFaults.push({ date: f.date, event: 'Fault', details: `${f.severity} severity: ${f.description || ''}`, duration: `${f.downtime || 0} hrs`, sortDate: f.date + 'T' + (f.time || '00:00') });
+    });
+    tripList.forEach(t => {
+        combinedFaults.push({ date: t.trip_date, event: 'Tripping', details: `${t.type} trip: ${t.remarks || ''}`, duration: `${t.duration || 0} hrs`, sortDate: t.trip_date + 'T' + (t.trip_time || '00:00') });
+    });
+    bdList.forEach(b => {
+        let bDate = b.startTime ? b.startTime.split('T')[0] : '';
+        combinedFaults.push({ date: bDate, event: 'Breakdown', details: `${b.nature || ''}`, duration: `${b.totalOutage || 0} hrs`, sortDate: b.startTime || '' });
+    });
+    combinedFaults.sort((a,b) => new Date(b.sortDate || 0) - new Date(a.sortDate || 0));
+
+    let faultsTableHtml = '';
+    if (combinedFaults.length === 0) {
+        faultsTableHtml = '<div style="padding:20px; text-align:center; color:var(--text-secondary)">No faults or tripping events recorded for this equipment.</div>';
+    } else {
+        faultsTableHtml = `
+             <table class="data-table alc-mobile-table">
+                <thead><tr><th>Date</th><th>Event</th><th>Details</th><th>Duration</th></tr></thead>
+                <tbody>
+                    ${combinedFaults.map(cf => `
+                        <tr>
+                            <td data-label="Date">${cf.date || '-'}</td>
+                            <td data-label="Event">${cf.event}</td>
+                            <td data-label="Details">${cf.details}</td>
+                            <td data-label="Duration">${cf.duration}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
+    }
+
+    let docsTableHtml = '';
+    if (docList.length === 0) {
+        docsTableHtml = '<div style="padding:20px; text-align:center; color:var(--text-secondary)">No documents uploaded for this equipment.</div>';
+    } else {
+        docsTableHtml = `
+            <table class="data-table alc-mobile-table">
+                <thead><tr><th>Document Name</th><th>Type</th><th>Upload Date</th><th>Action</th></tr></thead>
+                <tbody>
+                    ${docList.map(d => `
+                        <tr>
+                            <td data-label="Document Name">${d.title}</td>
+                            <td data-label="Type">${d.version || 'v1.0'}</td>
+                            <td data-label="Upload Date">${d.timestamp ? d.timestamp.split('T')[0] : '-'}</td>
+                            <td data-label="Action"><a href="${d.url}" target="_blank" class="btn btn-outline" style="padding:4px 8px; text-decoration:none;">View</a></td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
+    }
 
     let profileHtml = `
         <div class="alc-profile-header">
@@ -199,98 +388,23 @@ function renderAssetLifecycleProfile(eqId) {
 
         <!-- TIMELINE TAB -->
         <div class="alc-tab-content" id="alcTabTimeline">
-            <div class="alc-timeline">
-                <div class="alc-timeline-item">
-                    <div class="alc-timeline-icon type-testing"><span class="material-icons-round">science</span></div>
-                    <div class="alc-timeline-content">
-                        <div class="alc-timeline-header">
-                            <span class="alc-timeline-title">Routine Testing (CRM & IR)</span>
-                            <span class="alc-timeline-date">2026-02-15 10:30</span>
-                        </div>
-                        <div class="alc-timeline-desc">Performed Contact Resistance and Insulation Resistance testing. Results within permissible limits.</div>
-                        <div class="alc-timeline-meta">
-                            <span><span class="material-icons-round" style="font-size:12px; vertical-align:middle">person</span> NP Patel</span>
-                            <span style="color:var(--primary-color); cursor:pointer;"><span class="material-icons-round" style="font-size:12px; vertical-align:middle">attach_file</span> Test_Report.pdf</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="alc-timeline-item">
-                    <div class="alc-timeline-icon type-fault"><span class="material-icons-round">bolt</span></div>
-                    <div class="alc-timeline-content">
-                        <div class="alc-timeline-header">
-                            <span class="alc-timeline-title">Tripping Event</span>
-                            <span class="alc-timeline-date">2025-11-04 14:22</span>
-                        </div>
-                        <div class="alc-timeline-desc">Line tripped on Earth Fault. Distance 14.5 KM. Auto-reclosure successful.</div>
-                        <div class="alc-timeline-meta">
-                            <span><span class="material-icons-round" style="font-size:12px; vertical-align:middle">person</span> System Auto</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="alc-timeline-item">
-                    <div class="alc-timeline-icon type-maintenance"><span class="material-icons-round">build</span></div>
-                    <div class="alc-timeline-content">
-                        <div class="alc-timeline-header">
-                            <span class="alc-timeline-title">Preventive Maintenance</span>
-                            <span class="alc-timeline-date">2025-06-10 09:00</span>
-                        </div>
-                        <div class="alc-timeline-desc">Half-yearly maintenance performed. Mechanisms lubricated and gas pressure checked.</div>
-                        <div class="alc-timeline-meta">
-                            <span><span class="material-icons-round" style="font-size:12px; vertical-align:middle">person</span> RK Sharma (Maintenance Team)</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="alc-timeline-item">
-                    <div class="alc-timeline-icon type-installation"><span class="material-icons-round">flag</span></div>
-                    <div class="alc-timeline-content">
-                        <div class="alc-timeline-header">
-                            <span class="alc-timeline-title">Commissioned</span>
-                            <span class="alc-timeline-date">2018-06-01 11:00</span>
-                        </div>
-                        <div class="alc-timeline-desc">Equipment successfully commissioned and put into service.</div>
-                        <div class="alc-timeline-meta">
-                            <span><span class="material-icons-round" style="font-size:12px; vertical-align:middle">person</span> GETCO Project Div.</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            ${timelineHtml}
         </div>
 
         <!-- MAINTENANCE TAB -->
         <div class="alc-tab-content" id="alcTabMaintenance">
-            <table class="data-table alc-mobile-table">
-                <thead><tr><th>Date</th><th>Type</th><th>Description</th><th>Performed By</th></tr></thead>
-                <tbody>
-                    <tr><td data-label="Date">2025-06-10</td><td data-label="Type">Preventive</td><td data-label="Description">Half-yearly maintenance</td><td data-label="Performed By">RK Sharma</td></tr>
-                    <tr><td data-label="Date">2024-12-05</td><td data-label="Type">Preventive</td><td data-label="Description">Yearly maintenance</td><td data-label="Performed By">RK Sharma</td></tr>
-                </tbody>
-            </table>
+            ${mntTableHtml}
         </div>
 
         <!-- FAULTS TAB -->
         <div class="alc-tab-content" id="alcTabFaults">
-             <table class="data-table alc-mobile-table">
-                <thead><tr><th>Date</th><th>Event</th><th>Details</th><th>Duration</th></tr></thead>
-                <tbody>
-                    <tr><td data-label="Date">2025-11-04</td><td data-label="Event">Tripping</td><td data-label="Details">Earth Fault</td><td data-label="Duration">Auto-reclose</td></tr>
-                    <tr><td data-label="Date">2022-08-12</td><td data-label="Event">Breakdown</td><td data-label="Details">Mechanism Failure</td><td data-label="Duration">4 hrs 30 mins</td></tr>
-                </tbody>
-            </table>
+            ${faultsTableHtml}
         </div>
 
         <!-- DOCS TAB -->
         <div class="alc-tab-content" id="alcTabDocs">
             <button class="btn btn-primary" style="margin-bottom:16px;">+ Upload Document</button>
-            <table class="data-table alc-mobile-table">
-                <thead><tr><th>Document Name</th><th>Type</th><th>Upload Date</th><th>Action</th></tr></thead>
-                <tbody>
-                    <tr><td data-label="Document Name">Equipment_Manual.pdf</td><td data-label="Type">Manual</td><td data-label="Upload Date">2018-06-01</td><td data-label="Action"><button class="btn btn-outline" style="padding:4px 8px">View</button></td></tr>
-                    <tr><td data-label="Document Name">Test_Report_Feb2026.pdf</td><td data-label="Type">Test Report</td><td data-label="Upload Date">2026-02-15</td><td data-label="Action"><button class="btn btn-outline" style="padding:4px 8px">View</button></td></tr>
-                </tbody>
-            </table>
+            ${docsTableHtml}
         </div>
     `;
 

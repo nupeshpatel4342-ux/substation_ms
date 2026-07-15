@@ -64,6 +64,38 @@ const ssEquipmentProfileTemplate = `
                         <span class="eq-stat-label">Install Date</span>
                         <span class="eq-stat-val" id="profDetailInstall">-</span>
                     </div>
+                    <div class="eq-lifecycle-stat">
+                        <span class="eq-stat-label">Commission Date</span>
+                        <span class="eq-stat-val" id="profDetailCommission">-</span>
+                    </div>
+                    <div class="eq-lifecycle-stat">
+                        <span class="eq-stat-label">Warranty Expiry</span>
+                        <span class="eq-stat-val" id="profDetailWarranty">-</span>
+                    </div>
+                    <div class="eq-lifecycle-stat">
+                        <span class="eq-stat-label">SAP Code</span>
+                        <span class="eq-stat-val" id="profDetailSapCode">-</span>
+                    </div>
+                    <div class="eq-lifecycle-stat">
+                        <span class="eq-stat-label">Last Maintenance</span>
+                        <span class="eq-stat-val" id="profDetailLastMaint">-</span>
+                    </div>
+                    <div class="eq-lifecycle-stat">
+                        <span class="eq-stat-label">Next Maintenance</span>
+                        <span class="eq-stat-val" id="profDetailNextMaint">-</span>
+                    </div>
+                    <div class="eq-lifecycle-stat" id="profOilRow" style="display:none;">
+                        <span class="eq-stat-label">Oil Capacity</span>
+                        <span class="eq-stat-val" id="profDetailOil">-</span>
+                    </div>
+                    <div class="eq-lifecycle-stat" id="profGasRow" style="display:none;">
+                        <span class="eq-stat-label">SF6 Gas Pressure</span>
+                        <span class="eq-stat-val" id="profDetailGas">-</span>
+                    </div>
+                    <div class="eq-lifecycle-stat" id="profRatioRow" style="display:none;">
+                        <span class="eq-stat-label">CT/PT Ratio</span>
+                        <span class="eq-stat-val" id="profDetailRatio">-</span>
+                    </div>
                 </div>
             </div>
 

@@ -178,7 +178,7 @@ function openFaultForm(faultId = null) {
     eqSelect.innerHTML = '<option value="">Select Equipment...</option>';
     let eqList = getCleanTrippingEquipment(ss);
     eqList.forEach(eq => {
-        eqSelect.innerHTML += `<option value="${escapeHtml(eq.name)}">${escapeHtml(eq.name)} (${eq.type})</option>`;
+        eqSelect.innerHTML += `<option value="${escapeHtml(eq.id)}">${escapeHtml(eq.name)} (${eq.type})</option>`;
     });
     
     if (faultId) {
@@ -188,7 +188,13 @@ function openFaultForm(faultId = null) {
         document.getElementById('f_time').value = f.time || '';
         document.getElementById('f_voltage').value = f.voltage || '66KV';
         document.getElementById('f_category').value = f.category || 'Transformer';
-        document.getElementById('f_equipment_name').value = f.equipment_name || '';
+        
+        let activeEqId = f.equipment_id;
+        if (!activeEqId && f.equipment_name) {
+            let found = eqList.find(e => e.name === f.equipment_name);
+            if (found) activeEqId = found.id;
+        }
+        document.getElementById('f_equipment_name').value = activeEqId || '';
         
         document.getElementById('f_type').value = f.type || 'Transient';
         document.getElementById('f_severity').value = f.severity || 'Low';
@@ -258,13 +264,22 @@ function saveFault() {
         id = 'FLT-' + Date.now().toString().slice(-6);
     }
     
+    let eqSelectEl = document.getElementById('f_equipment_name');
+    let selectedEqId = eqSelectEl.value;
+    let selectedEqName = '';
+    if (selectedEqId && ss.equipmentMaster) {
+        let found = ss.equipmentMaster.find(e => e.id === selectedEqId);
+        if (found) selectedEqName = found.name;
+    }
+
     let fault = {
         id: id,
         date: document.getElementById('f_date').value,
         time: document.getElementById('f_time').value,
         voltage: document.getElementById('f_voltage').value,
         category: document.getElementById('f_category').value,
-        equipment_name: document.getElementById('f_equipment_name').value,
+        equipment_id: selectedEqId || null,
+        equipment_name: selectedEqName || eqSelectEl.value,
         type: document.getElementById('f_type').value,
         severity: document.getElementById('f_severity').value,
         description: document.getElementById('f_description').value,
@@ -467,7 +482,7 @@ function openTripForm(tripId = null) {
             select.appendChild(groups[eq.type]);
         }
         let opt = document.createElement('option');
-        opt.value = eq.name; 
+        opt.value = eq.id; 
         opt.textContent = eq.name;
         groups[eq.type].appendChild(opt);
     });
@@ -476,7 +491,14 @@ function openTripForm(tripId = null) {
         let trip = (ss.trips || []).find(t => t.id === tripId);
         if (trip) {
             document.getElementById('t_id').value = trip.id;
-            document.getElementById('t_equipment').value = trip.equipment;
+            
+            let activeEqId = trip.equipment_id;
+            if (!activeEqId && trip.equipment) {
+                let found = cleanEq.find(e => e.name === trip.equipment);
+                if (found) activeEqId = found.id;
+            }
+            document.getElementById('t_equipment').value = activeEqId || '';
+            
             document.getElementById('t_type').value = trip.type;
             document.getElementById('t_remarks').value = trip.remarks;
             document.getElementById('t_trip_date').value = trip.trip_date;
@@ -516,8 +538,15 @@ function saveTrip() {
     let isNew = !id;
     if (isNew) id = 'TRP-' + Date.now().toString().slice(-6);
     
-    let equipment = document.getElementById('t_equipment').value;
-    if(!equipment) { showToast('Please select equipment.'); return; }
+    let eqSelectEl = document.getElementById('t_equipment');
+    let selectedEqId = eqSelectEl.value;
+    if(!selectedEqId) { showToast('Please select equipment.'); return; }
+    
+    let selectedEqName = '';
+    if (selectedEqId && ss.equipmentMaster) {
+        let found = ss.equipmentMaster.find(e => e.id === selectedEqId);
+        if (found) selectedEqName = found.name;
+    }
     
     let t_date = document.getElementById('t_trip_date').value;
     let t_time = document.getElementById('t_trip_time').value;
@@ -540,7 +569,8 @@ function saveTrip() {
     
     let trip = {
         id: id,
-        equipment: equipment,
+        equipment_id: selectedEqId || null,
+        equipment: selectedEqName || eqSelectEl.value,
         type: document.getElementById('t_type').value,
         remarks: document.getElementById('t_remarks').value,
         trip_date: t_date,
@@ -696,7 +726,7 @@ function openBreakdownForm(id = null) {
     eqSelect.innerHTML = '<option value="">Select Equipment...</option>';
     let eqList = getCleanTrippingEquipment(ss);
     eqList.forEach(eq => {
-        eqSelect.innerHTML += `<option value="${escapeHtml(eq.name)}">${escapeHtml(eq.name)} (${eq.type})</option>`;
+        eqSelect.innerHTML += `<option value="${escapeHtml(eq.id)}">${escapeHtml(eq.name)} (${eq.type})</option>`;
     });
     
     if (id) {
@@ -708,7 +738,13 @@ function openBreakdownForm(id = null) {
             document.getElementById('bdStartTime').value = bd.startTime || '';
             document.getElementById('bdReportedBy').value = bd.reportedBy || '';
             document.getElementById('bdSeverity').value = bd.severity || 'Medium';
-            document.getElementById('bdEquipmentName').value = bd.equipmentName || '';
+            
+            let activeEqId = bd.equipment_id;
+            if (!activeEqId && bd.equipmentName) {
+                let found = eqList.find(e => e.name === bd.equipmentName);
+                if (found) activeEqId = found.id;
+            }
+            document.getElementById('bdEquipmentName').value = activeEqId || '';
             document.getElementById('bdMake').value = bd.make || '';
             document.getElementById('bdNature').value = bd.nature || '';
             document.getElementById('bdRootCause').value = bd.rootCause || '';
@@ -774,11 +810,17 @@ function saveBreakdown() {
     }
     let bdNumber = document.getElementById('bdNumber').value || ('BD-' + id.slice(-4));
     
-    let eqName = document.getElementById('bdEquipmentName').value;
-    let start = document.getElementById('bdStartTime').value;
+    let eqSelectEl = document.getElementById('bdEquipmentName');
+    let selectedEqId = eqSelectEl.value;
+    let selectedEqName = '';
+    if (selectedEqId && ss.equipmentMaster) {
+        let found = ss.equipmentMaster.find(e => e.id === selectedEqId);
+        if (found) selectedEqName = found.name;
+    }
     
-    if (!eqName || !start) {
-        showToast('Equipment Name and Start Time are required.');
+    let start = document.getElementById('bdStartTime').value;
+    if (!selectedEqId || !start) {
+        showToast('Equipment and Start Time are required.');
         return;
     }
     
@@ -788,7 +830,8 @@ function saveBreakdown() {
         startTime: start,
         reportedBy: document.getElementById('bdReportedBy').value,
         severity: document.getElementById('bdSeverity').value,
-        equipmentName: eqName,
+        equipment_id: selectedEqId || null,
+        equipmentName: selectedEqName || eqSelectEl.value,
         make: document.getElementById('bdMake').value,
         nature: document.getElementById('bdNature').value,
         rootCause: document.getElementById('bdRootCause').value,
@@ -979,7 +1022,7 @@ function openMaintenanceForm(id = null) {
     let eqList = getCleanTrippingEquipment(ss);
     equipSelect.innerHTML = '<option value="">-- Select Equipment --</option>';
     eqList.forEach(eq => {
-        equipSelect.innerHTML += `<option value="${escapeHtml(eq.name)}">${escapeHtml(eq.name)} (${eq.type})</option>`;
+        equipSelect.innerHTML += `<option value="${escapeHtml(eq.id)}">${escapeHtml(eq.name)} (${eq.type})</option>`;
     });
     
     document.getElementById('mntDashboardSection').style.display = 'none';
@@ -994,7 +1037,13 @@ function openMaintenanceForm(id = null) {
         let m = ss.maintenance.find(x => x.id === id);
         if (m) {
             document.getElementById('mntId').value = m.id;
-            document.getElementById('mntEquipmentName').value = m.equipmentName || '';
+            
+            let activeEqId = m.equipment_id;
+            if (!activeEqId && m.equipmentName) {
+                let found = eqList.find(e => e.name === m.equipmentName);
+                if (found) activeEqId = found.id;
+            }
+            document.getElementById('mntEquipmentName').value = activeEqId || '';
             document.getElementById('mntType').value = m.type || 'Preventive';
             document.getElementById('mntDescription').value = m.description || '';
             document.getElementById('mntParts').value = m.parts || '';
@@ -1185,9 +1234,18 @@ function saveMaintenance() {
         }
     }
     
+    let eqSelectEl = document.getElementById('mntEquipmentName');
+    let selectedEqId = eqSelectEl.value;
+    let selectedEqName = '';
+    if (selectedEqId && ss.equipmentMaster) {
+        let found = ss.equipmentMaster.find(e => e.id === selectedEqId);
+        if (found) selectedEqName = found.name;
+    }
+
     let m = {
         id: id,
-        equipmentName: document.getElementById('mntEquipmentName').value,
+        equipment_id: selectedEqId || null,
+        equipmentName: selectedEqName || eqSelectEl.value,
         type: document.getElementById('mntType').value,
         description: document.getElementById('mntDescription').value,
         parts: document.getElementById('mntParts').value,
@@ -1817,6 +1875,14 @@ function openEquipmentModal(eqId) {
     document.getElementById('eqSerial').value = eq ? (eq.serialNo || '') : '';
     document.getElementById('eqCapacity').value = eq ? (eq.capacity || '') : '';
     document.getElementById('eqInstallDate').value = eq ? (eq.installDate || '') : '';
+    document.getElementById('eqCommissionDate').value = eq ? (eq.commissionDate || '') : '';
+    document.getElementById('eqWarrantyExpiry').value = eq ? (eq.warrantyExpiry || '') : '';
+    document.getElementById('eqSapCode').value = eq ? (eq.sapCode || '') : '';
+    document.getElementById('eqLastMaintenance').value = eq ? (eq.lastMaintenance || '') : '';
+    document.getElementById('eqNextMaintenance').value = eq ? (eq.nextMaintenance || '') : '';
+    document.getElementById('eqOilCapacity').value = eq ? (eq.oilCapacity || '') : '';
+    document.getElementById('eqGasPressure').value = eq ? (eq.gasPressure || '') : '';
+    document.getElementById('eqCtPtRatio').value = eq ? (eq.ctPtRatio || '') : '';
     let currentStatus = eq ? eq.status : 'Healthy';
     if (!['Healthy', 'In Service', 'Faulty', 'Under Maintenance', 'Decommissioned'].includes(currentStatus)) {
         currentStatus = 'Healthy';
@@ -1876,6 +1942,14 @@ function saveEquipment(event) {
         serialNo: document.getElementById('eqSerial').value,
         capacity: document.getElementById('eqCapacity').value,
         installDate: document.getElementById('eqInstallDate').value,
+        commissionDate: document.getElementById('eqCommissionDate').value,
+        warrantyExpiry: document.getElementById('eqWarrantyExpiry').value,
+        sapCode: document.getElementById('eqSapCode').value,
+        lastMaintenance: document.getElementById('eqLastMaintenance').value,
+        nextMaintenance: document.getElementById('eqNextMaintenance').value,
+        oilCapacity: document.getElementById('eqOilCapacity').value,
+        gasPressure: document.getElementById('eqGasPressure').value,
+        ctPtRatio: document.getElementById('eqCtPtRatio').value,
         status: document.getElementById('eqStatus').value,
         location: document.getElementById('eqLocation').value,
         description: document.getElementById('eqDescription').value
@@ -1931,8 +2005,44 @@ function renderEquipmentProfile(eqId) {
     document.getElementById('profDetailModel').textContent = eq.model || '-';
     document.getElementById('profDetailSerial').textContent = eq.serialNo || '-';
     document.getElementById('profDetailInstall').textContent = eq.installDate || '-';
-    document.getElementById('profDetailCategory').textContent = eq.type || '-';
-    document.getElementById('profDetailVoltage').textContent = eq.voltage || '-';
+    document.getElementById('profDetailCommission').textContent = eq.commissionDate || '-';
+    document.getElementById('profDetailWarranty').textContent = eq.warrantyExpiry || '-';
+    document.getElementById('profDetailSapCode').textContent = eq.sapCode || '-';
+    document.getElementById('profDetailLastMaint').textContent = eq.lastMaintenance || '-';
+    document.getElementById('profDetailNextMaint').textContent = eq.nextMaintenance || '-';
+    document.getElementById('profDetailCategory').textContent = eq.category || '-';
+    document.getElementById('profDetailVoltage').textContent = eq.voltageLevel || '-';
+
+    // Show/hide specific technical rows
+    const oilRow = document.getElementById('profOilRow');
+    if (oilRow) {
+        if (eq.category.toLowerCase().includes('transformer') && eq.oilCapacity) {
+            oilRow.style.display = 'flex';
+            document.getElementById('profDetailOil').textContent = eq.oilCapacity;
+        } else {
+            oilRow.style.display = 'none';
+        }
+    }
+
+    const gasRow = document.getElementById('profGasRow');
+    if (gasRow) {
+        if (eq.category.toLowerCase().includes('breaker') && eq.gasPressure) {
+            gasRow.style.display = 'flex';
+            document.getElementById('profDetailGas').textContent = eq.gasPressure;
+        } else {
+            gasRow.style.display = 'none';
+        }
+    }
+
+    const ratioRow = document.getElementById('profRatioRow');
+    if (ratioRow) {
+        if ((eq.category.toLowerCase().includes('ct') || eq.category.toLowerCase().includes('pt')) && eq.ctPtRatio) {
+            ratioRow.style.display = 'flex';
+            document.getElementById('profDetailRatio').textContent = eq.ctPtRatio;
+        } else {
+            ratioRow.style.display = 'none';
+        }
+    }
     
     document.getElementById('profEditBtn').onclick = () => openEquipmentModal(eqId);
 }

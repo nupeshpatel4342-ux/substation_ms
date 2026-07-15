@@ -148,6 +148,38 @@ const ssEquipmentMasterTemplate = `
                                 <input type="date" id="eqInstallDate" class="form-input">
                             </div>
                             <div class="form-group">
+                                <label class="form-label">Commissioning Date</label>
+                                <input type="date" id="eqCommissionDate" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Warranty Expiry Date</label>
+                                <input type="date" id="eqWarrantyExpiry" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">SAP Asset Code</label>
+                                <input type="text" id="eqSapCode" class="form-input" placeholder="e.g. SAP-10023">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Last Maintenance Date</label>
+                                <input type="date" id="eqLastMaintenance" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Next Maintenance Due</label>
+                                <input type="date" id="eqNextMaintenance" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Oil Capacity (Liters)</label>
+                                <input type="text" id="eqOilCapacity" class="form-input" placeholder="e.g. 5000 L">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">SF6 Gas Pressure (bar)</label>
+                                <input type="text" id="eqGasPressure" class="form-input" placeholder="e.g. 5.5 bar">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">CT/PT Ratio</label>
+                                <input type="text" id="eqCtPtRatio" class="form-input" placeholder="e.g. 400/1 A">
+                            </div>
+                            <div class="form-group">
                                 <label class="form-label">Status</label>
                                 <select id="eqStatus" class="form-input">
                                     <option value="In Service">In Service</option>

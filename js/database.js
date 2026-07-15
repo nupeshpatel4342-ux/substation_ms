@@ -156,6 +156,14 @@ const DatabaseManager = {
                             serial_no: eq.serialNo || null,
                             capacity: eq.capacity || null,
                             install_date: eq.installDate ? eq.installDate : null,
+                            commission_date: eq.commissionDate ? eq.commissionDate : null,
+                            warranty_expiry: eq.warrantyExpiry ? eq.warrantyExpiry : null,
+                            sap_code: eq.sapCode || null,
+                            last_maintenance: eq.lastMaintenance ? eq.lastMaintenance : null,
+                            next_maintenance: eq.nextMaintenance ? eq.nextMaintenance : null,
+                            oil_capacity: eq.oilCapacity || null,
+                            gas_pressure: eq.gasPressure || null,
+                            ct_pt_ratio: eq.ctPtRatio || null,
                             status: eq.status || 'Healthy',
                             location: eq.location || null,
                             description: eq.description || null
@@ -218,6 +226,7 @@ const DatabaseManager = {
                             start_time: b.startTime ? new Date(b.startTime).toISOString() : new Date().toISOString(),
                             reported_by: b.reportedBy || null,
                             severity: b.severity || '',
+                            equipment_id: b.equipment_id || (ss.equipmentMaster && ss.equipmentMaster.find(e => e.name === b.equipmentName)?.id) || null,
                             equipment_name: b.equipmentName || '',
                             make: b.make || null,
                             nature: b.nature || null,
@@ -242,6 +251,7 @@ const DatabaseManager = {
                         maintenanceData.push({
                             id: m.id,
                             substation_id: ss.id,
+                            equipment_id: m.equipment_id || (ss.equipmentMaster && ss.equipmentMaster.find(e => e.name === m.equipmentName)?.id) || null,
                             equipment_name: m.equipmentName || '',
                             type: m.type || '',
                             description: m.description || null,
@@ -285,6 +295,7 @@ const DatabaseManager = {
                             id: p.id,
                             substation_id: ss.id,
                             url: p.url || '',
+                            equipment_id: p.equipment_id || (ss.equipmentMaster && ss.equipmentMaster.find(e => e.name === p.equipment)?.id) || null,
                             equipment: p.equipment || null,
                             category: p.category || null,
                             caption: p.caption || null,
@@ -305,6 +316,7 @@ const DatabaseManager = {
                             title: d.title || '',
                             version: d.version || 'v1.0',
                             status: d.status || 'Approved',
+                            equipment_id: d.equipment_id || (ss.equipmentMaster && ss.equipmentMaster.find(e => e.name === d.equipment)?.id) || null,
                             equipment: d.equipment || null,
                             record_id: d.recordId || null,
                             expiry: d.expiry ? d.expiry : null,
@@ -413,7 +425,8 @@ const DatabaseManager = {
                         details: typeof entry.details === 'string' ? { html: entry.details } : (entry.details || {}),
                         remarks: entry.remarks || '',
                         created_by: entry.created_by || 'Operator',
-                        attachments: entry.attachments || []
+                        attachments: entry.attachments || [],
+                        equipment_id: entry.equipment_id || null
                     });
                 });
             });
@@ -518,6 +531,14 @@ const DatabaseManager = {
                     serialNo: e.serial_no || '',
                     capacity: e.capacity || '',
                     installDate: e.install_date || '',
+                    commissionDate: e.commission_date || '',
+                    warrantyExpiry: e.warranty_expiry || '',
+                    sapCode: e.sap_code || '',
+                    lastMaintenance: e.last_maintenance || '',
+                    nextMaintenance: e.next_maintenance || '',
+                    oilCapacity: e.oil_capacity || '',
+                    gasPressure: e.gas_pressure || '',
+                    ctPtRatio: e.ct_pt_ratio || '',
                     status: e.status,
                     location: e.location || '',
                     description: e.description || ''
