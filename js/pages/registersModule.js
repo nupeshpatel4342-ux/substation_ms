@@ -433,6 +433,7 @@ function saveRegisterEntry() {
     }
 
     const newEntry = {
+        substation_id: currentDashboardSSId || 'halvad3',
         date: dateInput.value,
         time: timeInput.value,
         shift: shiftText,

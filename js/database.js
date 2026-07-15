@@ -412,12 +412,12 @@ const DatabaseManager = {
                 if (!entries || !Array.isArray(entries)) return;
 
                 entries.forEach(entry => {
-                    const uniqueStr = (entry.substation_id || window.currentDashboardSSId || 'global') + '_' + title + '_' + entry.date + '_' + entry.time + '_' + entry.shift;
+                    const uniqueStr = (entry.substation_id || currentDashboardSSId || 'global') + '_' + title + '_' + entry.date + '_' + entry.time + '_' + entry.shift;
                     const entryId = this.generateUuid(uniqueStr);
 
                     entriesData.push({
                         id: entryId,
-                        substation_id: entry.substation_id || window.currentDashboardSSId || 'halvad3',
+                        substation_id: entry.substation_id || currentDashboardSSId || 'halvad3',
                         title: title,
                         entry_date: entry.date,
                         entry_time: entry.time + ':00',
