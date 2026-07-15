@@ -111,6 +111,10 @@ function executeSSDeletion() {
     let ss = getSubstation(_ssIdToDelete);
     if (!ss) return;
     
+    if (typeof DatabaseManager !== 'undefined' && DatabaseManager.deleteSubstation) {
+        DatabaseManager.deleteSubstation(_ssIdToDelete);
+    }
+    
     let subs = loadSubstations().filter(s => s.id !== _ssIdToDelete);
     saveSubstations(subs);
     

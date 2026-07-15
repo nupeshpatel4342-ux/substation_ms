@@ -222,7 +222,15 @@ function loadSubstations() {
 }
 
 function saveSubstations(list) {
+    let activeId = window.currentDashboardSSId || window.reportSSId || window.editingSSId;
+    if (activeId) {
+        let ss = list.find(s => s.id === activeId);
+        if (ss) ss.updated_at = new Date().toISOString();
+    }
     localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+    if (typeof DatabaseManager !== 'undefined' && DatabaseManager.pushData) {
+        DatabaseManager.pushData(list);
+    }
 }
 
 function preloadSampleEquipment(ss) {

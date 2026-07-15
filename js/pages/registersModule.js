@@ -186,6 +186,9 @@ try {
 function saveToLocalStorage() {
     try {
         localStorage.setItem('substation_registers_db', JSON.stringify(registerEntriesDB));
+        if (typeof DatabaseManager !== 'undefined' && DatabaseManager.pushRegisters) {
+            DatabaseManager.pushRegisters(registerEntriesDB);
+        }
     } catch (e) {
         console.error('Error saving to localStorage', e);
     }

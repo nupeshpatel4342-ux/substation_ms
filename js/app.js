@@ -416,6 +416,9 @@ window.addEventListener('popstate', (event) => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
+    if (typeof DatabaseManager !== 'undefined') {
+        DatabaseManager.init();
+    }
     if (window.location.hash && window.location.hash.length > 1) {
         let hash = window.location.hash.substring(1);
         let args = hash.split('/').map(decodeURIComponent);
@@ -489,32 +492,36 @@ function closeDrawer() {
     document.body.style.overflow = '';
 }
 
-hamburger.addEventListener('click', openDrawer);
-drawerCloseBtn.addEventListener('click', closeDrawer);
-navOverlay.addEventListener('click', closeDrawer);
+if (hamburger) hamburger.addEventListener('click', openDrawer);
+if (drawerCloseBtn) drawerCloseBtn.addEventListener('click', closeDrawer);
+if (navOverlay) navOverlay.addEventListener('click', closeDrawer);
 
 // ===== Profile Dropdown =====
 const profileBtn = document.getElementById('navProfile');
 const profileDropdown = document.getElementById('profileDropdown');
 
-profileBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    profileBtn.classList.toggle('open');
-    profileDropdown.classList.toggle('show');
-    notifPanel.classList.remove('show');
-});
+if (profileBtn && profileDropdown) {
+    profileBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        profileBtn.classList.toggle('open');
+        profileDropdown.classList.toggle('show');
+        if (notifPanel) notifPanel.classList.remove('show');
+    });
+}
 
 // ===== Notification Panel =====
 const notifBtn = document.getElementById('notifBtn');
 const notifPanel = document.getElementById('notifPanel');
 const notifBadge = document.getElementById('notifBadge');
 
-notifBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    notifPanel.classList.toggle('show');
-    profileDropdown.classList.remove('show');
-    profileBtn.classList.remove('open');
-});
+if (notifBtn && notifPanel) {
+    notifBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        notifPanel.classList.toggle('show');
+        if (profileDropdown) profileDropdown.classList.remove('show');
+        if (profileBtn) profileBtn.classList.remove('open');
+    });
+}
 
 function markAllRead() {
     document.querySelectorAll('.notif-item.unread').forEach(item => {
@@ -523,16 +530,16 @@ function markAllRead() {
     document.querySelectorAll('.notif-dot').forEach(dot => {
         dot.style.display = 'none';
     });
-    notifBadge.style.display = 'none';
+    if (notifBadge) notifBadge.style.display = 'none';
 }
 
 // Close dropdowns on outside click
 document.addEventListener('click', (e) => {
-    if (!profileBtn.contains(e.target)) {
+    if (profileBtn && profileDropdown && !profileBtn.contains(e.target)) {
         profileDropdown.classList.remove('show');
         profileBtn.classList.remove('open');
     }
-    if (!notifBtn.contains(e.target) && !notifPanel.contains(e.target)) {
+    if (notifBtn && notifPanel && !notifBtn.contains(e.target) && !notifPanel.contains(e.target)) {
         notifPanel.classList.remove('show');
     }
 });

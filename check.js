@@ -17,7 +17,8 @@ const puppeteer = require('puppeteer');
     console.log('MAIN CONTENT:', content);
     
     await page.evaluate(() => {
-        document.querySelector('.nav-menu-item[data-page="substations"]').click();
+        const btn = document.querySelector('.nav-menu-item[data-page="substations"]');
+        if (btn) btn.click();
     });
     await new Promise(r => setTimeout(r, 1000));
     
