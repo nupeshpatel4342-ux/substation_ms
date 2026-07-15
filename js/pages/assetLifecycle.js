@@ -143,6 +143,44 @@ function renderAssetLifecycleProfile(eqId) {
     let bdList = (ss.breakdowns || []).filter(b => b.equipment_id === eqId || b.equipmentName === eq.name);
     let docList = (ss.documents || []).filter(d => d.equipment_id === eqId || d.equipment === eq.name);
 
+    // Filter dynamic registers
+    let regList = [];
+    let rDB = {};
+    try {
+        const storedRegs = localStorage.getItem('substation_registers_db');
+        if (storedRegs) {
+            rDB = JSON.parse(storedRegs);
+        }
+    } catch (e) {
+        console.error('Error loading registers in lifecycle', e);
+    }
+    
+    Object.entries(rDB).forEach(([title, entries]) => {
+        if (entries && Array.isArray(entries)) {
+            entries.forEach(entry => {
+                let isRelated = false;
+                if (entry.equipment_id && entry.equipment_id === eqId) {
+                    isRelated = true;
+                } else if (entry.details) {
+                    let detailsStr = typeof entry.details === 'string' ? entry.details : JSON.stringify(entry.details);
+                    if (detailsStr.toLowerCase().includes(eq.name.toLowerCase())) {
+                        isRelated = true;
+                    }
+                }
+                if (isRelated) {
+                    regList.push({
+                        title: title,
+                        date: entry.date,
+                        time: entry.time || '00:00',
+                        shift: entry.shift || '-',
+                        details: entry.details || '',
+                        remarks: entry.remarks || '-'
+                    });
+                }
+            });
+        }
+    });
+
     // Calculate Health Score dynamically based on logs
     let healthScore = 100;
     healthScore -= faultList.length * 8;
@@ -215,6 +253,17 @@ function renderAssetLifecycleProfile(eqId) {
         });
     });
 
+    regList.forEach(reg => {
+        timelineEvents.push({
+            date: reg.date || '',
+            time: reg.time || '00:00',
+            type: 'register',
+            title: `${reg.title}`,
+            desc: `Logged in registers. Remarks: ${reg.remarks}`,
+            operator: 'Operator Log'
+        });
+    });
+
     // Sort newest first
     timelineEvents.sort((a, b) => {
         let dateA = new Date((a.date || '1970-01-01') + 'T' + (a.time || '00:00'));
@@ -235,6 +284,7 @@ function renderAssetLifecycleProfile(eqId) {
                     if (evt.type === 'tripping') { icon = 'bolt'; iconClass = 'type-tripping'; }
                     if (evt.type === 'breakdown') { icon = 'error_outline'; iconClass = 'type-fault'; }
                     if (evt.type === 'maintenance') { icon = 'build'; iconClass = 'type-maintenance'; }
+                    if (evt.type === 'register') { icon = 'assignment'; iconClass = 'type-testing'; }
                     
                     return `
                         <div class="alc-timeline-item">
@@ -333,6 +383,38 @@ function renderAssetLifecycleProfile(eqId) {
         `;
     }
 
+    let regsTableHtml = '';
+    if (regList.length === 0) {
+        regsTableHtml = '<div style="padding:20px; text-align:center; color:var(--text-secondary)">No register records found for this equipment.</div>';
+    } else {
+        regsTableHtml = `
+            <div class="table-responsive">
+                <table class="data-table alc-mobile-table">
+                    <thead>
+                        <tr>
+                            <th>Date / Time</th>
+                            <th>Register Type</th>
+                            <th>Shift</th>
+                            <th>Details</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${regList.map(reg => `
+                            <tr>
+                                <td data-label="Date/Time">${reg.date} ${reg.time}</td>
+                                <td data-label="Register Type" style="font-weight:600">${reg.title}</td>
+                                <td data-label="Shift">${reg.shift}</td>
+                                <td data-label="Details" style="font-size:12px;">${reg.details}</td>
+                                <td data-label="Remarks">${reg.remarks}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    }
+
     let profileHtml = `
         <div class="alc-profile-header">
             <div class="alc-profile-info">
@@ -355,6 +437,7 @@ function renderAssetLifecycleProfile(eqId) {
             <div class="alc-tab" onclick="switchAlcTab(this, 'alcTabTimeline')">Lifecycle Timeline</div>
             <div class="alc-tab" onclick="switchAlcTab(this, 'alcTabMaintenance')">Maintenance History</div>
             <div class="alc-tab" onclick="switchAlcTab(this, 'alcTabFaults')">Faults & Trippings</div>
+            <div class="alc-tab" onclick="switchAlcTab(this, 'alcTabRegs')">Register Data</div>
             <div class="alc-tab" onclick="switchAlcTab(this, 'alcTabDocs')">Documents</div>
         </div>
 
@@ -399,6 +482,11 @@ function renderAssetLifecycleProfile(eqId) {
         <!-- FAULTS TAB -->
         <div class="alc-tab-content" id="alcTabFaults">
             ${faultsTableHtml}
+        </div>
+
+        <!-- REGISTER DATA TAB -->
+        <div class="alc-tab-content" id="alcTabRegs">
+            ${regsTableHtml}
         </div>
 
         <!-- DOCS TAB -->
